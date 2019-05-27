@@ -82,11 +82,13 @@ void init(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   if(info.Length() < 1) {
     return Nan::ThrowTypeError("init(): expected at least 1 argument");
   }
+printf("A\n");
 
   // first argument is a number
   if(!info[0]->IsNumber()) {
     return Nan::ThrowTypeError("init(): argument 0 is not a number");
   }
+printf("B\n");
 
   ledstring.channel[0].count = info[0]->Int32Value();
 
@@ -121,6 +123,7 @@ void init(const Nan::FunctionCallbackInfo<v8::Value>& info) {
       ledstring.channel[0].brightness = config->Get(symBrightness)->Int32Value();
     }
   }
+printf("C\n");
 
   // FIXME: handle errors, throw JS-Exception
   int err = ws2811_init(&ledstring);
