@@ -3,7 +3,9 @@ var ws281x = require('../index.js');
 var NUM_LEDS = parseInt(process.argv[2], 10) || 10,
     pixelData = new Uint32Array(NUM_LEDS);
 
+console.log('Calling init');
 ws281x.init(NUM_LEDS);
+console.log('Calling init done');
 
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
@@ -22,7 +24,9 @@ setInterval(function () {
   pixelData[offset] = 0xffffff;
 
   offset = (offset + 1) % NUM_LEDS;
+  console.log('calling render');
   ws281x.render(pixelData);
+  console.log('calling render done');
 }, 100);
 
 console.log('Press <ctrl>+C to exit.');
