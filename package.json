@@ -8,7 +8,8 @@
     "goto-npm": "open https://www.npmjs.com/package/rpi-ws281x",
     "git-pull": "git pull",
     "git-commit": "git add -A && git commit -m '-' && git push",
-    "git-revert": "git reset --hard HEAD"
+    "git-revert": "git reset --hard HEAD",
+    "npm-publish": "npm publish"
 
   },
   "repository": {
