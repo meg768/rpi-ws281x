@@ -24,9 +24,7 @@ setInterval(function () {
   pixelData[offset] = 0xffffff;
 
   offset = (offset + 1) % NUM_LEDS;
-  console.log('calling render');
   ws281x.render(pixelData);
-  console.log('calling render done');
 }, 100);
 
 console.log('Press <ctrl>+C to exit.');
