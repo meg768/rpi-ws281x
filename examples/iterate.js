@@ -13,7 +13,7 @@ process.on('SIGINT', function () {
   process.nextTick(function () { process.exit(0); });
 });
 
-process.on('SIGKILL', function () {
+process.on('SIGKILLXX', function () {
   ws281x.reset();
   process.nextTick(function () { process.exit(0); });
 });
