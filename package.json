@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/meg768/rpi-ws281x/issues"
   },
+  "dependencies": {
+    "nan": "^2.14.0"
+  },  
   "homepage": "https://github.com/meg768/rpi-ws281x#readme"
 }
