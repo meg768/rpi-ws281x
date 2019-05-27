@@ -127,6 +127,7 @@ printf("C\n");
 
   // FIXME: handle errors, throw JS-Exception
   int err = ws2811_init(&ledstring);
+printf("D\n");
 
   if(err) {
       return Nan::ThrowError("init(): initialization failed. sorry – no idea why.");
