@@ -22,7 +22,7 @@ setInterval(function () {
   pixelData[offset] = 0xffffff;
 
   offset = (offset + 1) % NUM_LEDS;
-  ws281x.render();
+  ws281x.render(pixelData);
 }, 100);
 
 console.log('Press <ctrl>+C to exit.');
