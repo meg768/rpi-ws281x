@@ -13,6 +13,10 @@ process.on('SIGINT', function () {
   process.nextTick(function () { process.exit(0); });
 });
 
+process.on('SIGKILL', function () {
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
+});
 
 // ---- animation-loop
 var offset = 0;
