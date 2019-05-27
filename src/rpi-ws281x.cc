@@ -40,17 +40,13 @@ void render(const Nan::FunctionCallbackInfo<v8::Value>& info) {
     return;
   }
 
-printf("1\n");
   Local<Object> buffer = info[0]->ToObject();
-printf("2\n");
 
   int numBytes = std::min((int)node::Buffer::Length(buffer),
       4 * ledstring.channel[0].count);
-printf("3\n");
 
   uint32_t* data = (uint32_t*) node::Buffer::Data(buffer);
   memcpy(ledstring.channel[0].leds, data, numBytes);
-printf("4\n");
 
   ws2811_wait(&ledstring);
   ws2811_render(&ledstring);
