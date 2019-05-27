@@ -1,0 +1,24 @@
+{
+  "name": "rpi-ws281x",
+  "version": "1.0.0",
+  "description": "rpi-ws281x",
+  "main": "index.js",
+  "scripts": {
+    "goto-github": "open https://github.com/meg768/rpi-ws281x",
+    "goto-npm": "open https://www.npmjs.com/package/rpi-ws281x",
+    "git-pull": "git pull",
+    "git-commit": "git add -A && git commit -m '-' && git push",
+    "git-revert": "git reset --hard HEAD"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meg768/rpi-ws281x.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meg768/rpi-ws281x/issues"
+  },
+  "homepage": "https://github.com/meg768/rpi-ws281x#readme"
+}
