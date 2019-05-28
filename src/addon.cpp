@@ -99,7 +99,7 @@ NAN_METHOD(Addon::reset)
 {
 	Nan::HandleScope();
 
-    ws2811_fini(ws2811);
+    ws2811_fini(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
 
