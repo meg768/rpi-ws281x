@@ -1,9 +1,36 @@
 #include "addon.h"
 
+#define DEFAULT_TARGET_FREQ     800000
+#define DEFAULT_GPIO_PIN        18
+#define DEFAULT_DMA             5
+#define DEFAULT_STRIP_TYPE      WS2811_STRIP_GBR
 
 int initialized = 0;
-ws2811_t ledstring;
-ws2811_channel_t channel0data, channel1data;
+
+ws2811_t ws2811 =
+{
+    .freq = DEFAULT_TARGET_FREQ,
+    .dmanum = DEFAULT_DMA,
+    .channel =
+    {
+        [0] =
+        {
+            .gpionum = DEFAULT_GPIO_PIN,
+            .count = 0,
+            .invert = 0,
+            .brightness = 255,
+            .strip_type = STRIP_TYPE,
+        },
+        [1] =
+        {
+            .gpionum = 0,
+            .count = 0,
+            .invert = 0,
+            .brightness = 0,
+        },
+    },
+};
+
 
 NAN_METHOD(Addon::sleep)
 {
@@ -37,6 +64,16 @@ NAN_METHOD(Addon::configure)
     // debug
     v8::Local<v8::Value> debug = options->Get(Nan::New<v8::String>("debug").ToLocalChecked());
 
+    ///////////////////////////////////////////////////////////////////////////
+    v8::Local<v8::Value> length = options->Get(Nan::New<v8::String>("length").ToLocalChecked());
+
+    if (!length->IsUndefined())
+        ws2811.channel[0].count = Nan::To<int32_t>(length).FromMaybe(length);
+    else
+        return Nan::ThrowTypeError("configure(): length must be defined");
+
+    if (ws2811_init(&ws2811))
+        return Nan::ThrowError("configure(): ws2811_init() failed.");
 
 	info.GetReturnValue().Set(Nan::Undefined());
 };
@@ -54,14 +91,14 @@ NAN_METHOD(Addon::render)
         void *data = array->Buffer()->GetContents().Data();
         int byteLength = array->Buffer()->GetContents().ByteLength();
 
-        int numBytes = std::min(byteLength, 4 * ledstring.channel[0].count);
+        int numBytes = std::min(byteLength, 4 * ws2811.channel[0].count);
 
-        memcpy(ledstring.channel[0].leds, data, numBytes);
+        memcpy(ws2811.channel[0].leds, data, numBytes);
 
         printf("A");
-        ws2811_wait(&ledstring);
+        ws2811_wait(&ws2811);
         printf("B");
-        ws2811_render(&ledstring);
+        ws2811_render(&ws2811);
         printf("C");
 
     }
