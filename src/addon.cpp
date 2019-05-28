@@ -90,6 +90,15 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // dma
+    if (true) {
+        v8::Local<v8::Value> dma = options->Get(Nan::New<v8::String>("dma").ToLocalChecked());
+
+        if (!dma->IsUndefined())
+            ws2811.dmanum  = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // stripType
     if (true) {
         v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
