@@ -9,7 +9,6 @@ int initialized = 0;
 
 ws2811_t ws2811;
 
-// http://rgb-123.com/ws2812-color-output
 
 
 NAN_METHOD(Addon::sleep)
@@ -25,6 +24,7 @@ NAN_METHOD(Addon::sleep)
 
 NAN_METHOD(Addon::configure)
 {
+    // http://rgb-123.com/ws2812-color-output
     static uint8_t gammaCorrection[256] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2,
