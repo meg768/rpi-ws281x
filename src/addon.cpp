@@ -128,6 +128,7 @@ NAN_MODULE_INIT(initAddon)
 {
 	Nan::SetMethod(target, "configure",  Addon::configure);
 	Nan::SetMethod(target, "render",     Addon::render);
+	Nan::SetMethod(target, "reset",      Addon::reset);
 }
 
 
