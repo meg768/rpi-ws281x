@@ -79,6 +79,7 @@ NAN_METHOD(Addon::configure)
     v8::Local<v8::Value> debug = options->Get(Nan::New<v8::String>("debug").ToLocalChecked());
 
     ///////////////////////////////////////////////////////////////////////////
+    // leds
     if (true) {
         v8::Local<v8::Value> leds = options->Get(Nan::New<v8::String>("leds").ToLocalChecked());
 
@@ -116,7 +117,6 @@ NAN_METHOD(Addon::configure)
                 ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
             }
 
-            opts.hardware_mapping = hardware_mapping_string.c_str(); 
         }
     }
 
