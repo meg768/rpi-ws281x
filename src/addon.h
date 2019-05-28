@@ -37,6 +37,7 @@ public:
 	Addon();
 
 	static NAN_METHOD(configure);
+	static NAN_METHOD(reset);
 	static NAN_METHOD(render);
 	static NAN_METHOD(sleep);
 
