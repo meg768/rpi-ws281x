@@ -19,7 +19,7 @@ ws2811_t ws2811 =
             .count = 0,
             .invert = 0,
             .brightness = 255,
-            .strip_type = STRIP_TYPE,
+            .strip_type = DEFAULT_STRIP_TYPE,
         },
         [1] =
         {
