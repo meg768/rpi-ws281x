@@ -47,8 +47,8 @@ void render(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   uint32_t* data = (uint32_t*) node::Buffer::Data(buffer);
   memcpy(ledstring.channel[0].leds, data, numBytes);
 
-printf("A");
-  ws2811_wait(&ledstring);
+//printf("A");
+//  ws2811_wait(&ledstring);
 printf("B");
   ws2811_render(&ledstring);
 printf("C");
