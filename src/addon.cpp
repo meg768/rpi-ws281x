@@ -80,6 +80,17 @@ NAN_METHOD(Addon::render)
 {
 	Nan::HandleScope();
 
+        v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
+
+        void *data = array->Buffer()->GetContents().Data();
+        int byteLength = array->Buffer()->GetContents().ByteLength();
+
+        int numBytes = std::min(byteLength, 4 * ws2811.channel[0].count);
+
+        memcpy(ws2811.channel[0].leds, data, numBytes);
+
+        ws2811_render(&ws2811);
+/*
     try {
         v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
 
@@ -103,7 +114,7 @@ NAN_METHOD(Addon::render)
     catch (...) {
         return Nan::ThrowError("Unhandled error");
     }
-
+*/
 	info.GetReturnValue().Set(Nan::Undefined());
 
 };
