@@ -2,7 +2,7 @@
     "targets":[  
         {  
             "target_name":"rpi-ws281x",
-            "sources":[  
+            "!sources":[  
                 "src/addon.cpp",
                 "./src/rpi_ws281x/ws2811.c",
                 "./src/rpi_ws281x/pwm.c",
@@ -11,6 +11,15 @@
                 "./src/rpi_ws281x/rpihw.c",
                 "./src/rpi_ws281x/pcm.c"
             ],
+            "sources":[  
+                "src/addon.cpp",
+            ],
+            "link_settings": {
+	            "libraries": [
+					"<!(pwd)/src/rpi_ws281x/libws2811.a"
+	            ]
+            },
+
             "include_dirs":[  
                 "<!(node -e \"require('nan')\")"
             ],
