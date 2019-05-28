@@ -1,2 +1,23 @@
 var path = require("path");
-module.exports = require(path.join(__dirname, "build", "Release", "rpi-ws281x.node"));
+var addon = require(path.join(__dirname, "build", "Release", "rpi-ws281x.node"));
+
+class Module {
+    constructor() {
+
+    }
+
+    configure(options) {
+        addon.configure(options);
+
+    }
+    sleep(ms) {
+        addon.sleep(ms);
+    }
+
+    render(pixels) {
+        addon.render(pixels);
+    }
+}
+
+
+module.exports = new Module();
