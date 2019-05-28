@@ -88,6 +88,38 @@ NAN_METHOD(Addon::configure)
             return Nan::ThrowTypeError("configure(): leds must be defined");
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // stripType
+    if (true) {
+        v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
+
+        if (!stripType->IsUndefined()) {
+            v8::String::Utf8Value value(stripType->ToString());
+            string stripTypeValue = string(*value);        
+
+            if (stripTypeValue == "rgb") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
+            }
+            if (stripTypeValue == "rbg") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_RBG;
+            }
+            if (stripTypeValue == "grb") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_GRB;
+            }
+            if (stripTypeValue == "gbr") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_GBR;
+            }
+            if (stripTypeValue == "brg") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_BRG;
+            }
+            if (stripTypeValue == "bgr") {
+                ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
+            }
+
+            opts.hardware_mapping = hardware_mapping_string.c_str(); 
+        }
+    }
+
     if (ws2811_init(&ws2811))
         return Nan::ThrowError("configure(): ws2811_init() failed.");
 
