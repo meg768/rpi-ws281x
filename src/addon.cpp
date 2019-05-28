@@ -34,7 +34,7 @@ NAN_METHOD(Addon::configure)
     ws2811.freq = DEFAULT_TARGET_FREQ;
     ws2811.dmanum = DEFAULT_DMA;
 
-    ws2811.channel[0].gpionum = 0;
+    ws2811.channel[0].gpionum = DEFAULT_GPIO_PIN;
     ws2811.channel[0].count = 0;
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
@@ -66,7 +66,6 @@ NAN_METHOD(Addon::configure)
     else
         return Nan::ThrowTypeError("configure(): length must be defined");
 
-ws2811.channel[0].count = 169;
 
     if (ws2811_init(&ws2811))
         return Nan::ThrowError("configure(): ws2811_init() failed.");
