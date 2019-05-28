@@ -4,12 +4,12 @@ var NUM_LEDS = parseInt(process.argv[2], 10) || 10,
     pixelData = new Uint32Array(NUM_LEDS);
 
 console.log('Calling init');
-ws281x.configure({length:169});
+ws281x.configure({leds:169});
 console.log('Calling init done');
 
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
-  //ws281x.reset();
+  ws281x.reset();
   process.nextTick(function () { process.exit(0); });
 });
 
