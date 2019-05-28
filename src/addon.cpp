@@ -66,6 +66,8 @@ NAN_METHOD(Addon::configure)
     else
         return Nan::ThrowTypeError("configure(): length must be defined");
 
+ws2811.channel[0].count = 169;
+
     if (ws2811_init(&ws2811))
         return Nan::ThrowError("configure(): ws2811_init() failed.");
 
