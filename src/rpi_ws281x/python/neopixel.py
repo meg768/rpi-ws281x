@@ -1,14 +1,16 @@
 # Adafruit NeoPixel library port to the rpi_ws281x library.
 # Author: Tony DiCola (tony@tonydicola.com), Jeremy Garff (jer@jers.net)
+import atexit
+
 import _rpi_ws281x as ws
 
 
-def Color(red, green, blue):
+def Color(red, green, blue, white = 0):
 	"""Convert the provided red, green, blue color to a 24-bit color value.
 	Each color component should be a value 0-255 where 0 is the lowest intensity
 	and 255 is the highest intensity.
 	"""
-	return (red << 16) | (green << 8) | blue
+	return (white << 24) | (red << 16)| (green << 8) | blue
 
 
 class _LED_Data(object):
@@ -26,7 +28,7 @@ class _LED_Data(object):
 		# Handle if a slice of positions are passed in by grabbing all the values
 		# and returning them in a list.
 		if isinstance(pos, slice):
-			return [ws.ws2811_led_get(self.channel, n) for n in range(pos.indices(self.size))]
+			return [ws.ws2811_led_get(self.channel, n) for n in xrange(*pos.indices(self.size))]
 		# Else assume the passed in value is a number to the position.
 		else:
 			return ws.ws2811_led_get(self.channel, pos)
@@ -39,7 +41,7 @@ class _LED_Data(object):
 		# LED data values to the provided values.
 		if isinstance(pos, slice):
 			index = 0
-			for n in range(pos.indices(self.size)):
+			for n in xrange(*pos.indices(self.size)):
 				ws.ws2811_led_set(self.channel, n, value[index])
 				index += 1
 		# Else assume the passed in value is a number to the position.
@@ -48,12 +50,13 @@ class _LED_Data(object):
 
 
 class Adafruit_NeoPixel(object):
-	def __init__(self, num, pin, freq_hz=800000, dma=5, invert=False, brightness=255, channel=0):
+	def __init__(self, num, pin, freq_hz=800000, dma=10, invert=False,
+			brightness=255, channel=0, strip_type=ws.WS2811_STRIP_RGB):
 		"""Class to represent a NeoPixel/WS281x LED display.  Num should be the
 		number of pixels in the display, and pin should be the GPIO pin connected
 		to the display signal line (must be a PWM pin like 18!).  Optional
 		parameters are freq, the frequency of the display signal in hertz (default
-		800khz), dma, the DMA channel to use (default 5), invert, a boolean
+		800khz), dma, the DMA channel to use (default 10), invert, a boolean
 		specifying if the signal line should be inverted (default False), and
 		channel, the PWM channel to use (defaults to 0).
 		"""
@@ -74,6 +77,7 @@ class Adafruit_NeoPixel(object):
 		ws.ws2811_channel_t_gpionum_set(self._channel, pin)
 		ws.ws2811_channel_t_invert_set(self._channel, 0 if not invert else 1)
 		ws.ws2811_channel_t_brightness_set(self._channel, brightness)
+		ws.ws2811_channel_t_strip_type_set(self._channel, strip_type)
 
 		# Initialize the controller
 		ws.ws2811_t_freq_set(self._leds, freq_hz)
@@ -82,40 +86,43 @@ class Adafruit_NeoPixel(object):
 		# Grab the led data array.
 		self._led_data = _LED_Data(self._channel, num)
 
-	def __del__(self):
+		# Substitute for __del__, traps an exit condition and cleans up properly
+		atexit.register(self._cleanup)
+
+	def _cleanup(self):
 		# Clean up memory used by the library when not needed anymore.
 		if self._leds is not None:
-			ws.ws2811_fini(self._leds)
 			ws.delete_ws2811_t(self._leds)
 			self._leds = None
 			self._channel = None
-			# Note that ws2811_fini will free the memory used by led_data internally.
 
 	def begin(self):
 		"""Initialize library, must be called once before other functions are
 		called.
 		"""
 		resp = ws.ws2811_init(self._leds)
-		if resp != 0:
-			raise RuntimeError('ws2811_init failed with code {0}'.format(resp))
-		
+		if resp != ws.WS2811_SUCCESS:
+			message = ws.ws2811_get_return_t_str(resp)
+			raise RuntimeError('ws2811_init failed with code {0} ({1})'.format(resp, message))
+
 	def show(self):
 		"""Update the display with the data from the LED buffer."""
 		resp = ws.ws2811_render(self._leds)
-		if resp != 0:
-			raise RuntimeError('ws2811_render failed with code {0}'.format(resp))
+		if resp != ws.WS2811_SUCCESS:
+			message = ws.ws2811_get_return_t_str(resp)
+			raise RuntimeError('ws2811_render failed with code {0} ({1})'.format(resp, message))
 
 	def setPixelColor(self, n, color):
 		"""Set LED at position n to the provided 24-bit color value (in RGB order).
 		"""
 		self._led_data[n] = color
 
-	def setPixelColorRGB(self, n, red, green, blue):
+	def setPixelColorRGB(self, n, red, green, blue, white = 0):
 		"""Set LED at position n to the provided red, green, and blue color.
 		Each color component should be a value from 0 to 255 (where 0 is the
 		lowest intensity and 255 is the highest intensity).
 		"""
-		self.setPixelColor(n, Color(red, green, blue))
+		self.setPixelColor(n, Color(red, green, blue, white))
 
 	def setBrightness(self, brightness):
 		"""Scale each LED in the buffer by the provided brightness.  A brightness
@@ -123,8 +130,14 @@ class Adafruit_NeoPixel(object):
 		"""
 		ws.ws2811_channel_t_brightness_set(self._channel, brightness)
 
+	def getBrightness(self):
+		"""Get the brightness value for each LED in the buffer. A brightness
+		of 0 is the darkest and 255 is the brightest.
+		"""
+		return ws.ws2811_channel_t_brightness_get(self._channel)
+
 	def getPixels(self):
-		"""Return an object which allows access to the LED display data as if 
+		"""Return an object which allows access to the LED display data as if
 		it were a sequence of 24-bit RGB values.
 		"""
 		return self._led_data

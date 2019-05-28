@@ -68,7 +68,7 @@ NAN_METHOD(Addon::configure)
     v8::Local<v8::Value> length = options->Get(Nan::New<v8::String>("length").ToLocalChecked());
 
     if (!length->IsUndefined())
-        ws2811.channel[0].count = Nan::To<int32_t>(length).FromMaybe(length);
+        ws2811.channel[0].count = Nan::To<int>(length).FromMaybe(length);
     else
         return Nan::ThrowTypeError("configure(): length must be defined");
 

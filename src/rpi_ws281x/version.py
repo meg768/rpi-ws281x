@@ -1,7 +1,7 @@
 #
-# SConscript
+# SConstruct
 #
-# Copyright (c) 2014 Jeremy Garff <jer @ jers.net>
+# Copyright (c) 2016 Jeremy Garff <jer @ jers.net>
 #
 # All rights reserved.
 #
@@ -26,70 +26,46 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+import SCons, os
 
-Import(['clean_envs'])
+def version_flags(env):
+    if not env['V']:
+        env['VERSIONCOMSTR'] = 'Version ${TARGET}'
 
-tools_env = clean_envs['userspace'].Clone()
+def version_builders(env):
+    def generate_version_header(target, source, env):
+        headername = os.path.basename(target[0].abspath)
+        headerdef = headername.replace('.', '_').replace('-', '_').upper()
 
+        try:
+            version = open(source[0].abspath, 'r').readline().strip().split('.')
+        except:
+            version = [ '0', '0', '0' ]
 
-# Build Library
-lib_srcs = Split('''
-    mailbox.c
-    ws2811.c
-    pwm.c
-    pcm.c
-    dma.c
-    rpihw.c
-''')
+        f = open(headername, 'w')
+        f.write('/* Auto Generated Header built by version.py - DO NOT MODIFY */\n')
+        f.write('\n')
+        f.write('#ifndef __%s__\n' % (headerdef))
+        f.write('#define __%s__\n' % (headerdef))
+        f.write('\n')
+        f.write('#define VERSION_MAJOR %s\n' % version[0])
+        f.write('#define VERSION_MINOR %s\n' % version[1])
+        f.write('#define VERSION_MICRO %s\n' % version[2])
+        f.write('\n')
+        f.write('#endif /* __%s__ */\n' % (headerdef))
+        f.close()
 
-version_hdr = tools_env.Version('version')
-ws2811_lib = tools_env.Library('libws2811', lib_srcs)
-tools_env['LIBS'].append(ws2811_lib)
+    env.Append(BUILDERS = {
+        'Version' : SCons.Builder.Builder(
+            action = SCons.Action.Action(generate_version_header, '${VERSIONCOMSTR}'),
+            suffix = '.h',
+        ),
+    })
 
-# Shared library (if required)
-ws2811_slib = tools_env.SharedLibrary('libws2811', lib_srcs)
+def exists(env):
+    return 1
 
-# Test Program
-srcs = Split('''
-    main.c
-''')
+def generate(env, **kwargs):
+    [f(env) for f in (version_flags, version_builders)]
 
-objs = []
-for src in srcs:
-   objs.append(tools_env.Object(src))
-
-test = tools_env.Program('test', objs + tools_env['LIBS'])
-
-Default([test, ws2811_lib])
-
-package_version = "1.1.0-1"
-package_name = 'libws2811_%s' % package_version
-
-debian_files = [
-    'DEBIAN/control',
-    'DEBIAN/postinst',
-    'DEBIAN/prerm',
-    'DEBIAN/postrm',
-]
-
-package_files_desc = [
-    [ '/usr/lib', ws2811_slib ],
-]
-
-package_files = []
-for target in package_files_desc:
-    package_files.append(tools_env.Install(package_name + target[0], target[1]))
-
-for deb_file in debian_files:
-    package_files.append(
-        tools_env.Command('%s/%s' % (package_name, deb_file), deb_file, [
-            Copy("$TARGET", "$SOURCE"),
-            Chmod("$TARGET", 0755)
-        ])
-    )
-
-package = tools_env.Command('%s.deb' % package_name, package_files,
-                            'cd %s; dpkg-deb --build %s' % (Dir('.').abspath, package_name));
-
-Alias("deb", package)
 

@@ -35,14 +35,19 @@ opts.Add(BoolVariable('V',
                       'Verbose build',
                       False))
 
+opts.Add('TOOLCHAIN',
+         'Set toolchain for cross compilation (e.g. arm-linux-gnueabihf)',
+         '')
+
 platforms = [ 
     [
-        'userspace',                # Target Name
-        'linux',                # Scons tool (linux, avr, etc.)
+        'userspace',            # Target Name
+        [ 'linux', 'version' ], # Scons tool (linux, avr, etc.)
         {                       # Special environment setup
             'CPPPATH' : [
             ],
             'LINKFLAGS' : [
+                "-lrt",
             ],
         },
     ], 
@@ -52,7 +57,7 @@ clean_envs = {}
 for platform, tool, flags in platforms:
     env = Environment(
         options = opts,
-        tools = [ tool ],
+        tools = tool,
         toolpath = ['.'],
         ENV = {'PATH' : os.environ['PATH']},
         LIBS = [],
@@ -61,6 +66,10 @@ for platform, tool, flags in platforms:
     clean_envs[platform] = env
 
 Help(opts.GenerateHelpText(clean_envs))
+
+if env['TOOLCHAIN'] != '':
+    env['CC'] = env['TOOLCHAIN'] + '-gcc'
+    env['AR'] = env['TOOLCHAIN'] + '-ar'
 
 Export(['clean_envs'])
 SConscript('SConscript');
