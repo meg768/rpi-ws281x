@@ -7,29 +7,7 @@
 
 int initialized = 0;
 
-ws2811_t ws2811 =
-{
-    .freq = DEFAULT_TARGET_FREQ,
-    .dmanum = DEFAULT_DMA,
-    .channel =
-    {
-        [0] =
-        {
-            .gpionum = DEFAULT_GPIO_PIN,
-            .count = 0,
-            .invert = 0,
-            .brightness = 255,
-            .strip_type = DEFAULT_STRIP_TYPE,
-        },
-        [1] =
-        {
-            .gpionum = 0,
-            .count = 0,
-            .invert = 0,
-            .brightness = 0,
-        },
-    },
-};
+ws2811_t ws2811;
 
 
 NAN_METHOD(Addon::sleep)
@@ -52,6 +30,21 @@ NAN_METHOD(Addon::configure)
 	if (!initialized) {
 		initialized = 1;
 	}
+
+    ws2811.freq = DEFAULT_TARGET_FREQ;
+    ws2811.dmanum = DEFAULT_DMA;
+
+    ws2811.channel[0].gpionum = 0;
+    ws2811.channel[0].count = 0;
+    ws2811.channel[0].invert = 0;
+    ws2811.channel[0].brightness = 255;
+    ws2811.channel[0].strip_type = DEFAULT_STRIP_TYPE;
+
+    ws2811.channel[1].gpionum = 0;
+    ws2811.channel[1].count = 0;
+    ws2811.channel[1].invert = 0;
+    ws2811.channel[1].brightness = 255;
+    ws2811.channel[1].strip_type = 0;
 
 
 	if (info.Length() != 1 ) {
