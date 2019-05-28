@@ -1,6 +1,6 @@
 {
   "name": "rpi-ws281x",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "rpi-ws281x",
   "main": "index.js",
   "scripts": {
