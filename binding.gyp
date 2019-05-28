@@ -1,7 +1,7 @@
 {  
     "targets":[  
         {  
-            "target_name":"rpi-matrix",
+            "target_name":"rpi-w218x",
             "sources":[  
                 "src/addon.cpp",
                 "./src/rpi_ws281x/ws2811.c",
