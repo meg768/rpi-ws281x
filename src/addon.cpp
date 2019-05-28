@@ -59,7 +59,7 @@ NAN_METHOD(Addon::configure)
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
     ws2811.channel[0].strip_type = DEFAULT_STRIP_TYPE;
-    ws2811.channel[0].gamma = &gamma;
+    ws2811.channel[0].gamma = gamma;
 
     ws2811.channel[1].gpionum = 0;
     ws2811.channel[1].count = 0;
