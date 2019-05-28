@@ -2,7 +2,7 @@
     "targets":[  
         {  
             "target_name":"rpi-ws281x",
-            "!sources":[  
+            "sources":[  
                 "src/addon.cpp",
                 "./src/rpi_ws281x/ws2811.c",
                 "./src/rpi_ws281x/pwm.c",
@@ -11,10 +11,10 @@
                 "./src/rpi_ws281x/rpihw.c",
                 "./src/rpi_ws281x/pcm.c"
             ],
-            "sources":[  
+            "xxxsources":[  
                 "src/addon.cpp"
             ],
-            "link_settings": {
+            "xxxlink_settings": {
 	            "libraries": [
 					"<!(pwd)/src/rpi_ws281x/libws2811.a"
 	            ]
@@ -24,16 +24,16 @@
                 "<!(node -e \"require('nan')\")"
             ],
             "ldflags":[  
-                "-lrt -lm -lpthread"
+                "-lrt"
             ],
-            "ldflags!":[  
+            "xxxldflags!":[  
                 "-rdynamic",
                 "-shared"
             ],
             "cflags":[  
                 "-Wall -O3 -g"
             ],
-            "cflags!":[  
+            "xxxcflags!":[  
                 "-Wno-unused-parameter",
                 "-Wextra",
                 "-fno-omit-frame-pointer",
@@ -41,10 +41,10 @@
                 "-fno-exceptions",
                 "-fno-rtti"
             ],
-            "cflags_cc":[  
+            "xxxcflags_cc":[  
                 "-Wall -g -fno-strict-aliasing -O2 -pthread"
             ],
-            "cflags_cc!":[  
+            "xxxcflags_cc!":[  
                 "-Wno-unused-parameter",
                 "-Wextra",
                 "-fno-omit-frame-pointer",

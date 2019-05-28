@@ -90,11 +90,7 @@ NAN_METHOD(Addon::render)
 
         memcpy(ws2811.channel[0].leds, data, numBytes);
 
-        printf("A");
-//        ws2811_wait(&ws2811);
- //       printf("B");
         ws2811_render(&ws2811);
-        printf("C");
 
     }
     
