@@ -35,20 +35,24 @@ void render(const Nan::FunctionCallbackInfo<v8::Value>& info) {
     return;
   }
 
+/*
   if(!node::Buffer::HasInstance(info[0])) {
     Nan::ThrowTypeError("render(): expected argument to be a Buffer.");
     return;
   }
+*/
+  v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
 
-  Local<Object> buffer = info[0]->ToObject();
+  void *data = array->Buffer()->GetContents().Data();
+  int byteLength = array->Buffer()->GetContents().ByteLength();
 
-  int numBytes = std::min((int)node::Buffer::Length(buffer), 4 * ledstring.channel[0].count);
 
-  uint32_t* data = (uint32_t*) node::Buffer::Data(buffer);
+  int numBytes = std::min(byteLength, 4 * ledstring.channel[0].count);
+
   memcpy(ledstring.channel[0].leds, data, numBytes);
 
-//printf("A");
-//  ws2811_wait(&ledstring);
+printf("A");
+  ws2811_wait(&ledstring);
 printf("B");
   ws2811_render(&ledstring);
 printf("C");
