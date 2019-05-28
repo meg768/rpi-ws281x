@@ -1,7 +1,7 @@
 {  
     "targets":[  
         {  
-            "target_name":"rpi-w281x",
+            "target_name":"rpi-ws281x",
             "sources":[  
                 "src/addon.cpp",
                 "./src/rpi_ws281x/ws2811.c",
@@ -11,7 +11,6 @@
                 "./src/rpi_ws281x/board_info.c"
             ],
             "include_dirs":[  
-                "./hzeller/include",
                 "<!(node -e \"require('nan')\")"
             ],
             "ldflags":[  
