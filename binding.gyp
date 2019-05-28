@@ -12,7 +12,7 @@
                 "./src/rpi_ws281x/pcm.c"
             ],
             "sources":[  
-                "src/addon.cpp",
+                "src/addon.cpp"
             ],
             "link_settings": {
 	            "libraries": [
