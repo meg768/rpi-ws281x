@@ -42,14 +42,16 @@ void render(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
   Local<Object> buffer = info[0]->ToObject();
 
-  int numBytes = std::min((int)node::Buffer::Length(buffer),
-      4 * ledstring.channel[0].count);
+  int numBytes = std::min((int)node::Buffer::Length(buffer), 4 * ledstring.channel[0].count);
 
   uint32_t* data = (uint32_t*) node::Buffer::Data(buffer);
   memcpy(ledstring.channel[0].leds, data, numBytes);
 
+printf("A");
   ws2811_wait(&ledstring);
+printf("B");
   ws2811_render(&ledstring);
+printf("C");
 
   info.GetReturnValue().SetUndefined();
 }
@@ -78,13 +80,12 @@ void init(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   if(info.Length() < 1) {
     return Nan::ThrowTypeError("init(): expected at least 1 argument");
   }
-printf("A\n");
+
 
   // first argument is a number
   if(!info[0]->IsNumber()) {
     return Nan::ThrowTypeError("init(): argument 0 is not a number");
   }
-printf("B\n");
 
   ledstring.channel[0].count = info[0]->Int32Value();
 
@@ -119,11 +120,10 @@ printf("B\n");
       ledstring.channel[0].brightness = config->Get(symBrightness)->Int32Value();
     }
   }
-printf("C\n");
 
   // FIXME: handle errors, throw JS-Exception
   int err = ws2811_init(&ledstring);
-printf("D\n");
+
 
   if(err) {
       return Nan::ThrowError("init(): initialization failed. sorry – no idea why.");
