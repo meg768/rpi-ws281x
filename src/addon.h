@@ -25,7 +25,9 @@
 #include <getopt.h>
 #include <algorithm>
 
-#include "rpi_ws281x/ws2811.h"
+extern "C" {
+  #include "rpi_ws281x/ws2811.h"
+}
 
 using namespace std;
 
