@@ -128,8 +128,9 @@ NAN_METHOD(Addon::configure)
         }
     }
 
-    if (ws2811_init(&ws2811))
+    if (ws2811_init(&ws2811)) {
         return Nan::ThrowError("configure(): ws2811_init() failed.");
+    }
 
 	info.GetReturnValue().Set(Nan::Undefined());
 };
@@ -162,10 +163,11 @@ NAN_METHOD(Addon::render)
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
     v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    if (array->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
+    
+    if ((uint32_t)array->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
 		return Nan::ThrowError("Size of pixels does not match.");
 
-    if (mapping->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
+    if ((uint32_t)mapping->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
 		return Nan::ThrowError("Size of pixel mapping does not match.");
 
     uint32_t *pixels = (uint32_t *)array->Buffer()->GetContents().Data();

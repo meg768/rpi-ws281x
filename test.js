@@ -22,7 +22,7 @@ class App {
 		var map = new Uint16Array(this.width * this.height);
 
 		for (var i = 0; i < map.length; i++) {
-			var row = Math.floor(i / width), col = i % width;
+			var row = Math.floor(i / this.width), col = i % this.width;
 	
 			if ((row % 2) === 0) {
 				map[i] = i;
