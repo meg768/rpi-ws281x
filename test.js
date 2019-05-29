@@ -19,7 +19,7 @@ class App {
 
 	mapping() {
 		
-		var map = new Uint16Array(this.width * this.height);
+		var map = new Uint32Array(this.width * this.height);
 
 		for (var i = 0; i < map.length; i++) {
 			var row = Math.floor(i / this.width), col = i % this.width;

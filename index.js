@@ -22,7 +22,7 @@ class Module {
         }
         
         if (!(map instanceof Uint32Array))
-            throw new Error('Pixel mapping mist be an Uint32Array.');
+            throw new Error('Pixel mapping must be an Uint32Array.');
 
         this.map = map;
         this.leds = leds;
