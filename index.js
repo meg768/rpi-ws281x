@@ -3,8 +3,8 @@ var addon = require(path.join(__dirname, "build", "Release", "rpi-ws281x.node"))
 
 class Module {
     constructor() {
-        this.map = undefined;
-        this.leds = 0;
+        this.map  = undefined;
+        this.leds = undefined;
     }
 
     configure(options) {
@@ -78,8 +78,10 @@ class Module {
     }
 
     reset() {
-        this.render(new Uint32Array(this.leds));
-        addon.reset();
+        if (this.leds != undefined) {
+            this.render(new Uint32Array(this.leds));
+            addon.reset();    
+        }
     }
 
     sleep(ms) {
@@ -87,7 +89,8 @@ class Module {
     }
 
     render(pixels) {
-        addon.render(pixels, this.map);
+        if (this.map != undefined)
+            addon.render(pixels, this.map);
     }
 }
 

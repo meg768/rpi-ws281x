@@ -14,7 +14,7 @@ class App {
         this.leds      = this.width * this.height;
         this.pixels    = new Uint32Array(this.width * this.height);
         this.map       = 'alternating-matrix';
-        this.strip     = 'grb'
+        this.strip     = 'grb';
     }
 
 
