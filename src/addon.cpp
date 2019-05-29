@@ -10,7 +10,6 @@ int initialized = 0;
 ws2811_t ws2811;
 
 
-
 NAN_METHOD(Addon::sleep)
 {
 	Nan::HandleScope();
@@ -150,13 +149,32 @@ NAN_METHOD(Addon::render)
 {
 	Nan::HandleScope();
 
+	if (info.Length() != 2) {
+		return Nan::ThrowError("render() requires pixels and pixel mapping arguments.");
+	}
+
+    if (!info[0]->IsUint32Array())
+		return Nan::ThrowError("render() requires pixels to be an Uint32Array.");
+
+    if (!info[1]->IsUint32Array())
+		return Nan::ThrowError("render() requires pixels mapping to be an Uint32Array.");
+
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
+    v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    void *data = array->Buffer()->GetContents().Data();
-    int byteLength = array->Buffer()->GetContents().ByteLength();
-    int numBytes = std::min(byteLength, 4 * ws2811.channel[0].count);
+    if (array->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
+		return Nan::ThrowError("Size of pixels does not match.");
 
-    memcpy(ws2811.channel[0].leds, data, numBytes);
+    if (mapping->Buffer()->GetContents().ByteLength() != 4 * ws2811.channel[0].count)
+		return Nan::ThrowError("Size of pixel mapping does not match.");
+
+    uint32_t *pixels = (uint32_t *)array->Buffer()->GetContents().Data();
+    uint32_t *map = (uint32_t *)mapping->Buffer()->GetContents().Data();
+    uint32_t *leds = ws2811.channel[0].leds;
+
+    for (int i = 0; i < ws2811.channel[0].count; i++) {
+        leds[i] = pixels[map[i]];
+    }
 
     ws2811_render(&ws2811);
 
