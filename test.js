@@ -41,7 +41,7 @@ class App {
         for (var i = 0; i < this.leds; i++)
             this.pixels[i] = 0;
 
-        this.pixels[this.offset] = 0xFFFFFF;
+        this.pixels[this.offset] = 0xFF0000;
         this.offset = (this.offset + 1) % (this.width * this.height);
 
         ws211x.render(this.pixels, this.map);
