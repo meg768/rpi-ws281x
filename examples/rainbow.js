@@ -1,9 +1,9 @@
-var ws281x = require('../lib/ws281x-native');
+var ws281x = require('../index.js');
 
 var NUM_LEDS = parseInt(process.argv[2], 10) || 10,
     pixelData = new Uint32Array(NUM_LEDS);
 
-ws281x.init(NUM_LEDS);
+ws281x.configure({leds:NUM_LEDS});
 
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
