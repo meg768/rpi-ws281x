@@ -10,7 +10,7 @@ ws281x.configure({leds:NUM_LEDS});
 
 process.on('SIGINT', function () {
   ws281x.reset();
-  process.exit(0);
+//  process.exit(0);
 });
 
 // ---- animation-loop
