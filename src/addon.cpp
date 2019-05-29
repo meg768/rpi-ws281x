@@ -5,24 +5,13 @@
 #define DEFAULT_DMA             10
 #define DEFAULT_STRIP_TYPE      WS2811_STRIP_RGB
 
-int initialized = 0;
-
 ws2811_t ws2811;
-
-
-NAN_METHOD(Addon::sleep)
-{
-	Nan::HandleScope();
-
-    usleep(info[0]->Int32Value() * 1000);
-
-    info.GetReturnValue().Set(Nan::Undefined());
-
-}
 
 
 NAN_METHOD(Addon::configure)
 {
+	Nan::HandleScope();
+
     // http://rgb-123.com/ws2812-color-output
     static uint8_t gammaCorrection[256] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -42,12 +31,10 @@ NAN_METHOD(Addon::configure)
         191,193,194,196,198,200,202,204,206,208,210,212,214,216,218,220,
         222,224,227,229,231,233,235,237,239,241,244,246,248,250,252,255
     };
-	static int initialized = 0;
 
-	Nan::HandleScope();
 
-	if (!initialized) {
-		initialized = 1;
+	if (ws2811.freq != 0) {
+		return Nan::ThrowError("ws281x already configured.");
 	}
 
     ws2811.freq = DEFAULT_TARGET_FREQ;
@@ -140,7 +127,10 @@ NAN_METHOD(Addon::reset)
 {
 	Nan::HandleScope();
 
-    ws2811_fini(&ws2811);
+    if (ws2811.freq != 0)
+        ws2811_fini(&ws2811);
+
+    memset(&ws2811, 0, sizeof(ws2811));
 
     info.GetReturnValue().Set(Nan::Undefined());
 
@@ -183,6 +173,16 @@ NAN_METHOD(Addon::render)
 	info.GetReturnValue().Set(Nan::Undefined());
 
 };
+
+NAN_METHOD(Addon::sleep)
+{
+	Nan::HandleScope();
+
+    usleep(info[0]->Int32Value() * 1000);
+
+    info.GetReturnValue().Set(Nan::Undefined());
+
+}
 
 
 NAN_MODULE_INIT(initAddon)
