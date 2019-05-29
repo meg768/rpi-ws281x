@@ -130,7 +130,7 @@ NAN_METHOD(Addon::reset)
     if (ws2811.freq != 0)
         ws2811_fini(&ws2811);
 
-    memset(&ws2811, 0, sizeof(ws2811));
+    ws2811.freq = 0;
 
     info.GetReturnValue().Set(Nan::Undefined());
 
