@@ -85,9 +85,12 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // stripType
+    // stripType/strip
     if (true) {
         v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
+
+        if (stripType->IsUndefined()) 
+            stripType = options->Get(Nan::New<v8::String>("strip").ToLocalChecked());
 
         if (!stripType->IsUndefined()) {
             v8::String::Utf8Value value(stripType->ToString());

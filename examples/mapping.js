@@ -12,29 +12,11 @@ class App {
         this.width     = 13;
         this.height    = 13;
         this.leds      = this.width * this.height;
-        this.pixels    = new Uint32Array(this.leds);
-        this.map       = this.mapping();
+        this.pixels    = new Uint32Array(this.width * this.height);
+        this.map       = 'alternating-matrix';
         this.stripType = 'grb'
     }
 
-	mapping() {
-		
-		var map = new Uint32Array(this.width * this.height);
-
-		for (var i = 0; i < map.length; i++) {
-			var row = Math.floor(i / this.width), col = i % this.width;
-	
-			if ((row % 2) === 0) {
-				map[i] = i;
-			}
-			else {
-				map[i] = (row+1) * this.width - (col+1);
-			}
-		}
-
-		return map;
-	
-	}
 
     loop() {
 
@@ -42,13 +24,13 @@ class App {
             this.pixels[i] = 0;
 
         this.pixels[this.offset] = 0xFF0000;
-        this.offset = (this.offset + 1) % (this.width * this.height);
+        this.offset = (this.offset + 1) % this.leds;
 
         ws211x.render(this.pixels, this.map);
     }
 
     run() {
-        ws211x.configure({leds:169, map:this.map, stripType:this.stripType})
+        ws211x.configure({width:this.width, height:this.height, map:this.map, stripType:this.stripType})
         setInterval(this.loop.bind(this), 100);
     }
     
