@@ -39,7 +39,7 @@ class App {
     loop() {
 
         for (var i = 0; i < this.leds; i++)
-            pixels[i] = 0;
+            this.pixels[i] = 0;
 
         this.pixels[this.offset] = 0xFFFFFF;
         this.offset = (this.offset + 1) % (this.width * this.height);
