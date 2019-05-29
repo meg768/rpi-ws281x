@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-var ws211x = require('./index.js');
+var ws211x = require('../index.js');
 
 
 class App {
