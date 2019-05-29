@@ -10,7 +10,7 @@ console.log('Calling init done');
 // ---- trap the SIGINT and reset before exit
 process.on('SIGINT', function () {
   ws281x.reset();
-  process.nextTick(function () { process.exit(0); });
+  process.exit(0);
 });
 
 
