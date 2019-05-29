@@ -14,7 +14,7 @@ class App {
         this.leds      = this.width * this.height;
         this.pixels    = new Uint32Array(this.leds);
         this.map       = this.mapping();
-        this.stripType = 'rgb'
+        this.stripType = 'grb'
     }
 
 	mapping() {
