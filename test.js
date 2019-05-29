@@ -28,7 +28,7 @@ class App {
 				map[i] = i;
 			}
 			else {
-				map[i] = (row+1) * width - (col+1);
+				map[i] = (row+1) * this.width - (col+1);
 			}
 		}
 
