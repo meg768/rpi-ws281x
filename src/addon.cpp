@@ -5,7 +5,7 @@
 #define DEFAULT_DMA             10
 #define DEFAULT_STRIP_TYPE      WS2811_STRIP_RGB
 
-ws2811_t ws2811;
+static ws2811_t ws2811;
 
 
 NAN_METHOD(Addon::configure)
