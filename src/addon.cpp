@@ -90,7 +90,7 @@ NAN_METHOD(Addon::configure)
         v8::Local<v8::Value> brightness = options->Get(Nan::New<v8::String>("brightness").ToLocalChecked());
 
         if (!brightness->IsUndefined())
-            ws2811.brightness = Nan::To<int>(brightness).FromMaybe(ws2811.brightness);
+            ws2811.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws2811.channel[0].brightness);
     }
 
     ///////////////////////////////////////////////////////////////////////////
