@@ -1,6 +1,6 @@
 {
   "name": "rpi-ws281x",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "rpi-ws281x",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,13 @@
     "npm-publish": "make npm-publish"
 
   },
+  "keywords": [
+    "ws2811",
+    "ws2812",
+    "ws281x",
+    "neopixels",
+    "adafruit"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/meg768/rpi-ws281x.git"
