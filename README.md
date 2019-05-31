@@ -17,10 +17,11 @@ Module for connecting to Neopixel strips.
 ## Methods
 
 - configure(option) - ksdjfhsd
-	* lsdkjlkdf - sflsjfk
-	* xlsdkslfj - lsdfkjslkj
+	* leds - Specifies the number of leds.
+	* width - Specifies the width 
+	* gpio - Specifies the GPIO number used.
 - render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
-- reset() - Cl
+- reset() - Resets
 
 
 ## Examples
