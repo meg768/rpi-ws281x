@@ -11,7 +11,7 @@ class App {
         this.offset     = 0;
         this.width      = 13;
         this.height     = 13;
-        this.brightness = 30;
+        this.brightness = 255;
         this.leds       = this.width * this.height;
         this.pixels     = new Uint32Array(this.width * this.height);
         this.map        = 'alternating-matrix';
@@ -31,10 +31,8 @@ class App {
     }
 
     run() {
-        var options = {brightness:this.brightness, width:this.width, height:this.height, map:this.map, strip:this.strip};
-        console.log(options);
+        console.log({brightness:this.brightness, width:this.width, height:this.height, map:this.map, strip:this.strip});
         ws211x.configure(options);
-        console.log(options);
         setInterval(this.loop.bind(this), 100);
     }
     
