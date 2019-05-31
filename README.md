@@ -52,12 +52,17 @@ var ws281x = require('rpi-ws281x');
 
 class Example {
 
-    run() {
-        // Number of leds in my strip
-        var leds = 169;
+    constructor() {
+        // NUmber of leds in my strip
+        this.leds = 169;
 
         // Configure ws281x
-        ws281x.configure({leds:leds});
+        ws281x.configure({leds:this.leds});
+    }
+
+    run() {
+        // Number of leds
+        var leds = this.leds;
 
         // Create an pixel array matching the number of leds
         var pixels = new Uint32Array(leds);
