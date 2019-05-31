@@ -21,25 +21,24 @@ $ npm install rpi-ws281x --save
 ## Usage
 
 	var ws281x = require('rpi-ws281x');
-    ws281x.configure({leds:100});
+	...
+	// One time initialization
+    ws281x.configure({leds:16});
+	...
+	var pixels = new Uint32Array(16);
+	...
+	// Render pixels to the Neopixewl strip
+    ws281x.render(pixels);
+
 
 ## Methods
 
-- **configure(option)**   -	Configures the ws281x strip. Must be called before anything else.
-	* **leds**            -	Specifies the number of leds. Either use **leds** or **width** and **height**.
-	* **width**           -	Specifies the width.
-	* **height**          -	Specifies the height.
-	* **map**	          -	If **width** and **height** is specified, it may used as pixel mapping. 
-							Must be a Uint32Array or a string.
-							Predefined maps are **matrix** (default) or **alternating-matrix**.
-	* **gpio**            -	Specifies the GPIO number used. Default is number 18.
-	* **strip**           - Speifies the RGB sequence of the strip. Valid values
-							are **rgb**, **brg**, **bgr**... etc. RGBW is not currenty supported.  
-	* **brightness**      -	Brightness of pixels. Number from 0 to 255. Default 255.
-	* **dma**             - The DMA used. Default 10.
-- 	**render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array
-                        	and the same size as the number of leds specified.
-- 	**reset()**           -	Resets configuration. 
+- **configure(options)**  -	Configures the ws281x strip. Must be called before anything else. See
+							examples below.
+- **render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must 
+							be an Uint32Array representing the color values of all pixels
+                        	and the same size as the number of leds specified when configuring.
+- **reset()**           -	Resets configuration. 
 
 
 ## Examples
