@@ -31,8 +31,7 @@ class App {
     }
 
     run() {
-        console.log({brightness:this.brightness, width:this.width, height:this.height, map:this.map, strip:this.strip});
-        ws211x.configure(options);
+        ws211x.configure({brightness:this.brightness, width:this.width, height:this.height, map:this.map, strip:this.strip});
         setInterval(this.loop.bind(this), 100);
     }
     
