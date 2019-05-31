@@ -24,6 +24,8 @@ $ npm install rpi-ws281x --save
 							Must be a Uint32Array or a string.
 							Predefined maps are **matrix** (default) or **alternating-matrix**.
 	* **gpio**          -	Specifies the GPIO number used. Default is number 18.
+	* **strip**         -   Speifies the RGB sequence of the strip. Valid values
+							are **rgb**, **brg**, **bgr**... etc. RGBW is not currenty supported.  
 	* **brightness**    -	Brightness of pixels. Number from 0 to 255. Default 255.
 - **render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array
                         	and the same size as the number of leds specified.
