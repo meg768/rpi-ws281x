@@ -22,7 +22,7 @@ class Example {
         this.offset = (this.offset + 1) % this.leds;
 
         // Render to strip
-        ws281x.render(this.pixels);
+        ws281x.render(pixels);
     }
 
     run() {
