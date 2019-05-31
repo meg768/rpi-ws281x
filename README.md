@@ -45,7 +45,7 @@ class App {
             this.pixels[i] = 0;
 
         // Set a specific pixel
-        this.pixels[this.offset] = 0xFF0000;
+        this.pixels[this.offset] = 0xFF000F;
 
         // Move on to next
         this.offset = (this.offset + 1) % this.leds;
