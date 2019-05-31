@@ -17,7 +17,7 @@ Module for connecting to Neopixel strips.
 
 ## Examples
 
-### Iterate
+### Running Pixel
 
 ````javascript
 
@@ -27,9 +27,13 @@ class App {
 
     constructor() {
         // The number of leds in my strip
-        this.leds = 169;
-
-        this.offset = 0;
+		this.leds = 169;
+		
+		// Create an array of pixels
+		this.pixels = new Uint32Array(this.leds);
+		
+		// Reset cursor
+		this.offset = 0;
 
         this.run();
     }
