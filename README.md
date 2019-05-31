@@ -18,8 +18,12 @@ Module for connecting to Neopixel strips.
 
 - configure(option) - ksdjfhsd
 	* leds - Specifies the number of leds.
-	* width - Specifies the width 
+	* width - Specifies the width
+	* height - bla bla bla
+	* map	- If specified, it may used as pixelmapping. Must be a Uint32Array or a string.
+			Predefined maps are **matrix** or **alternating-matrix**.
 	* gpio - Specifies the GPIO number used.
+	* 
 - render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
 - reset() - Resets
 
