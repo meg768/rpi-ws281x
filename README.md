@@ -17,8 +17,8 @@ Module for connecting to Neopixel strips.
 ## Methods
 
 - configure(option) - ksdjfhsd
-	-- lsdkjlkdf - sflsjfk
-	-- lsdkslfj - lsdfkjslkj
+	* lsdkjlkdf - sflsjfk
+	* xlsdkslfj - lsdfkjslkj
 - render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
 - reset() - Cl
 
