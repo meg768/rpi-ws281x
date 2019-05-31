@@ -3,7 +3,7 @@
 This is a npm module for connecting a Raspberyy Pi to Neopixel strips. It uses the 
 library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
-You may also check out another npm module https://www.npmjs.com/package/rpi-ws281x-native.
+You may also check out another npm module https://www.npmjs.com/package/rpi-ws281x-native.x
 
 ## Installation
 
@@ -19,20 +19,21 @@ $ npm install rpi-ws281x --save
 
 ## Methods
 
-- **configure(option)** -	Configures the ws281x strip. Must be called before anything else.
-	* **leds**          -	Specifies the number of leds. Either use **leds** or **width** and **height**.
-	* **width**         -	Specifies the width.
-	* **height**        -	Specifies the height.
-	* **map**	        -	If **width** and **height** is specified, it may used as pixel mapping. 
+- **configure(option)**   -	Configures the ws281x strip. Must be called before anything else.
+	* **leds**            -	Specifies the number of leds. Either use **leds** or **width** and **height**.
+	* **width**           -	Specifies the width.
+	* **height**          -	Specifies the height.
+	* **map**	          -	If **width** and **height** is specified, it may used as pixel mapping. 
 							Must be a Uint32Array or a string.
 							Predefined maps are **matrix** (default) or **alternating-matrix**.
-	* **gpio**          -	Specifies the GPIO number used. Default is number 18.
-	* **strip**         -   Speifies the RGB sequence of the strip. Valid values
+	* **gpio**            -	Specifies the GPIO number used. Default is number 18.
+	* **strip**           - Speifies the RGB sequence of the strip. Valid values
 							are **rgb**, **brg**, **bgr**... etc. RGBW is not currenty supported.  
-	* **brightness**    -	Brightness of pixels. Number from 0 to 255. Default 255.
-- **render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array
+	* **brightness**      -	Brightness of pixels. Number from 0 to 255. Default 255.
+	* **dma**             - The DMA used. Default 10.
+- 	**render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array
                         	and the same size as the number of leds specified.
-- **reset()**           -	Resets configuration. 
+- 	**reset()**           -	Resets configuration. 
 
 
 ## Examples
