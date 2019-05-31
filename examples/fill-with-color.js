@@ -2,12 +2,16 @@ var ws281x = require('../index.js');
 
 class Example {
 
-    run() {
-        // Number of leds
-        var leds = 169;
+    constructor() {
+        this.leds = 169;
 
         // Configure ws281x
-        ws281x.configure({leds:leds});
+        ws281x.configure({leds:this.leds});
+    }
+
+    run() {
+        // Number of leds
+        var leds = this.leds;
 
         // Create an pixel array matching the number of leds
         var pixels = new Uint32Array(leds);
