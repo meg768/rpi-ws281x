@@ -162,7 +162,7 @@ class Example {
         // Set my Neopixel configuration
         this.config = {};
 
-        // By setting width and height instead of leads
+        // By setting width and height instead of number of leds
         // you may use named pixel mappings.
         // Currently "matrix" and "alternating-matrix" are
         // supported. You may also set the "map" property
