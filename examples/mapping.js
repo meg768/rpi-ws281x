@@ -8,13 +8,14 @@ class App {
 
 
     constructor() {
-        this.offset    = 0;
-        this.width     = 13;
-        this.height    = 13;
-        this.leds      = this.width * this.height;
-        this.pixels    = new Uint32Array(this.width * this.height);
-        this.map       = 'alternating-matrix';
-        this.strip     = 'grb';
+        this.offset     = 0;
+        this.width      = 13;
+        this.height     = 13;
+        this.brightness = 30;
+        this.leds       = this.width * this.height;
+        this.pixels     = new Uint32Array(this.width * this.height);
+        this.map        = 'alternating-matrix';
+        this.strip      = 'grb';
     }
 
 
@@ -30,7 +31,7 @@ class App {
     }
 
     run() {
-        var options = {brightness:30, width:this.width, height:this.height, map:this.map, strip:this.strip};
+        var options = {brightness:this.brightness, width:this.width, height:this.height, map:this.map, strip:this.strip};
         console.log(options);
         ws211x.configure(options);
         console.log(options);
