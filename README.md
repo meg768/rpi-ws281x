@@ -26,7 +26,7 @@ Module for connecting to Neopixel strips.
 	* **gpio**          -	Specifies the GPIO number used. Default is number 18.
 	* **brightness**    -	Brightness of pixels. Number from 0 to 255. Default 255.
 - **render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array
-                        	and the same size as 
+                        	and the same size as the number of leds specified.
 - **reset()**           -	Resets configuration. 
 
 
