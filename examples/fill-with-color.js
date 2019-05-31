@@ -2,24 +2,23 @@ var ws281x = require('../index.js');
 
 class App {
 
-    constructor() {
-        // The number of leds in my strip
-        this.leds = 169;
-    }
-
     run() {
+        // Number of leds
+        var leds = 169;
+
         // Configure ws281x
-        ws281x.configure({leds:this.leds});
+        ws281x.configure({leds:leds});
 
         // Create an pixel array matching the number of leds
-        var pixels = new Uint32Array(this.leds);
+        var pixels = new Uint32Array(leds);
 
-        // Create a fill color
+        // Create a fill color (R/G/B)
         var color = (255 << 16) | (0 << 8)| 0;
 
-        for (var i = 0; i < this.leds; i++)
+        for (var i = 0; i < leds; i++)
             pixels[i] = color;
 
+        // Render to strip
         ws281x.render(pixels);
     }
     

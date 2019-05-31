@@ -25,45 +25,31 @@ var ws281x = require('rpi-ws281x');
 
 class App {
 
-	constructor() {
-		// The number of leds in my strip
-		this.leds = 169;
-
-		// Create an array of pixels
-		this.pixels = new Uint32Array(this.leds);
-
-		// Reset cursor
-		this.offset = 0;
-
-		this.run();
-    }
-
-    loop() {
-
-        // Clear all pixels
-        for (var i = 0; i < this.leds; i++)
-            this.pixels[i] = 0;
-
-        // Set a specific pixel
-        this.pixels[this.offset] = 0xFF000F;
-
-        // Move on to next
-        this.offset = (this.offset + 1) % this.leds;
-
-        // Render to strip
-        ws281x.render(this.pixels);
+    constructor() {
+        // The number of leds in my strip
+        this.leds = 169;
     }
 
     run() {
         // Configure ws281x
         ws281x.configure({leds:this.leds});
 
-        // Loop every 100 ms
-        setInterval(this.loop.bind(this), 100);
+        // Create an pixel array matching the number of leds
+        var pixels = new Uint32Array(this.leds);
+
+        // Create a fill color (R/G/B)
+        var color = (255 << 16) | (0 << 8)| 0;
+
+        for (var i = 0; i < this.leds; i++)
+            pixels[i] = color;
+
+        ws281x.render(pixels);
     }
     
 };
 
-new App();
+var app = new App();
+app.run();
+
 
 ````
