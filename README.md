@@ -20,6 +20,8 @@ $ npm install rpi-ws281x --save
 
 ## Usage
 
+````javascript
+
 	var ws281x = require('rpi-ws281x');
 	...
 	// One time initialization
@@ -29,6 +31,7 @@ $ npm install rpi-ws281x --save
 	...
 	// Render pixels to the Neopixewl strip
     ws281x.render(pixels);
+````
 
 
 ## Methods
