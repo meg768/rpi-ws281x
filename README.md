@@ -23,12 +23,12 @@ $ npm install rpi-ws281x --save
 ````javascript
 
 var ws281x = require('rpi-ws281x');
-...
+
 // One time initialization
 ws281x.configure({leds:16});
-...
+
 var pixels = new Uint32Array(16);
-...
+
 // Render pixels to the Neopixewl strip
 ws281x.render(pixels);
 
