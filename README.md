@@ -7,7 +7,9 @@ You may also check out another npm module https://www.npmjs.com/package/rpi-ws28
 
 The module **rpi-ws281x-native** is excellent and does the job well. The reason I created
 this npm module is that I had a problem with my hardware and had to start from scratch and
-did not know where the problem was. 
+did not know where the problem was.
+
+It turned out that the solution was to use **dma** 10 instead of 5...
 
 ## Installation
 
