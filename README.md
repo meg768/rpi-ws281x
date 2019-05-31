@@ -27,9 +27,10 @@ var ws281x = require('rpi-ws281x');
 // One time initialization
 ws281x.configure({leds:16});
 
+// Create my pixels
 var pixels = new Uint32Array(16);
 
-// Render pixels to the Neopixewl strip
+// Render pixels to the Neopixel strip
 ws281x.render(pixels);
 
 ````
@@ -161,7 +162,7 @@ class Example {
         // Set my Neopixel configuration
         this.config = {};
 
-        // By setting width and height istead of leads
+        // By setting width and height instead of leads
         // you may use named pixel mappings.
         // Currently "matrix" and "alternating-matrix" are
         // supported. You may also set the "map" property
