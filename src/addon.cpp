@@ -81,7 +81,16 @@ NAN_METHOD(Addon::configure)
         v8::Local<v8::Value> dma = options->Get(Nan::New<v8::String>("dma").ToLocalChecked());
 
         if (!dma->IsUndefined())
-            ws2811.dmanum  = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
+            ws2811.dmanum = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // brightness
+    if (true) {
+        v8::Local<v8::Value> brightness = options->Get(Nan::New<v8::String>("brightness").ToLocalChecked());
+
+        if (!brightness->IsUndefined())
+            ws2811.brightness = Nan::To<int>(brightness).FromMaybe(ws2811.brightness);
     }
 
     ///////////////////////////////////////////////////////////////////////////
