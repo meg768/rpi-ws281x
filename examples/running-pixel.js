@@ -1,24 +1,22 @@
 var ws281x = require('../index.js');
 
-class App {
+class Example {
 
     constructor() {
         // The number of leds in my strip
         this.leds = 169;
 
+        // Current pixel position
         this.offset = 0;
 
-        this.run();
     }
 
     loop() {
 
-        // Clear all pixels
-        for (var i = 0; i < this.leds; i++)
-            this.pixels[i] = 0;
+        var pixels = new Uint32Array(this.leds);
 
         // Set a specific pixel
-        this.pixels[this.offset] = 0xFF0000;
+        pixels[this.offset] = 0xFF0000;
 
         // Move on to next
         this.offset = (this.offset + 1) % this.leds;
@@ -37,4 +35,5 @@ class App {
     
 };
 
-new App();
+var example = new Example();
+example.run();
