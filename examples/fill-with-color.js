@@ -3,7 +3,7 @@ var ws281x = require('../index.js');
 class Example {
 
     constructor() {
-        // NUmber of leds in my strip
+        // Number of leds in my strip
         this.leds = 169;
 
         // Configure ws281x
