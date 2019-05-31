@@ -9,9 +9,14 @@ class Example {
         // Set my Neopixel configuration
         this.config = {};
 
-        this.config.map = 'alternating-matrix';
+        // By setting width and height istead of leads
+        // you may use named pixel mappings.
+        // Currently "matrix" and "alternating-matrix" are
+        // supported. You may also set the "map" property
+        // to a custom Uint32Array to define your own map.
         this.config.width = 13;
         this.config.height = 13;
+        this.config.map = 'alternating-matrix';
 
 
         // Configure ws281x
