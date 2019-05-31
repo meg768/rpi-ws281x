@@ -18,7 +18,6 @@ class Example {
         this.config.height = 13;
         this.config.map = 'alternating-matrix';
 
-
         // Configure ws281x
         ws281x.configure(this.config);
     }
