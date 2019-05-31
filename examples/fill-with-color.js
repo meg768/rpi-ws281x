@@ -1,6 +1,6 @@
 var ws281x = require('../index.js');
 
-class App {
+class Example {
 
     run() {
         // Number of leds
@@ -24,5 +24,5 @@ class App {
     
 };
 
-var app = new App();
-app.run();
+var example = new Example();
+example.run();
