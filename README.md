@@ -16,9 +16,9 @@ Module for connecting to Neopixel strips.
 
 ## Methods
 
-configure(option) - ksdjfhsd
-render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
-reset() - Cl
+- configure(option) - ksdjfhsd
+- render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
+- reset() - Cl
 
 
 ## Examples
