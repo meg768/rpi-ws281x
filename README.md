@@ -14,6 +14,12 @@ Module for connecting to Neopixel strips.
 	var ws281x = require('rpi-ws281x');
     ws281x.configure({leds:100});
 
+## Methods
+
+configure(option) - ksdjfhsd
+render(pixels) - Renders the pixels specified to the strip. The **pixels** parameter must be a Uint32Array.
+reset() - Cl
+
 
 ## Examples
 
@@ -49,7 +55,5 @@ class Example {
 
 var example = new Example();
 example.run();
-
-
 
 ````
