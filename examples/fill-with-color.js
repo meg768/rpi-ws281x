@@ -12,9 +12,10 @@ class App {
         ws281x.configure({leds:this.leds});
 
         var pixels = new Uint32Array(this.leds);
-        
+        var color = (255 << 16) | (0 << 8)| 0;
+
         for (var i = 0; i < this.leds; i++)
-            pixels[i] = (255 << 16) | (0 << 8)| 0;
+            pixels[i] = color;
 
         ws281x.render(pixels);
     }
