@@ -13,19 +13,19 @@ class Example {
         this.config.width = 13;
         this.config.height = 13;
 
-        
+
         // Configure ws281x
         ws281x.configure(this.config);
     }
 
     loop() {
-        var pixels = new Uint32Array(this.config.leds);
+        var pixels = new Uint32Array(leds);
 
         // Set a specific pixel
         pixels[this.offset] = 0xFF0000;
 
         // Move on to next
-        this.offset = (this.offset + 1) % this.config.leds;
+        this.offset = (this.offset + 1) % leds;
 
         // Render to strip
         ws281x.render(pixels);
