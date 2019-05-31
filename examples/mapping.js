@@ -30,7 +30,8 @@ class App {
     }
 
     run() {
-        var options = {width:this.width, height:this.height, map:this.map, strip:this.strip};
+        var options = {brightness:30, width:this.width, height:this.height, map:this.map, strip:this.strip};
+        console.log(options);
         ws211x.configure(options);
         console.log(options);
         setInterval(this.loop.bind(this), 100);
