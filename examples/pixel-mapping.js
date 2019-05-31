@@ -19,6 +19,7 @@ class Example {
     }
 
     loop() {
+        var leds = this.config.width * this.config.height;
         var pixels = new Uint32Array(leds);
 
         // Set a specific pixel
