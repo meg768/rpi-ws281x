@@ -85,6 +85,15 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // gpio
+    if (true) {
+        v8::Local<v8::Value> gpio = options->Get(Nan::New<v8::String>("gpio").ToLocalChecked());
+
+        if (!gpio->IsUndefined())
+            ws2811.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws2811.channel[0].gpionum);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // brightness
     if (true) {
         v8::Local<v8::Value> brightness = options->Get(Nan::New<v8::String>("brightness").ToLocalChecked());
