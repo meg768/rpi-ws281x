@@ -25,7 +25,7 @@ var ws281x = require('rpi-ws281x');
 
 class App {
 
-    constructor() {
+	constructor() {
 		// The number of leds in my strip
 		this.leds = 169;
 
