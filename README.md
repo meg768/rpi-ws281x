@@ -5,7 +5,7 @@ Module for connecting to Neopixel strips.
 ## Installation
 
 ````bash
-	$ npm install rpi-ws281x --save
+$ npm install rpi-ws281x --save
 ````
 
 
