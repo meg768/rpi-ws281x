@@ -38,12 +38,14 @@ ws281x.render(pixels);
 
 ## Methods
 
-- **configure(options)**  -	Configures the ws281x strip. Must be called before anything else. See
+This module is simple and only has three methods **configure()**, **render()** and **reset()**.
+
+- **configure(options)**  -	Configures the ws281x strip. Must be called once and before anything else. See
 							examples below.
-- **render(pixels)**    -	Renders the pixels specified to the strip. The **pixels** parameter must 
-							be an Uint32Array representing the color values of all pixels
+- **render(pixels)**      -	Renders the pixels specified to the strip. The **pixels** parameter must 
+							be an **Uint32Array** representing the color values of all pixels
                         	and the same size as the number of leds specified when configuring.
-- **reset()**           -	Resets configuration. 
+- **reset()**             -	Resets configuration. 
 
 
 ## Examples
