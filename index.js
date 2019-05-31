@@ -8,7 +8,7 @@ class Module {
     }
 
     configure(options) {
-        var {width, height, map, leds, ...other} = options;
+        var {width, height, map, leds, ...options} = options;
         
         if (width != undefined || height != undefined) {
 
@@ -74,7 +74,7 @@ class Module {
         this.map  = map;
         this.leds = leds;
 
-        addon.configure({...other, leds:leds});
+        addon.configure({...options, leds:leds});
     }
 
     reset() {
