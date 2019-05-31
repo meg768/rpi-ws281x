@@ -3,6 +3,8 @@
 This is a npm module for connecting a Raspberyy Pi to Neopixel strips. It uses the 
 library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
+You may also check out another npm module https://www.npmjs.com/package/rpi-ws281x-native.
+
 ## Installation
 
 ````bash
