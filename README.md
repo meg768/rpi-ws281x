@@ -3,14 +3,6 @@
 This is a npm module for connecting a Raspbery Pi to Neopixel strips. It uses the 
 library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
-You may also check out another npm module https://www.npmjs.com/package/rpi-ws281x-native.
-
-The module **rpi-ws281x-native** is excellent and does the job well. The reason I created
-this npm module is that I had a problem with my hardware and had to start from scratch and
-did not know where the problem was.
-
-(It turned out that the solution was to use **dma** 10 instead of 5)
-
 ## Installation
 
 ````bash
