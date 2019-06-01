@@ -148,6 +148,8 @@ NAN_METHOD(Addon::reset)
 {
 	Nan::HandleScope();
 
+    memset(ledstring.channel[0].leds, 0, sizeof(*ledstring.channel[0].leds) * ledstring.channel[0].count);
+
     if (ws2811.freq != 0)
         ws2811_fini(&ws2811);
 
