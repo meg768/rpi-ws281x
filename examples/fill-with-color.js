@@ -15,7 +15,7 @@ class Example {
         this.config.brightness = 255;
 
         // Set the GPIO number to communicate with the Neopixel strip (default 18)
-        this.config.gpio = 18;
+        this.config.gpio = 24;
 
         // The RGB sequence may vary on some strips. Valid values
         // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
