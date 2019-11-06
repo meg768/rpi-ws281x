@@ -1,5 +1,7 @@
 #include "addon.h"
 
+#include <sstream>
+
 #define DEFAULT_TARGET_FREQ     800000
 #define DEFAULT_GPIO_PIN        18
 #define DEFAULT_DMA             10
@@ -135,9 +137,12 @@ NAN_METHOD(Addon::configure)
 
         }
     }
+    ws2811_return_t result = ws2811_init(&ws2811);
 
-    if (ws2811_init(&ws2811)) {
-        return Nan::ThrowError("configure(): ws2811_init() failed.");
+    if (result) {
+        std::ostringstream errortext;
+        errortext << "configure(): ws2811_init() failed: " << ws2811_get_return_t_str(result);
+        return Nan::ThrowError(errortext.str().c_str());
     }
 
 	info.GetReturnValue().Set(Nan::Undefined());
