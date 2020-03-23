@@ -5,7 +5,7 @@
 #define DEFAULT_TARGET_FREQ     800000
 #define DEFAULT_GPIO_PIN        18
 #define DEFAULT_DMA             10
-#define DEFAULT_STRIP_TYPE      WS2811_STRIP_RGB
+#define DEFAULT_TYPE            WS2811_STRIP_RGB
 
 static ws2811_t ws2811;
 
@@ -46,7 +46,7 @@ NAN_METHOD(Addon::configure)
     ws2811.channel[0].count = 0;
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
-    ws2811.channel[0].strip_type = DEFAULT_STRIP_TYPE;
+    ws2811.channel[0].strip_type = DEFAULT_TYPE;
     ws2811.channel[0].gamma = gammaCorrection;
 
     ws2811.channel[1].gpionum = 0;
@@ -105,12 +105,15 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // stripType/strip
+    // stripType/strip/type
     if (true) {
-        v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
+        v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("type").ToLocalChecked());
 
         if (stripType->IsUndefined()) 
             stripType = options->Get(Nan::New<v8::String>("strip").ToLocalChecked());
+
+        if (stripType->IsUndefined()) 
+            stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
 
         if (!stripType->IsUndefined()) {
             v8::String::Utf8Value value(stripType->ToString());
@@ -135,6 +138,9 @@ NAN_METHOD(Addon::configure)
                 ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
             }
 
+        }
+        else {
+            ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
         }
     }
     ws2811_return_t result = ws2811_init(&ws2811);
@@ -220,6 +226,7 @@ NAN_MODULE_INIT(initAddon)
 	Nan::SetMethod(target, "configure",  Addon::configure);
 	Nan::SetMethod(target, "render",     Addon::render);
 	Nan::SetMethod(target, "reset",      Addon::reset);
+	Nan::SetMethod(target, "sleep",      Addon::sleep);
 }
 
 

@@ -38,6 +38,7 @@ This module is simple and only has three methods **configure()**, **render()** a
 							be an **Uint32Array** representing the color values of all pixels
                         	and the same size as the number of leds specified when configuring.
 - **reset()**             -	Resets configuration. 
+- **sleep(ms)**           -	Sleeps for the specified number of milliseconds. 
 
 
 ## Examples
@@ -69,7 +70,7 @@ class Example {
         // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
         // Default is "rgb".
         // RGBW strips are not currently supported.
-        this.config.strip = 'grb';
+        this.config.type = 'grb';
 
         // Configure ws281x
         ws281x.configure(this.config);
