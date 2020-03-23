@@ -1,4 +1,5 @@
 .gitignore
+.npmignore
 .vscode
 src
 examples
