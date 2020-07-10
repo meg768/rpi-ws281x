@@ -60,14 +60,14 @@ static const rpi_hw_t rpi_hw_info[] = {
         .type = RPI_HWVER_TYPE_PI4,
         .periph_base = PERIPH_BASE_RPI4,
         .videocore_base = VIDEOCORE_BASE_RPI2,
-        .desc = "Pi 4 Model B - 1GB"
+        .desc = "Pi 4 Model B - 1GB v1.1"
     },
     {
         .hwver = 0xB03111,
         .type = RPI_HWVER_TYPE_PI4,
         .periph_base = PERIPH_BASE_RPI4,
         .videocore_base = VIDEOCORE_BASE_RPI2,
-        .desc = "Pi 4 Model B - 2GB"
+        .desc = "Pi 4 Model B - 2GB v.1.1"
     },
     {
         .hwver = 0xC03111,
@@ -77,11 +77,32 @@ static const rpi_hw_t rpi_hw_info[] = {
         .desc = "Pi 4 Model B - 4GB v1.1"
     },
     {
+        .hwver = 0xA03112,
+        .type = RPI_HWVER_TYPE_PI4,
+        .periph_base = PERIPH_BASE_RPI4,
+        .videocore_base = VIDEOCORE_BASE_RPI2,
+        .desc = "Pi 4 Model B - 1GB v1.2"
+    },
+    {
+        .hwver = 0xB03112,
+        .type = RPI_HWVER_TYPE_PI4,
+        .periph_base = PERIPH_BASE_RPI4,
+        .videocore_base = VIDEOCORE_BASE_RPI2,
+        .desc = "Pi 4 Model B - 2GB v.1.2"
+    },
+    {
         .hwver = 0xC03112,
         .type = RPI_HWVER_TYPE_PI4,
         .periph_base = PERIPH_BASE_RPI4,
         .videocore_base = VIDEOCORE_BASE_RPI2,
         .desc = "Pi 4 Model B - 4GB v1.2"
+    },
+    {
+        .hwver = 0xD03114,
+        .type = RPI_HWVER_TYPE_PI4,
+        .periph_base = PERIPH_BASE_RPI4,
+        .videocore_base = VIDEOCORE_BASE_RPI2,
+        .desc = "Pi 4 Model B - 8GB v1.2"
     },
     //
     // Model B Rev 1.0
@@ -402,7 +423,7 @@ const rpi_hw_t *rpi_hw_detect(void)
     {
         return NULL;
     }
-    size_t read = fread(&rev, sizeof(uint32_t), 1, f);
+    size_t read = fread(&rev, 1, sizeof(uint32_t), f);
     if (read != sizeof(uint32_t))
         goto done;
     #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
