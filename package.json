@@ -10,7 +10,6 @@
     "git-commit": "make git-commit",
     "git-revert": "make git-revert",
     "npm-publish": "make npm-publish"
-
   },
   "keywords": [
     "ws2811",
@@ -31,6 +30,6 @@
   },
   "dependencies": {
     "nan": "^2.14.0"
-  },  
+  },
   "homepage": "https://github.com/meg768/rpi-ws281x#readme"
 }
