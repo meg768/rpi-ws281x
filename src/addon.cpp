@@ -109,15 +109,15 @@ NAN_METHOD(Addon::configure)
     if (true) {
         v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("type").ToLocalChecked());
 
-        if (stripType->IsUndefined()) 
+        if (stripType->IsUndefined())
             stripType = options->Get(Nan::New<v8::String>("strip").ToLocalChecked());
 
-        if (stripType->IsUndefined()) 
+        if (stripType->IsUndefined())
             stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
 
         if (!stripType->IsUndefined()) {
-            v8::String::Utf8Value value(stripType->ToString());
-            string stripTypeValue = string(*value);        
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked()); //  stripType->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>()));
+            string stripTypeValue = string(*value);
 
             if (stripTypeValue == "rgb") {
                 ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
@@ -189,7 +189,7 @@ NAN_METHOD(Addon::render)
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
     v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    
+
     if ((uint32_t)(array->Buffer()->GetContents().ByteLength()) != (uint32_t)(4 * ws2811.channel[0].count))
 		return Nan::ThrowError("Size of pixels does not match.");
 
@@ -214,7 +214,7 @@ NAN_METHOD(Addon::sleep)
 {
 	Nan::HandleScope();
 
-    usleep(info[0]->Int32Value() * 1000);
+    usleep(info[0]->ToInt32(Nan::GetCurrentContext()).ToLocalChecked()->Value() * 1000);
 
     info.GetReturnValue().Set(Nan::Undefined());
 
