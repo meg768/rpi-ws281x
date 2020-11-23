@@ -64,14 +64,15 @@ NAN_METHOD(Addon::configure)
 
     ///////////////////////////////////////////////////////////////////////////
     // debug
-    v8::Local<v8::Value> debug = options->Get(Nan::New<v8::String>("debug").ToLocalChecked());
+    // Nan::MaybeLocal<v8::Value> debug = Nan::Get(options, Nan::New<v8::String>("debug").ToLocalChecked());
 
     ///////////////////////////////////////////////////////////////////////////
     // leds
-    if (true) {
-        v8::Local<v8::Value> leds = options->Get(Nan::New<v8::String>("leds").ToLocalChecked());
+    if (Nan::Has(options, Nan::New<v8::String>("leds").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_leds = Nan::Get(options, Nan::New<v8::String>("leds").ToLocalChecked());
+        v8::Local<v8::Value> leds;
 
-        if (!leds->IsUndefined())
+        if (maybe_leds.ToLocal(&leds))
             ws2811.channel[0].count = Nan::To<int>(leds).FromMaybe(ws2811.channel[0].count);
         else
             return Nan::ThrowTypeError("configure(): leds must be defined");
@@ -79,45 +80,53 @@ NAN_METHOD(Addon::configure)
 
     ///////////////////////////////////////////////////////////////////////////
     // dma
-    if (true) {
-        v8::Local<v8::Value> dma = options->Get(Nan::New<v8::String>("dma").ToLocalChecked());
+    if (Nan::Has(options, Nan::New<v8::String>("dma").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_dma = Nan::Get(options, Nan::New<v8::String>("dma").ToLocalChecked());
+        v8::Local<v8::Value> dma;
 
-        if (!dma->IsUndefined())
+        if (maybe_dma.ToLocal(&dma))
             ws2811.dmanum = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // gpio
-    if (true) {
-        v8::Local<v8::Value> gpio = options->Get(Nan::New<v8::String>("gpio").ToLocalChecked());
+    if (Nan::Has(options, Nan::New<v8::String>("gpio").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_gpio = Nan::Get(options, Nan::New<v8::String>("gpio").ToLocalChecked());
+        v8::Local<v8::Value> gpio;
 
-        if (!gpio->IsUndefined())
+        if (!maybe_gpio.IsEmpty() && maybe_gpio.ToLocal(&gpio)) {
             ws2811.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws2811.channel[0].gpionum);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // brightness
-    if (true) {
-        v8::Local<v8::Value> brightness = options->Get(Nan::New<v8::String>("brightness").ToLocalChecked());
+    if (Nan::Has(options, Nan::New<v8::String>("brightness").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_brightness = Nan::Get(options, Nan::New<v8::String>("brightness").ToLocalChecked());
+        v8::Local<v8::Value> brightness;
 
-        if (!brightness->IsUndefined())
+        if (maybe_brightness.ToLocal(&brightness))
             ws2811.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws2811.channel[0].brightness);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // stripType/strip/type
     if (true) {
-        v8::Local<v8::Value> stripType = options->Get(Nan::New<v8::String>("type").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_stripType;
+        v8::Local<v8::Value> stripType;
 
-        if (stripType->IsUndefined()) 
-            stripType = options->Get(Nan::New<v8::String>("strip").ToLocalChecked());
+        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
+            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("type").ToLocalChecked());
 
-        if (stripType->IsUndefined()) 
-            stripType = options->Get(Nan::New<v8::String>("stripType").ToLocalChecked());
+        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
+            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("strip").ToLocalChecked());
 
-        if (!stripType->IsUndefined()) {
-            v8::String::Utf8Value value(stripType->ToString());
-            string stripTypeValue = string(*value);        
+        if (Nan::Has(options, Nan::New<v8::String>("stripType").ToLocalChecked()).ToChecked())
+            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("stripType").ToLocalChecked());
+
+        if (maybe_stripType.ToLocal(&stripType)) {
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked());
+            string stripTypeValue = string(*value);
 
             if (stripTypeValue == "rgb") {
                 ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
@@ -159,7 +168,6 @@ NAN_METHOD(Addon::reset)
 {
 	Nan::HandleScope();
 
-
     if (ws2811.freq != 0) {
         memset(ws2811.channel[0].leds, 0, sizeof(uint32_t) * ws2811.channel[0].count);
         ws2811_render(&ws2811);
@@ -189,7 +197,7 @@ NAN_METHOD(Addon::render)
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
     v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    
+
     if ((uint32_t)(array->Buffer()->GetContents().ByteLength()) != (uint32_t)(4 * ws2811.channel[0].count))
 		return Nan::ThrowError("Size of pixels does not match.");
 
@@ -214,7 +222,7 @@ NAN_METHOD(Addon::sleep)
 {
 	Nan::HandleScope();
 
-    usleep(info[0]->Int32Value() * 1000);
+    usleep(info[0]->ToInt32(Nan::GetCurrentContext()).ToLocalChecked()->Value() * 1000);
 
     info.GetReturnValue().Set(Nan::Undefined());
 
