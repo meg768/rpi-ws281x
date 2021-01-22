@@ -70,7 +70,7 @@ class Example {
         // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
         // Default is "rgb".
         // RGBW strips are not currently supported.
-        this.config.type = 'grb';
+        this.config.stripType = 'grb';
 
         // Configure ws281x
         ws281x.configure(this.config);
