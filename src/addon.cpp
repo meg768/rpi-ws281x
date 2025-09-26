@@ -25,7 +25,7 @@ NAN_METHOD(Addon::configure)
     ws2811.dmanum = DEFAULT_DMA;
 
     ws2811.channel[0].gpionum = DEFAULT_GPIO_PIN;
-    ws2811.channel[0].count = 0;
+    ws2811.channel[0].count = 169;
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
     ws2811.channel[0].strip_type = DEFAULT_TYPE;
@@ -36,7 +36,7 @@ NAN_METHOD(Addon::configure)
     ws2811.channel[1].invert = 0;
     ws2811.channel[1].brightness = 0;
     ws2811.channel[1].strip_type = 0;
-
+/*
     if (info.Length() != 1)
     {
         return Nan::ThrowError("configure requires an argument.");
@@ -156,6 +156,8 @@ NAN_METHOD(Addon::configure)
     {
         return Nan::ThrowError("configure(): 'leds' must be > 0.");
     }
+
+    */
 
     ws2811_return_t result = ws2811_init(&ws2811);
 
