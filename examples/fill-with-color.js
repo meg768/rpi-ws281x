@@ -7,7 +7,7 @@ class Example {
         this.pixels = new Uint32Array(this.leds);
         
         // Configure ws281x
-        ws281x.configure({});
+        ws281x.configure({leds:this.leds, stripType : 'grb', gpio:18});
 
     }
 
