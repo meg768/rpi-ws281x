@@ -6,6 +6,16 @@ class Module {
 	constructor() {
 		this.map = undefined;
 		this.leds = undefined;
+
+		function cleanup() {
+            addon.reset();
+			process.exit();
+		}
+
+		process.on('SIGUSR1', cleanup);
+		process.on('SIGUSR2', cleanup);
+		process.on('SIGINT', cleanup);
+		process.on('SIGTERM', cleanup);
 	}
 
 	configure(options) {
@@ -99,7 +109,6 @@ class Module {
 				mapped[i] = pixels[this.map[i]];
 			}
 			addon.render(mapped);
-
 		} else {
 			addon.render(pixels);
 		}
