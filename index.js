@@ -79,7 +79,6 @@ class Module {
 
     reset() {
         if (this.leds != undefined) {
-            this.render(new Uint32Array(this.leds));
             addon.reset();    
         }
     }
