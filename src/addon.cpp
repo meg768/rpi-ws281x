@@ -1,6 +1,7 @@
 #include "addon.h"
 
 #include <sstream>
+#include <string>
 
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
