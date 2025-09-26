@@ -8,7 +8,7 @@ class Module {
 		this.leds = undefined;
 
 		function cleanup() {
-            addon.reset();
+			addon.reset();
 			process.exit();
 		}
 
@@ -19,10 +19,11 @@ class Module {
 	}
 
 	configure(options) {
-		var { width, height, map, leds, ...options } = options;
+		var { width, height, map, gamma, leds, ...options } = options;
 
 		this.leds = undefined;
 		this.map = undefined;
+		this.gamma = gamma;
 
 		if (width != undefined || height != undefined) {
 			if (width == undefined) {
@@ -90,6 +91,31 @@ class Module {
 	}
 
 	render(pixels) {
+		// Apply gamma correction if needed
+		let gammaCorrect = (pixels, gamma) => {
+			if (gamma == undefined) {
+				return pixels;
+			}
+
+			const output = new Uint32Array(pixels.length);
+
+			for (let i = 0; i < pixels.length; i++) {
+				const rgb = pixels[i] >>> 0; // 0xRRGGBB
+
+				const r1 = (rgb >>> 16) & 0xff;
+				const g1 = (rgb >>> 8) & 0xff;
+				const b1 = (rgb >>> 0) & 0xff;
+
+				const r2 = Math.min(255, Math.round(Math.pow(r1 / 255, gamma) * 255));
+				const g2 = Math.min(255, Math.round(Math.pow(g1 / 255, gamma) * 255));
+				const b2 = Math.min(255, Math.round(Math.pow(b1 / 255, gamma) * 255));
+
+				output[i] = ((r2 << 16) | (g2 << 8) | b2) >>> 0;
+			}
+
+			return output;
+		};
+
 		if (this.leds == undefined) {
 			throw new Error('ws281x not configured.');
 		}
@@ -108,9 +134,10 @@ class Module {
 			for (var i = 0; i < mapped.length; i++) {
 				mapped[i] = pixels[this.map[i]];
 			}
-			addon.render(mapped);
+
+			addon.render(gammaCorrect(mapped, this.gamma));
 		} else {
-			addon.render(pixels);
+			addon.render(gammaCorrect(pixels, this.gamma));
 		}
 	}
 }
