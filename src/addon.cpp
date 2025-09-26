@@ -45,7 +45,7 @@ NAN_METHOD(Addon::configure)
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
     ws2811.channel[0].strip_type = DEFAULT_TYPE;
-    ws2811.channel[0].gamma = gammaCorrection;
+    ws2811.channel[0].gamma = NULL; // gammaCorrection;
 
     ws2811.channel[1].gpionum = 0;
     ws2811.channel[1].count = 0;
@@ -228,6 +228,7 @@ NAN_METHOD(Addon::render)
         leds[i] = pixels[map[i]];
     }
 
+    ws2811_wait(&ws281x);
     ws2811_render(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
