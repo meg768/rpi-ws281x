@@ -228,7 +228,7 @@ NAN_METHOD(Addon::render)
         leds[i] = pixels[map[i]];
     }
 
-    ws2811_wait(&ws281x);
+    ws2811_wait(&ws2811);
     ws2811_render(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
