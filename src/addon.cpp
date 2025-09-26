@@ -16,7 +16,7 @@ NAN_METHOD(Addon::configure)
 
     if (ws2811.freq != 0)
     {
-        return Nan::ThrowError("ws2811 already configured.");
+        return Nan::ThrowError("ws281x already configured.");
     }
 
     memset(&ws2811, 0, sizeof(ws2811_t));
@@ -119,27 +119,27 @@ NAN_METHOD(Addon::configure)
 
             if (stripTypeValue == "rgb")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_RGB;
+                ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
             }
             else if (stripTypeValue == "rbg")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_RBG;
+                ws2811.channel[0].strip_type = WS2811_STRIP_RBG;
             }
             else if (stripTypeValue == "grb")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_GRB;
+                ws2811.channel[0].strip_type = WS2811_STRIP_GRB;
             }
             else if (stripTypeValue == "gbr")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_GBR;
+                ws2811.channel[0].strip_type = WS2811_STRIP_GBR;
             }
             else if (stripTypeValue == "brg")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_BRG;
+                ws2811.channel[0].strip_type = WS2811_STRIP_BRG;
             }
             else if (stripTypeValue == "bgr")
             {
-                ws2811.channel[0].strip_type = ws2811_STRIP_BGR;
+                ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
             }
             else if (stripTypeValue == "grbw")
             {
@@ -197,7 +197,7 @@ NAN_METHOD(Addon::render)
 
     if (ws2811.freq == 0)
     {
-        return Nan::ThrowError("render(): ws2811 not configured.");
+        return Nan::ThrowError("render(): ws281x not configured.");
     }
     if (info.Length() != 1)
     {
