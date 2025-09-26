@@ -183,76 +183,38 @@ NAN_METHOD(Addon::render)
 {
     Nan::HandleScope();
 
-    // 1) Argumentvalidering
-    if (info.Length() != 2)
+    if (ws2811.freq == 0)
     {
-        return Nan::ThrowError("render() requires pixels and pixel mapping arguments.");
+        return Nan::ThrowError("render() ws281x not configured.");
     }
+
+    if (info.Length() != 1)
+    {
+        return Nan::ThrowError("render() requires pixels");
+    }
+
     if (!info[0]->IsUint32Array())
     {
         return Nan::ThrowError("render() requires pixels to be a Uint32Array.");
     }
-    if (!info[1]->IsUint32Array())
-    {
-        return Nan::ThrowError("render() requires pixel mapping to be a Uint32Array.");
-    }
 
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
-    v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    // 2) Hämta pekare med hänsyn till ByteOffset (stöd för subarray)
+    if (array->Length() != ws2811.channel[0].count)
+    {
+        return Nan::ThrowError("render() pixels size does not match.");
+    }
+
     auto *pixels_base = static_cast<uint8_t *>(array->Buffer()->GetBackingStore()->Data());
-    auto *map_base = static_cast<uint8_t *>(mapping->Buffer()->GetBackingStore()->Data());
-
     uint32_t *pixels = reinterpret_cast<uint32_t *>(pixels_base + array->ByteOffset());
-    uint32_t *map = reinterpret_cast<uint32_t *>(map_base + mapping->ByteOffset());
-
-    const uint32_t pixels_len = array->Length();    // antal uint32
-    const uint32_t mapping_len = mapping->Length(); // antal uint32
-    const uint32_t count = ws2811.channel[0].count;
     uint32_t *leds = ws2811.channel[0].leds;
 
-    // 3) Snabba nollfall
-    if (count == 0)
+    for (uint32_t i = 0; i < ws2811.channel[0].count; i++)
     {
-        info.GetReturnValue().Set(Nan::Undefined());
-        return;
-    }
-    if (!leds)
-    {
-        return Nan::ThrowError("render(): ws2811.channel[0].leds is null (not initialized?).");
+        leds[i] = pixels[i];
     }
 
-    // 4) Längdkontroller
-    if (mapping_len != count)
-    {
-        return Nan::ThrowError("render(): size of pixel mapping does not match led count.");
-    }
-    if (pixels_len == 0)
-    {
-        return Nan::ThrowError("render(): pixels array is empty.");
-    }
-    // (Valfritt strikt krav—avkommentera om du vill tvinga exakt längd)
-    // if (pixels_len != count) {
-    //     return Nan::ThrowError("render(): size of pixels does not match led count.");
-    // }
-
-    // 5) Bounds-koll på mapping
-    for (uint32_t i = 0; i < count; i++)
-    {
-        if (map[i] >= pixels_len)
-        {
-            return Nan::ThrowError("render(): mapping index out of range for pixels array.");
-        }
-    }
-
-    // 6) Kopiera värdena enligt mapping
-    for (uint32_t i = 0; i < count; i++)
-    {
-        leds[i] = pixels[map[i]];
-    }
-
-    // 7) Render
+    ws2811_wait(&ws281x);
     ws2811_render(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
