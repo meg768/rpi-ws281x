@@ -29,6 +29,7 @@
     "url": "https://github.com/meg768/rpi-ws281x/issues"
   },
   "dependencies": {
+    "bindings": "^1.5.0",
     "nan": "^2.23.0"
   },
   "homepage": "https://github.com/meg768/rpi-ws281x#readme"

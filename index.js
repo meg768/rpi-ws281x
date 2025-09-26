@@ -1,5 +1,6 @@
 var path = require('path');
-var addon = require(path.join(__dirname, 'build', 'Release', 'rpi-ws281x.node'));
+//var addon = require(path.join(__dirname, 'build', 'Release', 'rpi-ws281x.node'));
+var addon = require('bindings')('rpi-ws281x.node');
 
 class Module {
 	constructor() {
