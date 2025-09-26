@@ -16,11 +16,16 @@ $ npm install rpi-ws281x --save
 
 var ws281x = require('rpi-ws281x');
 
-// One time initialization
-ws281x.configure({leds:16});
+// One time initialization, assumes an 8 pixel strip
+ws281x.configure({leds:8});
 
 // Create my pixels
-var pixels = new Uint32Array(16);
+var pixels = new Uint32Array(8);
+
+// Set first three pixel pixels to red, green and blue
+pixels[0] = 0xFF0000;
+pixels[1] = 0x00FF00;
+pixels[2] = 0x0000FF;
 
 // Render pixels to the Neopixel strip
 ws281x.render(pixels);
@@ -32,13 +37,10 @@ ws281x.render(pixels);
 
 This module is simple and only has three methods **configure()**, **render()** and **reset()**.
 
-- **configure(options)**  -	Configures the ws281x strip. Must be called once and before anything else. See
-							examples below.
-- **render(pixels)**      -	Renders the pixels specified to the strip. The **pixels** parameter must 
-							be an **Uint32Array** representing the color values of all pixels
-                        	and the same size as the number of leds specified when configuring.
-- **reset()**             -	Resets configuration. 
-- **sleep(ms)**           -	Sleeps for the specified number of milliseconds. 
+- **configure(options)** - Configures the ws281x strip. Must be called once and before anything else. See examples below.
+- **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
+- **reset()** - Resets configuration and renders all pixels to black/off.
+- **sleep(ms)** - Sleeps for the specified number of milliseconds. 
 
 
 ## Examples
