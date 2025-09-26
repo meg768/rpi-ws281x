@@ -6,36 +6,36 @@
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
 #define DEFAULT_DMA 5
-#define DEFAULT_TYPE ws281x_STRIP_RGB
+#define DEFAULT_TYPE ws2811_STRIP_RGB
 
-static ws281x_t ws281x;
+static ws2811_t ws2811;
 
 NAN_METHOD(Addon::configure)
 {
     Nan::HandleScope();
 
-    if (ws281x.freq != 0)
+    if (ws2811.freq != 0)
     {
-        return Nan::ThrowError("ws281x already configured.");
+        return Nan::ThrowError("ws2811 already configured.");
     }
 
-    memset(&ws281x, 0, sizeof(ws281x_t));
+    memset(&ws2811, 0, sizeof(ws2811_t));
 
-    ws281x.freq = DEFAULT_TARGET_FREQ;
-    ws281x.dmanum = DEFAULT_DMA;
+    ws2811.freq = DEFAULT_TARGET_FREQ;
+    ws2811.dmanum = DEFAULT_DMA;
 
-    ws281x.channel[0].gpionum = DEFAULT_GPIO_PIN;
-    ws281x.channel[0].count = 0;
-    ws281x.channel[0].invert = 0;
-    ws281x.channel[0].brightness = 255;
-    ws281x.channel[0].strip_type = DEFAULT_TYPE;
-    ws281x.channel[0].gamma = NULL;
+    ws2811.channel[0].gpionum = DEFAULT_GPIO_PIN;
+    ws2811.channel[0].count = 0;
+    ws2811.channel[0].invert = 0;
+    ws2811.channel[0].brightness = 255;
+    ws2811.channel[0].strip_type = DEFAULT_TYPE;
+    ws2811.channel[0].gamma = NULL;
 
-    ws281x.channel[1].gpionum = 0;
-    ws281x.channel[1].count = 0;
-    ws281x.channel[1].invert = 0;
-    ws281x.channel[1].brightness = 0;
-    ws281x.channel[1].strip_type = 0;
+    ws2811.channel[1].gpionum = 0;
+    ws2811.channel[1].count = 0;
+    ws2811.channel[1].invert = 0;
+    ws2811.channel[1].brightness = 0;
+    ws2811.channel[1].strip_type = 0;
 
     if (info.Length() != 1)
     {
@@ -56,7 +56,7 @@ NAN_METHOD(Addon::configure)
         v8::Local<v8::Value> leds;
 
         if (maybe_leds.ToLocal(&leds))
-            ws281x.channel[0].count = Nan::To<int>(leds).FromMaybe(ws281x.channel[0].count);
+            ws2811.channel[0].count = Nan::To<int>(leds).FromMaybe(ws2811.channel[0].count);
         else
             return Nan::ThrowTypeError("configure(): leds must be defined");
     }
@@ -69,7 +69,7 @@ NAN_METHOD(Addon::configure)
         v8::Local<v8::Value> dma;
 
         if (maybe_dma.ToLocal(&dma))
-            ws281x.dmanum = Nan::To<int>(dma).FromMaybe(ws281x.dmanum);
+            ws2811.dmanum = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ NAN_METHOD(Addon::configure)
 
         if (!maybe_gpio.IsEmpty() && maybe_gpio.ToLocal(&gpio))
         {
-            ws281x.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws281x.channel[0].gpionum);
+            ws2811.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws2811.channel[0].gpionum);
         }
     }
 
@@ -93,7 +93,7 @@ NAN_METHOD(Addon::configure)
         v8::Local<v8::Value> brightness;
 
         if (maybe_brightness.ToLocal(&brightness))
-            ws281x.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws281x.channel[0].brightness);
+            ws2811.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws2811.channel[0].brightness);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -119,56 +119,56 @@ NAN_METHOD(Addon::configure)
 
             if (stripTypeValue == "rgb")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_RGB;
+                ws2811.channel[0].strip_type = ws2811_STRIP_RGB;
             }
             else if (stripTypeValue == "rbg")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_RBG;
+                ws2811.channel[0].strip_type = ws2811_STRIP_RBG;
             }
             else if (stripTypeValue == "grb")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_GRB;
+                ws2811.channel[0].strip_type = ws2811_STRIP_GRB;
             }
             else if (stripTypeValue == "gbr")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_GBR;
+                ws2811.channel[0].strip_type = ws2811_STRIP_GBR;
             }
             else if (stripTypeValue == "brg")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_BRG;
+                ws2811.channel[0].strip_type = ws2811_STRIP_BRG;
             }
             else if (stripTypeValue == "bgr")
             {
-                ws281x.channel[0].strip_type = ws281x_STRIP_BGR;
+                ws2811.channel[0].strip_type = ws2811_STRIP_BGR;
             }
             else if (stripTypeValue == "grbw")
             {
-                ws281x.channel[0].strip_type = SK6812_STRIP_GRBW;
+                ws2811.channel[0].strip_type = SK6812_STRIP_GRBW;
             }
         }
         else
         {
-            ws281x.channel[0].strip_type = ws281x_STRIP_RGB;
+            ws2811.channel[0].strip_type = ws2811_STRIP_RGB;
         }
     }
 
-    if (ws281x.channel[0].count <= 0)
+    if (ws2811.channel[0].count <= 0)
     {
         return Nan::ThrowError("configure(): 'leds' must be > 0.");
     }
 
-    ws281x_return_t result = ws281x_init(&ws281x);
+    ws2811_return_t result = ws2811_init(&ws2811);
 
     if (result)
     {
         std::ostringstream errortext;
-        errortext << "configure(): ws281x_init() failed: " << ws281x_get_return_t_str(result);
+        errortext << "configure(): ws2811_init() failed: " << ws2811_get_return_t_str(result);
         return Nan::ThrowError(errortext.str().c_str());
     }
 
-    if (!ws281x.channel[0].leds)
+    if (!ws2811.channel[0].leds)
     {
-        return Nan::ThrowError("configure(): ws281x_init succeeded but leds buffer is null.");
+        return Nan::ThrowError("configure(): ws2811_init succeeded but leds buffer is null.");
     }
 
     info.GetReturnValue().Set(Nan::Undefined());
@@ -178,16 +178,16 @@ NAN_METHOD(Addon::reset)
 {
     Nan::HandleScope();
 
-    if (ws281x.freq != 0)
+    if (ws2811.freq != 0)
     {
-        if (ws281x.channel[0].leds && ws281x.channel[0].count > 0)
+        if (ws2811.channel[0].leds && ws2811.channel[0].count > 0)
         {
-            memset(ws281x.channel[0].leds, 0, sizeof(uint32_t) * ws281x.channel[0].count);
-            ws281x_render(&ws281x);
+            memset(ws2811.channel[0].leds, 0, sizeof(uint32_t) * ws2811.channel[0].count);
+            ws2811_render(&ws2811);
         }
-        ws281x_fini(&ws281x);
+        ws2811_fini(&ws2811);
     }
-    ws281x.freq = 0;
+    ws2811.freq = 0;
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -195,9 +195,9 @@ NAN_METHOD(Addon::render)
 {
     Nan::HandleScope();
 
-    if (ws281x.freq == 0)
+    if (ws2811.freq == 0)
     {
-        return Nan::ThrowError("render(): ws281x not configured.");
+        return Nan::ThrowError("render(): ws2811 not configured.");
     }
     if (info.Length() != 1)
     {
@@ -215,17 +215,17 @@ NAN_METHOD(Addon::render)
         return;
     }
 
-    ws281x_channel_t channel = ws281x.channel[0];
+    ws2811_channel_t channel = ws2811.channel[0];
 
     v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
     auto buffer = info[0]->ToObject(context).ToLocalChecked();
     uint32_t *data = (uint32_t *)node::Buffer::Data(buffer);
 
-    const int numBytes = std::min(node::Buffer::Length(buffer), sizeof(ws281x_led_t) * channel.count);
+    const int numBytes = std::min(node::Buffer::Length(buffer), sizeof(ws2811_led_t) * channel.count);
 
     memcpy(channel.leds, data, numBytes);
 
-    ws281x_render(&ws281x);
+    ws2811_render(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
 }
