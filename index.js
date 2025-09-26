@@ -91,14 +91,14 @@ class Module {
 			throw new Error('Pixels must be of same length as number of leds in render()');
 		}
 
-		if (this.map && map instanceof Uint32Array) {
+		if (this.map && this.map instanceof Uint32Array) {
 			var mapped = new Uint32Array(this.map.length);
 
 			for (var i = 0; i < mapped.length; i++) {
 				mapped[i] = pixels[this.map[i]];
 			}
 			addon.render(mapped);
-            
+
 		} else {
 			addon.render(pixels);
 		}
