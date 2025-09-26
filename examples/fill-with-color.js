@@ -27,7 +27,7 @@ class Example {
         var pixels = new Uint32Array(this.config.leds);
 
         // Create a fill color with red/green/blue.
-        var red = 255, green = 0, blue = 0;
+        var red = 0, green = 128, blue = 0;
         var color = (red << 16) | (green << 8)| blue;
 
         for (var i = 0; i < this.config.leds; i++)
