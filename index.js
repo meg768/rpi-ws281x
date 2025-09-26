@@ -96,7 +96,7 @@ class Module {
             if (this.leds != pixels.length)
                 throw new Error('Pixels must be of same length as number of leds in render()');
 
-            addon.render(pixels, this.map);
+            addon.render(pixels);
         }
     }
 }
