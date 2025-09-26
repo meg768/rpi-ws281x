@@ -151,6 +151,12 @@ NAN_METHOD(Addon::configure)
             ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
         }
     }
+
+    if (ws2811.channel[0].count <= 0)
+    {
+        return Nan::ThrowError("configure(): 'leds' must be > 0.");
+    }
+
     ws2811_return_t result = ws2811_init(&ws2811);
 
     if (result)
@@ -158,6 +164,11 @@ NAN_METHOD(Addon::configure)
         std::ostringstream errortext;
         errortext << "configure(): ws2811_init() failed: " << ws2811_get_return_t_str(result);
         return Nan::ThrowError(errortext.str().c_str());
+    }
+
+    if (!ws2811.channel[0].leds)
+    {
+        return Nan::ThrowError("configure(): ws2811_init succeeded but leds buffer is null.");
     }
 
     info.GetReturnValue().Set(Nan::Undefined());
@@ -169,13 +180,14 @@ NAN_METHOD(Addon::reset)
 
     if (ws2811.freq != 0)
     {
-        memset(ws2811.channel[0].leds, 0, sizeof(uint32_t) * ws2811.channel[0].count);
-        ws2811_render(&ws2811);
+        if (ws2811.channel[0].leds && ws2811.channel[0].count > 0)
+        {
+            memset(ws2811.channel[0].leds, 0, sizeof(uint32_t) * ws2811.channel[0].count);
+            ws2811_render(&ws2811);
+        }
         ws2811_fini(&ws2811);
     }
-
     ws2811.freq = 0;
-
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -185,37 +197,49 @@ NAN_METHOD(Addon::render)
 
     if (ws2811.freq == 0)
     {
-        return Nan::ThrowError("render() ws281x not configured.");
+        return Nan::ThrowError("render(): ws281x not configured.");
     }
-
     if (info.Length() != 1)
     {
         return Nan::ThrowError("render() requires pixels");
     }
-
     if (!info[0]->IsUint32Array())
     {
         return Nan::ThrowError("render() requires pixels to be a Uint32Array.");
     }
 
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
+    const uint32_t count = ws2811.channel[0].count;
 
-    if ((int)array->Length() != ws2811.channel[0].count)
+    if (array->Length() != count)
     {
-        return Nan::ThrowError("render() pixels size does not match.");
+        return Nan::ThrowError("render(): pixels size does not match led count.");
+    }
+    if (count == 0)
+    {
+        // inget att göra men krascha inte
+        info.GetReturnValue().Set(Nan::Undefined());
+        return;
+    }
+    if (!ws2811.channel[0].leds)
+    {
+        return Nan::ThrowError("render(): ws2811.channel[0].leds is null (init failed or count=0).");
     }
 
-    auto *pixels_base = static_cast<uint8_t *>(array->Buffer()->GetBackingStore()->Data());
-    uint32_t *pixels = reinterpret_cast<uint32_t *>(pixels_base + array->ByteOffset());
+    // Hämta pekare med hänsyn till ByteOffset (subarray-stöd)
+    auto *base = static_cast<uint8_t *>(array->Buffer()->GetBackingStore()->Data());
+    uint32_t *pixels = reinterpret_cast<uint32_t *>(base + array->ByteOffset());
     uint32_t *leds = ws2811.channel[0].leds;
 
-    for (int i = 0; i < ws2811.channel[0].count; i++)
+    for (uint32_t i = 0; i < count; i++)
     {
         leds[i] = pixels[i];
     }
 
-    ws2811_wait(&ws2811);
+    // RENDER FÖRST...
     ws2811_render(&ws2811);
+    // ...EV. VÄNTA EFTERÅT, inte före
+    // ws2811_wait(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
 }
