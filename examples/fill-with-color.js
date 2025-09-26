@@ -34,7 +34,7 @@ class Example {
             this.pixels[i] = color;
 
         // Render to strip
-        //console.log('Rendering...');
+        console.log('Rendering...');
         ws281x.render(this.pixels);
     }
     
