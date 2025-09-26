@@ -5,20 +5,9 @@ class Example {
     constructor() {
         this.config = {};
 
-        // Number of leds in my strip
-        this.config.leds = 169;
-        this.pixels = new Uint32Array(this.config.leds);
-
-        // The RGB sequence may vary on some strips. Valid values
-        // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
-        // Default is "rgb".
-        // RGBW strips are not currently supported.
-        this.config.stripType = 'grb';
-
         // Configure ws281x
         ws281x.configure(this.config);
 
-        console.log('Filling strip with color...');
     }
 
     run() {
