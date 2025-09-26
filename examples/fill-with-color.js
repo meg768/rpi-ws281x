@@ -33,7 +33,7 @@ class Example {
             pixels[i] = color;
 
         // Render to strip
-        //console.log('Rendering...');
+        console.log('Rendering...');
         ws281x.render(pixels);
     }
     
