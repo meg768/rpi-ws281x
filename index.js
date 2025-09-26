@@ -10,6 +10,9 @@ class Module {
 	configure(options) {
 		var { width, height, map, leds, ...options } = options;
 
+		this.leds = undefined;
+		this.map = undefined;
+
 		if (width != undefined || height != undefined) {
 			if (width == undefined) {
 				throw new Error('Must specify width if height is specified.');
@@ -65,9 +68,10 @@ class Module {
 	}
 
 	reset() {
-		if (this.leds != undefined) {
-			addon.reset();
+		if (this.leds == undefined) {
+			throw new Error('ws281x not configured.');
 		}
+		addon.reset();
 	}
 
 	sleep(ms) {
@@ -75,7 +79,10 @@ class Module {
 	}
 
 	render(pixels) {
-		// Convert to Uint32Array if a Buffer
+		if (this.leds == undefined) {
+			throw new Error('ws281x not configured.');
+		}
+
 		if (!(pixels instanceof Uint32Array)) {
 			throw new Error('Pixels must be of type Uint32Array in render()');
 		}
@@ -84,13 +91,14 @@ class Module {
 			throw new Error('Pixels must be of same length as number of leds in render()');
 		}
 
-		if (this.map) {
-			var mapped = new Uint32Array(this.leds);
+		if (this.map && map instanceof Uint32Array) {
+			var mapped = new Uint32Array(this.map.length);
 
 			for (var i = 0; i < mapped.length; i++) {
 				mapped[i] = pixels[this.map[i]];
 			}
 			addon.render(mapped);
+            
 		} else {
 			addon.render(pixels);
 		}
