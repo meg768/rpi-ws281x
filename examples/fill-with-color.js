@@ -7,6 +7,7 @@ class Example {
 
         // Number of leds in my strip
         this.config.leds = 169;
+        this.pixels = new Uint32Array(this.config.leds);
 
         // The RGB sequence may vary on some strips. Valid values
         // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
@@ -30,11 +31,11 @@ class Example {
         var color = (red << 16) | (green << 8)| blue;
 
         for (var i = 0; i < this.config.leds; i++)
-            pixels[i] = color;
+            this.pixels[i] = color;
 
         // Render to strip
-        console.log('Rendering...');
-        ws281x.render(pixels);
+        //console.log('Rendering...');
+        ws281x.render(this.pixels);
     }
     
 };
