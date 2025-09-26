@@ -36,128 +36,128 @@ NAN_METHOD(Addon::configure)
     ws2811.channel[1].invert = 0;
     ws2811.channel[1].brightness = 0;
     ws2811.channel[1].strip_type = 0;
-/*
-    if (info.Length() != 1)
-    {
-        return Nan::ThrowError("configure requires an argument.");
-    }
-
-    v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
-
-    ///////////////////////////////////////////////////////////////////////////
-    // debug
-    // Nan::MaybeLocal<v8::Value> debug = Nan::Get(options, Nan::New<v8::String>("debug").ToLocalChecked());
-
-    ///////////////////////////////////////////////////////////////////////////
-    // leds
-    if (Nan::Has(options, Nan::New<v8::String>("leds").ToLocalChecked()).ToChecked())
-    {
-        Nan::MaybeLocal<v8::Value> maybe_leds = Nan::Get(options, Nan::New<v8::String>("leds").ToLocalChecked());
-        v8::Local<v8::Value> leds;
-
-        if (maybe_leds.ToLocal(&leds))
-            ws2811.channel[0].count = Nan::To<int>(leds).FromMaybe(ws2811.channel[0].count);
-        else
-            return Nan::ThrowTypeError("configure(): leds must be defined");
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // dma
-    if (Nan::Has(options, Nan::New<v8::String>("dma").ToLocalChecked()).ToChecked())
-    {
-        Nan::MaybeLocal<v8::Value> maybe_dma = Nan::Get(options, Nan::New<v8::String>("dma").ToLocalChecked());
-        v8::Local<v8::Value> dma;
-
-        if (maybe_dma.ToLocal(&dma))
-            ws2811.dmanum = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // gpio
-    if (Nan::Has(options, Nan::New<v8::String>("gpio").ToLocalChecked()).ToChecked())
-    {
-        Nan::MaybeLocal<v8::Value> maybe_gpio = Nan::Get(options, Nan::New<v8::String>("gpio").ToLocalChecked());
-        v8::Local<v8::Value> gpio;
-
-        if (!maybe_gpio.IsEmpty() && maybe_gpio.ToLocal(&gpio))
+    /*
+        if (info.Length() != 1)
         {
-            ws2811.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws2811.channel[0].gpionum);
+            return Nan::ThrowError("configure requires an argument.");
         }
-    }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // brightness
-    if (Nan::Has(options, Nan::New<v8::String>("brightness").ToLocalChecked()).ToChecked())
-    {
-        Nan::MaybeLocal<v8::Value> maybe_brightness = Nan::Get(options, Nan::New<v8::String>("brightness").ToLocalChecked());
-        v8::Local<v8::Value> brightness;
+        v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
 
-        if (maybe_brightness.ToLocal(&brightness))
-            ws2811.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws2811.channel[0].brightness);
-    }
+        ///////////////////////////////////////////////////////////////////////////
+        // debug
+        // Nan::MaybeLocal<v8::Value> debug = Nan::Get(options, Nan::New<v8::String>("debug").ToLocalChecked());
 
-    ///////////////////////////////////////////////////////////////////////////
-    // stripType/strip/type
-    if (true)
-    {
-        Nan::MaybeLocal<v8::Value> maybe_stripType;
-        v8::Local<v8::Value> stripType;
-
-        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("type").ToLocalChecked());
-
-        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("strip").ToLocalChecked());
-
-        if (Nan::Has(options, Nan::New<v8::String>("stripType").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("stripType").ToLocalChecked());
-
-        if (maybe_stripType.ToLocal(&stripType))
+        ///////////////////////////////////////////////////////////////////////////
+        // leds
+        if (Nan::Has(options, Nan::New<v8::String>("leds").ToLocalChecked()).ToChecked())
         {
-            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked());
-            string stripTypeValue = string(*value);
+            Nan::MaybeLocal<v8::Value> maybe_leds = Nan::Get(options, Nan::New<v8::String>("leds").ToLocalChecked());
+            v8::Local<v8::Value> leds;
 
-            if (stripTypeValue == "rgb")
+            if (maybe_leds.ToLocal(&leds))
+                ws2811.channel[0].count = Nan::To<int>(leds).FromMaybe(ws2811.channel[0].count);
+            else
+                return Nan::ThrowTypeError("configure(): leds must be defined");
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // dma
+        if (Nan::Has(options, Nan::New<v8::String>("dma").ToLocalChecked()).ToChecked())
+        {
+            Nan::MaybeLocal<v8::Value> maybe_dma = Nan::Get(options, Nan::New<v8::String>("dma").ToLocalChecked());
+            v8::Local<v8::Value> dma;
+
+            if (maybe_dma.ToLocal(&dma))
+                ws2811.dmanum = Nan::To<int>(dma).FromMaybe(ws2811.dmanum);
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // gpio
+        if (Nan::Has(options, Nan::New<v8::String>("gpio").ToLocalChecked()).ToChecked())
+        {
+            Nan::MaybeLocal<v8::Value> maybe_gpio = Nan::Get(options, Nan::New<v8::String>("gpio").ToLocalChecked());
+            v8::Local<v8::Value> gpio;
+
+            if (!maybe_gpio.IsEmpty() && maybe_gpio.ToLocal(&gpio))
+            {
+                ws2811.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(ws2811.channel[0].gpionum);
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // brightness
+        if (Nan::Has(options, Nan::New<v8::String>("brightness").ToLocalChecked()).ToChecked())
+        {
+            Nan::MaybeLocal<v8::Value> maybe_brightness = Nan::Get(options, Nan::New<v8::String>("brightness").ToLocalChecked());
+            v8::Local<v8::Value> brightness;
+
+            if (maybe_brightness.ToLocal(&brightness))
+                ws2811.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws2811.channel[0].brightness);
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // stripType/strip/type
+        if (true)
+        {
+            Nan::MaybeLocal<v8::Value> maybe_stripType;
+            v8::Local<v8::Value> stripType;
+
+            if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
+                maybe_stripType = Nan::Get(options, Nan::New<v8::String>("type").ToLocalChecked());
+
+            if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
+                maybe_stripType = Nan::Get(options, Nan::New<v8::String>("strip").ToLocalChecked());
+
+            if (Nan::Has(options, Nan::New<v8::String>("stripType").ToLocalChecked()).ToChecked())
+                maybe_stripType = Nan::Get(options, Nan::New<v8::String>("stripType").ToLocalChecked());
+
+            if (maybe_stripType.ToLocal(&stripType))
+            {
+                v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked());
+                string stripTypeValue = string(*value);
+
+                if (stripTypeValue == "rgb")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
+                }
+                else if (stripTypeValue == "rbg")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_RBG;
+                }
+                else if (stripTypeValue == "grb")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_GRB;
+                }
+                else if (stripTypeValue == "gbr")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_GBR;
+                }
+                else if (stripTypeValue == "brg")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_BRG;
+                }
+                else if (stripTypeValue == "bgr")
+                {
+                    ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
+                }
+                else if (stripTypeValue == "grbw")
+                {
+                    ws2811.channel[0].strip_type = SK6812_STRIP_GRBW;
+                }
+            }
+            else
             {
                 ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
             }
-            else if (stripTypeValue == "rbg")
-            {
-                ws2811.channel[0].strip_type = WS2811_STRIP_RBG;
-            }
-            else if (stripTypeValue == "grb")
-            {
-                ws2811.channel[0].strip_type = WS2811_STRIP_GRB;
-            }
-            else if (stripTypeValue == "gbr")
-            {
-                ws2811.channel[0].strip_type = WS2811_STRIP_GBR;
-            }
-            else if (stripTypeValue == "brg")
-            {
-                ws2811.channel[0].strip_type = WS2811_STRIP_BRG;
-            }
-            else if (stripTypeValue == "bgr")
-            {
-                ws2811.channel[0].strip_type = WS2811_STRIP_BGR;
-            }
-            else if (stripTypeValue == "grbw")
-            {
-                ws2811.channel[0].strip_type = SK6812_STRIP_GRBW;
-            }
         }
-        else
+
+        if (ws2811.channel[0].count <= 0)
         {
-            ws2811.channel[0].strip_type = WS2811_STRIP_RGB;
+            return Nan::ThrowError("configure(): 'leds' must be > 0.");
         }
-    }
 
-    if (ws2811.channel[0].count <= 0)
-    {
-        return Nan::ThrowError("configure(): 'leds' must be > 0.");
-    }
-
-    */
+        */
 
     ws2811_return_t result = ws2811_init(&ws2811);
 
@@ -210,39 +210,27 @@ NAN_METHOD(Addon::render)
         return Nan::ThrowError("render() requires pixels to be a Uint32Array.");
     }
 
-    v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
-    const uint32_t count = ws2811.channel[0].count;
-
-    if (array->Length() != count)
+    // retrieve buffer from argument 1
+    if (!node::Buffer::HasInstance(info[0]))
     {
-        return Nan::ThrowError("render(): pixels size does not match led count.");
-    }
-    if (count == 0)
-    {
-        // inget att göra men krascha inte
-        info.GetReturnValue().Set(Nan::Undefined());
+        Nan::ThrowTypeError("render(): expected argument to be a Buffer");
         return;
     }
-    if (!ws2811.channel[0].leds)
-    {
-        return Nan::ThrowError("render(): ws2811.channel[0].leds is null (init failed or count=0).");
-    }
+    ws2811_channel_t channel = ws2811.channel[0];
 
-    // Hämta pekare med hänsyn till ByteOffset (subarray-stöd)
-    auto *base = static_cast<uint8_t *>(array->Buffer()->GetBackingStore()->Data());
-    uint32_t *pixels = reinterpret_cast<uint32_t *>(base + array->ByteOffset());
-    uint32_t *leds = ws2811.channel[0].leds;
+    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+    auto buffer = info[0]->ToObject(context).ToLocalChecked();
+    uint32_t *data = (uint32_t *)node::Buffer::Data(buffer);
 
-    for (uint32_t i = 0; i < count; i++)
-    {
-        leds[i] = pixels[i];
-    }
+    const int numBytes = std::min(node::Buffer::Length(buffer),  sizeof(ws2811_led_t) * channel.count);
 
-    // RENDER FÖRST...
+    // FIXME: handle memcpy-result
+    memcpy(channel.leds, data, numBytes);
+
+
     ws2811_render(&ws2811);
-    // ...EV. VÄNTA EFTERÅT, inte före
-    // ws2811_wait(&ws2811);
 
+    
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
