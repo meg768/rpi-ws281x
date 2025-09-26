@@ -17,9 +17,9 @@ class Example {
         var red = 0, green = 32, blue = 0;
         var color = (red << 16) | (green << 8)| blue;
 
-        /*for (var i = 0; i < this.config.leds; i++)
+        for (var i = 0; i < this.config.leds; i++)
             this.pixels[i] = i % 2 == 0 ? 0 : color;
-*/
+
         // Render to strip
         console.log('Rendering...');
         ws281x.render(this.pixels);
