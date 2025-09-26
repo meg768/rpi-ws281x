@@ -4,6 +4,7 @@ class Example {
 
     constructor() {
         this.leds = 169;
+        this.pixels = new Uint32Array(this.leds);
         
         // Configure ws281x
         ws281x.configure({leds:this.leds, stripType : 'grb', dma:10, gpio:18});
@@ -11,7 +12,6 @@ class Example {
     }
 
     run() {
-        this.pixels = new Uint32Array(this.leds);
 
         // Create a fill color with red/green/blue.
         var red = 0, green = 0, blue = 32;
