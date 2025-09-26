@@ -200,7 +200,7 @@ NAN_METHOD(Addon::render)
 
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
 
-    if (array->Length() != ws2811.channel[0].count)
+    if ((int)array->Length() != ws2811.channel[0].count)
     {
         return Nan::ThrowError("render() pixels size does not match.");
     }
@@ -209,7 +209,7 @@ NAN_METHOD(Addon::render)
     uint32_t *pixels = reinterpret_cast<uint32_t *>(pixels_base + array->ByteOffset());
     uint32_t *leds = ws2811.channel[0].leds;
 
-    for (uint32_t i = 0; i < ws2811.channel[0].count; i++)
+    for (int i = 0; i < ws2811.channel[0].count; i++)
     {
         leds[i] = pixels[i];
     }
