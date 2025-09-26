@@ -21,7 +21,6 @@ class Example {
             this.pixels[i] = color;
 
         // Render to strip
-        console.log("Filling strip with color: " + color.toString(16));
         ws281x.render(this.pixels);
     }
     
