@@ -211,9 +211,10 @@ NAN_METHOD(Addon::render)
     // retrieve buffer from argument 1
     if (!node::Buffer::HasInstance(info[0]))
     {
-        Nan::ThrowTypeError("render(): expected argument to be a Buffer");
+        Nan::ThrowTypeError("render() expected pixels to be a Buffer");
         return;
     }
+
     ws281x_channel_t channel = ws281x.channel[0];
 
     v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
