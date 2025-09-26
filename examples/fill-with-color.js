@@ -3,17 +3,15 @@ var ws281x = require('../index.js');
 class Example {
 
     constructor() {
-        this.config = {};
-
+        this.leds = 169;
+        this.pixels = new Uint32Array(this.leds);
+        
         // Configure ws281x
-        ws281x.configure(this.config);
+        ws281x.configure({});
 
     }
 
     run() {
-        // Create a pixel array matching the number of leds.
-        // This must be an instance of Uint32Array.
-        var pixels = new Uint32Array(this.config.leds);
 
         // Create a fill color with red/green/blue.
         var red = 0, green = 32, blue = 0;
