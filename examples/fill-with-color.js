@@ -11,17 +11,17 @@ class Example {
     }
 
     run() {
-        let pixels = new Uint32Array(this.leds);
+        this.pixels = new Uint32Array(this.leds);
 
         // Create a fill color with red/green/blue.
-        var red = 0, green = 32, blue = 0;
+        var red = 0, green = 0, blue = 32;
         var color = (red << 16) | (green << 8)| blue;
 
         for (var i = 0; i < this.leds; i++)
-            pixels[i] = color;
+            this.pixels[i] = color;
 
         // Render to strip
-        ws281x.render(pixels);
+        ws281x.render(this.pixels);
     }
     
 };
