@@ -199,8 +199,6 @@ NAN_METHOD(Addon::render)
     v8::Local<v8::Uint32Array> array = info[0].As<v8::Uint32Array>();
     v8::Local<v8::Uint32Array> mapping = info[1].As<v8::Uint32Array>();
 
-    // if ((uint32_t)(array->Buffer()->GetBackingStore()->ByteLength()) != (uint32_t)(4 * ws2811.channel[0].count))
-    //     return Nan::ThrowError("Size of pixels does not match.");
 
     if ((uint32_t)(mapping->Buffer()->GetBackingStore()->ByteLength()) != (uint32_t)(4 * ws2811.channel[0].count))
         return Nan::ThrowError("Size of pixel mapping does not match.");
