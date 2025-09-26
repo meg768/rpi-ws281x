@@ -6,7 +6,7 @@ class Example {
         this.config = {};
 
         // Number of leds in my strip
-        this.config.leds = 24;
+        this.config.leds = 169;
 
         // Use DMA 10 (default 10)
         this.config.dma = 10;
