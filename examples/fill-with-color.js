@@ -21,7 +21,7 @@ class Example {
             pixels[i] = color;
 
         // Render to strip
-        ws281x.render(this.pixels);
+        ws281x.render(pixels);
     }
     
 };
