@@ -25,7 +25,7 @@ NAN_METHOD(Addon::configure)
     ws2811.dmanum = DEFAULT_DMA;
 
     ws2811.channel[0].gpionum = DEFAULT_GPIO_PIN;
-    ws2811.channel[0].count = 169;
+    ws2811.channel[0].count = 0;
     ws2811.channel[0].invert = 0;
     ws2811.channel[0].brightness = 255;
     ws2811.channel[0].strip_type = DEFAULT_TYPE;
@@ -39,7 +39,7 @@ NAN_METHOD(Addon::configure)
 
     if (info.Length() != 1)
     {
-        return Nan::ThrowError("configure requires an argument.");
+        return Nan::ThrowError("configure() requires an argument.");
     }
 
     v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
