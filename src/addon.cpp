@@ -225,7 +225,7 @@ NAN_METHOD(Addon::render)
 
     memcpy(channel.leds, data, numBytes);
 
-    ws2811_render(&ws2811);
+    ws2811_render(&ws281x);
 
     info.GetReturnValue().Set(Nan::Undefined());
 }
