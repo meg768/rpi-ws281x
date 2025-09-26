@@ -37,6 +37,8 @@ NAN_METHOD(Addon::configure)
         return Nan::ThrowError("ws281x already configured.");
     }
 
+    memset(&ws2811, 0, sizeof(ws2811_t));
+
     ws2811.freq = DEFAULT_TARGET_FREQ;
     ws2811.dmanum = DEFAULT_DMA;
 
@@ -228,7 +230,7 @@ NAN_METHOD(Addon::render)
         leds[i] = pixels[map[i]];
     }
 
-    ws2811_wait(&ws2811);
+    //ws2811_wait(&ws2811);
     ws2811_render(&ws2811);
 
     info.GetReturnValue().Set(Nan::Undefined());
