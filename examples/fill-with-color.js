@@ -7,7 +7,7 @@ class Example {
         this.pixels = new Uint32Array(this.leds);
         
         // Configure ws281x
-        ws281x.configure({leds:this.leds, stripType : 'grb', gpio:18});
+        ws281x.configure({leds:this.leds, stripType : 'grb', dma:10, gpio:18});
 
     }
 
@@ -18,10 +18,9 @@ class Example {
         var color = (red << 16) | (green << 8)| blue;
 
         for (var i = 0; i < this.leds; i++)
-            this.pixels[i] = i % 2 == 0 ? 0 : color;
+            this.pixels[i] = color;
 
         // Render to strip
-        console.log('Rendering...');
         ws281x.render(this.pixels);
     }
     
