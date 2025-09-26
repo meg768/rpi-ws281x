@@ -90,11 +90,11 @@ class Module {
     render(pixels) {
         if (this.map != undefined) {
             // Convert to Uint32Array if a Buffer
-            if (pixels instanceof Buffer)
-                pixels = new Uint32Array(pixels.buffer, pixels.byteOffset);
+            if (!(pixels instanceof Uint32Array))
+                throw new Error('Pixels must be of type Uint32Array in render()');
  
             if (this.leds != pixels.length)
-                throw new Error('Pixels must be of same length as number of leds in render().');
+                throw new Error('Pixels must be of same length as number of leds in render()');
 
             addon.render(pixels, this.map);
         }
