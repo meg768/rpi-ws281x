@@ -7,7 +7,7 @@ class Example {
         this.offset = 0;
 
         // Set my Neopixel configuration
-        this.config = {leds:24};
+        this.config = {leds:169};
 
         // Configure ws281x
         ws281x.configure(this.config);
