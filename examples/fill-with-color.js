@@ -14,7 +14,7 @@ class Example {
     run() {
 
         // Create a fill color with red/green/blue.
-        var red = 0, green = 0, blue = 32;
+        var red = 0, green = 32, blue = 32;
         var color = (red << 16) | (green << 8)| blue;
 
         for (var i = 0; i < this.leds; i++)
