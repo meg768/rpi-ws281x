@@ -90,7 +90,8 @@ class Module {
 		addon.sleep(ms);
 	}
 
-	renderGammaCorrected(pixels) {
+
+	render(pixels) {
 		let gammaCorrect = pixels => {
 			let gamma = this.gamma;
 
@@ -117,11 +118,8 @@ class Module {
 			return output;
 		};
 
-		addon.render(gammaCorrect(pixels));
-	}
 
-	render(pixels) {
-		if (this.leds == undefined) {
+        if (this.leds == undefined) {
 			throw new Error('ws281x not configured.');
 		}
 
@@ -140,9 +138,9 @@ class Module {
 				mapped[i] = pixels[this.map[i]];
 			}
 
-			this.renderGammaCorrected(mapped);
+			this.render(gammaCorrect(mapped));
 		} else {
-			this.renderGammaCorrected(pixels);
+			this.render(gammaCorrect(pixels));
 		}
 	}
 }
