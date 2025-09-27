@@ -45,8 +45,8 @@ This module is simple and only has three methods **configure()**, **render()** a
   | ---------- | ------------------------------------------------------------ |
   | leds       | Number of pixels in the strip.                               |
   | width      | Width of matrix/screen. Do not specify if **leds** is used.  |
-  | height     | Height of matrix/screen. Do not specify if **leds** is used  |
-  | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended |
+  | height     | Height of matrix/screen. Do not specify if **leds** is used. |
+  | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended. |
   | map        | An UInt32Array specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "alternating-matrix" is supported. |
   | dma        | Default 10.                                                  |
   | brightness | Default 255.                                                 |
@@ -176,7 +176,7 @@ class Example {
 
         // By setting width and height instead of number of leds
         // you may use named pixel mappings.
-        // Currently "matrix" and "alternating-matrix" are
+        // Currently "alternating-matrix" is
         // supported. You may also set the "map" property
         // to a custom Uint32Array to define your own map.
         this.config.width = 13;
@@ -211,3 +211,7 @@ var example = new Example();
 example.run();
 
 ````
+
+## Note
+
+Be sure to turn off audio if using a Raspberry Pi Zero. Ask ChatGPT how to do this with your version of OS.
