@@ -98,7 +98,7 @@ class Module {
 			if (gamma == undefined) {
 				return pixels;
 			}
-
+console.log("Applying gamma correction with gamma =", gamma);
 			const output = new Uint32Array(pixels.length);
 
 			for (let i = 0; i < pixels.length; i++) {
