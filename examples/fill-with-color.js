@@ -22,7 +22,9 @@ class Example {
 		// RGBW strips are not currently supported.
 		this.config.stripType = 'grb';
 
-        this.config.gamma = 5;
+		// Apply a gamma correction to account for the non-linear brightness
+		// of the LEDs. A typical value is 2.2
+		this.config.gamma = 2.2;
 
 		// Configure ws281x
 		ws281x.configure(this.config);
@@ -36,10 +38,12 @@ class Example {
 		// Create a fill color with red/green/blue.
 		var red = 255;
 		var green = 0;
-        var blue = 0;
+		var blue = 0;
 		var color = (red << 16) | (green << 8) | blue;
 
-		for (var i = 0; i < this.config.leds; i++) pixels[i] = color;
+		for (var i = 0; i < this.config.leds; i++) {
+			pixels[i] = color;
+		}
 
 		// Render to strip
 		ws281x.render(pixels);
