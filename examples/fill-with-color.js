@@ -22,7 +22,7 @@ class Example {
 		// RGBW strips are not currently supported.
 		this.config.stripType = 'grb';
 
-        this.gamma = 0.1;
+        this.config.gamma = 0.1;
 
 		// Configure ws281x
 		ws281x.configure(this.config);
