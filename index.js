@@ -25,13 +25,17 @@ class Module {
 		this.map = undefined;
 		this.gamma = gamma;
 
-		if (width != undefined || height != undefined) {
-			if (width == undefined) {
-				throw new Error('Must specify width if height is specified.');
+		if (map && map instanceof Uint32Array) {
+			if (map.length != leds) {
+				throw new Error('Pixel mapping array must be of the same size as the number of leds.');
 			}
 
-			if (height == undefined) {
-				throw new Error('Must specify height if width is specified.');
+			this.map = map;
+		}
+
+		if (width != undefined || height != undefined) {
+			if (width == undefined || height == undefined) {
+				throw new Error('Must specify both width and height.');
 			}
 
 			if (leds != undefined) {
@@ -40,31 +44,22 @@ class Module {
 
 			leds = width * height;
 
-			if (map) {
-				if (map instanceof Uint32Array) {
-					if (map.length != leds) {
-						throw new Error('Pixel mapping array must be of the same size as the number of leds.');
-					}
-					this.map = map;
-				} else {
-					if (typeof map == 'string') {
-						if (map == 'alternating-matrix') {
-							map = new Uint32Array(width * height);
+			if (map && this.map == undefined && typeof map == 'string') {
+				if (map == 'alternating-matrix') {
+					map = new Uint32Array(width * height);
 
-							for (var i = 0; i < map.length; i++) {
-								var row = Math.floor(i / width),
-									col = i % width;
+					for (var i = 0; i < map.length; i++) {
+						var row = Math.floor(i / width),
+							col = i % width;
 
-								if (row % 2 === 0) {
-									map[i] = i;
-								} else {
-									map[i] = (row + 1) * width - (col + 1);
-								}
-							}
-
-							this.map = map;
+						if (row % 2 === 0) {
+							map[i] = i;
+						} else {
+							map[i] = (row + 1) * width - (col + 1);
 						}
 					}
+
+					this.map = map;
 				}
 			}
 		}
@@ -90,7 +85,6 @@ class Module {
 		addon.sleep(ms);
 	}
 
-
 	render(pixels) {
 		let gammaCorrect = pixels => {
 			let gamma = this.gamma;
@@ -99,7 +93,7 @@ class Module {
 				return pixels;
 			}
 
-            const output = new Uint32Array(pixels.length);
+			const output = new Uint32Array(pixels.length);
 
 			for (let i = 0; i < pixels.length; i++) {
 				const rgb = pixels[i] >>> 0; // 0xRRGGBB
@@ -118,8 +112,7 @@ class Module {
 			return output;
 		};
 
-
-        if (this.leds == undefined) {
+		if (this.leds == undefined) {
 			throw new Error('ws281x not configured.');
 		}
 

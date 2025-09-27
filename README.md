@@ -39,19 +39,19 @@ This module is simple and only has three methods **configure()**, **render()** a
 
 - **configure(options)** - Configures the ws281x strip. Must be called once and before anything else. See examples below.
 
-  The **options** parameter may have the following properties
+  The **options** parameter may have the following properties.
 
   | Name       | Description                                                  |
   | ---------- | ------------------------------------------------------------ |
-  | leds       | Number of pixels in the strip                                |
-  | width      | Width of matrix/screen. Do not specify if **leds** is used   |
+  | leds       | Number of pixels in the strip.                               |
+  | width      | Width of matrix/screen. Do not specify if **leds** is used.  |
   | height     | Height of matrix/screen. Do not specify if **leds** is used  |
   | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended |
-  | map        | An UInt32Array or a string. Only valid if **width** and **height** is specified. |
-  | dma        | Default 10                                                   |
-  | brightness | Default 255                                                  |
-  | gpio       | Default 18                                                   |
-  | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb"   |
+  | map        | An UInt32Array specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "alternating-matrix" is supported. |
+  | dma        | Default 10.                                                  |
+  | brightness | Default 255.                                                 |
+  | gpio       | Default 18.                                                  |
+  | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb".  |
 
 - **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
 - **reset()** - Resets configuration and turns all pixels off.
