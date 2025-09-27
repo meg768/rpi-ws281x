@@ -9,7 +9,7 @@ class Example {
 		// Set my Neopixel configuration
 		// By setting width and height instead of number of leds
 		// you may use named pixel mappings.
-		// Currently "matrix" and "alternating-matrix" are
+		// Currently only "alternating-matrix" is 
 		// supported. You may also set the "map" property
 		// to a custom Uint32Array to define your own map.
 		this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'alternating-matrix' };

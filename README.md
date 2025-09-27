@@ -1,7 +1,5 @@
 # rpi-ws281x
 
-**Under construction. Documentation in progress as of 2025-09-27.**
-
 This is a npm module for connecting a Raspbery Pi to Neopixel strips. It uses the 
 library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
@@ -49,13 +47,12 @@ This module is simple and only has three methods **configure()**, **render()** a
   | width      | Width of matrix/screen. Do not specify if **leds** is used   |
   | height     | Height of matrix/screen. Do not specify if **leds** is used  |
   | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended |
-  | map        | An UInt32Array or a string. Only valid if **width** and **height** is specified |
+  | map        | An UInt32Array or a string. Only valid if **width** and **height** is specified. |
   | dma        | Default 10                                                   |
   | brightness | Default 255                                                  |
   | gpio       | Default 18                                                   |
   | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb"   |
 
-  
 - **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
 - **reset()** - Resets configuration and turns all pixels off.
 

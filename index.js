@@ -25,8 +25,6 @@ class Module {
 		this.map = undefined;
 		this.gamma = gamma;
 
-        console.log(options);
-
 		if (width != undefined || height != undefined) {
 			if (width == undefined) {
 				throw new Error('Must specify width if height is specified.');
@@ -100,8 +98,8 @@ class Module {
 			if (gamma == undefined) {
 				return pixels;
 			}
-console.log("Applying gamma correction with gamma =", gamma);
-			const output = new Uint32Array(pixels.length);
+
+            const output = new Uint32Array(pixels.length);
 
 			for (let i = 0; i < pixels.length; i++) {
 				const rgb = pixels[i] >>> 0; // 0xRRGGBB
