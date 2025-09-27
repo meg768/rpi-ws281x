@@ -138,9 +138,9 @@ class Module {
 				mapped[i] = pixels[this.map[i]];
 			}
 
-			this.render(gammaCorrect(mapped));
+			addon.render(gammaCorrect(mapped));
 		} else {
-			this.render(gammaCorrect(pixels));
+			addon.render(gammaCorrect(pixels));
 		}
 	}
 }
