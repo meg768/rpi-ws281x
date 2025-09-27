@@ -25,6 +25,8 @@ class Module {
 		this.map = undefined;
 		this.gamma = gamma;
 
+        console.log(options);
+
 		if (width != undefined || height != undefined) {
 			if (width == undefined) {
 				throw new Error('Must specify width if height is specified.');
