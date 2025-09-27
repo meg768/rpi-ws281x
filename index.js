@@ -25,7 +25,7 @@ class Module {
 		this.map = undefined;
 		this.gamma = gamma;
 
-		if (map && map instanceof Uint32Array) {
+		if (map instanceof Uint32Array) {
 			if (map.length != leds) {
 				throw new Error('Pixel mapping array must be of the same size as the number of leds.');
 			}
@@ -44,7 +44,7 @@ class Module {
 
 			leds = width * height;
 
-			if (map && this.map == undefined && typeof map == 'string') {
+			if (this.map == undefined && typeof map == 'string') {
 				if (map == 'alternating-matrix') {
 					map = new Uint32Array(width * height);
 
