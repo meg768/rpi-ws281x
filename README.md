@@ -1,18 +1,17 @@
 # rpi-ws281x
 
-This is a npm module for connecting a Raspbery Pi to Neopixel strips. It uses the 
+This is a npm module for connecting a Raspbery Pi to Neopixel strips. It uses the
 library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
 ## Installation
 
-````bash
+```bash
 $ npm install rpi-ws281x --save
-````
-
+```
 
 ## Usage
 
-````javascript
+```javascript
 
 var ws281x = require('rpi-ws281x');
 
@@ -30,8 +29,7 @@ pixels[2] = 0x0000FF;
 // Render pixels to the Neopixel strip
 ws281x.render(pixels);
 
-````
-
+```
 
 ## Methods
 
@@ -39,29 +37,28 @@ This module is simple and only has three methods **configure()**, **render()** a
 
 - **configure(options)** - Configures the ws281x strip. Must be called once and before anything else. See examples below.
 
-  The **options** parameter may have the following properties.
+     The **options** parameter may have the following properties.
 
-  | Name       | Description                                                  |
-  | ---------- | ------------------------------------------------------------ |
-  | leds       | Number of pixels in the strip.                               |
-  | width      | Width of matrix/screen. Do not specify if **leds** is used.  |
-  | height     | Height of matrix/screen. Do not specify if **leds** is used. |
-  | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended. |
-  | map        | An UInt32Array specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "alternating-matrix" is supported. |
-  | dma        | Default 10.                                                  |
-  | brightness | Default 255.                                                 |
-  | gpio       | Default 18.                                                  |
-  | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb".  |
+     | Name       | Description                                                                                                                                                                       |
+     | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+     | leds       | Number of pixels in the strip.                                                                                                                                                    |
+     | width      | Width of matrix/screen. Do not specify if **leds** is used.                                                                                                                       |
+     | height     | Height of matrix/screen. Do not specify if **leds** is used.                                                                                                                      |
+     | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended.                                                                                                          |
+     | map        | An UInt32Array specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "alternating-matrix" is supported. |
+     | dma        | Default 10.                                                                                                                                                                       |
+     | brightness | Default 255.                                                                                                                                                                      |
+     | gpio       | Default 18.                                                                                                                                                                       |
+     | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb".                                                                                                                       |
 
 - **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
 - **reset()** - Resets configuration and turns all pixels off.
-
 
 ## Examples
 
 ### Filling the Neopixel strip with a color
 
-````javascript
+```javascript
 
 var ws281x = require('rpi-ws281x');
 
@@ -105,7 +102,7 @@ class Example {
 		for (var i = 0; i < this.config.leds; i++) {
         pixels[i] = color;
     }
-    
+
 		// Render to strip
 		ws281x.render(pixels);
 	}
@@ -114,11 +111,11 @@ class Example {
 var example = new Example();
 example.run();
 
-````
+```
 
 ### Walking a pixel through the strip
 
-````javascript
+```javascript
 
 var ws281x = require('rpi-ws281x');
 
@@ -157,11 +154,11 @@ class Example {
 var example = new Example();
 example.run();
 
-````
+```
 
 ### Walking a pixel with pixel mapping
 
-````javascript
+```javascript
 
 var ws281x = require('rpi-ws281x');
 
@@ -210,7 +207,7 @@ class Example {
 var example = new Example();
 example.run();
 
-````
+```
 
 ## Note
 
