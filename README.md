@@ -86,7 +86,7 @@ class Example {
 
         // Configure ws281x
         ws281x.configure(this.config);
-		}
+    }
 
     run() {
         // Create a pixel array matching the number of leds.
