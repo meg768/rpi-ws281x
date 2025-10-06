@@ -2,7 +2,7 @@ var ws281x = require('../index.js');
 
 let leds = 169;
 
-ws281x.configure({ leds: leds, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:2.0 });
+ws281x.configure({ leds: leds, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:5.0 });
 
 // Create my pixels
 var pixels = new Uint32Array(leds);
