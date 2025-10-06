@@ -1,7 +1,7 @@
 var ws281x = require('../index.js');
 
 let leds = 169;
-let gamma = 1;
+let gamma = undefined
 
 // Configure with gamma correction
 ws281x.configure({ leds: leds, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:gamma });
