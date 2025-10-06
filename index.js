@@ -106,7 +106,7 @@ class Module {
 				if (gamma <= 0) {
 					throw new Error('Gamma must be a positive number.');
 				}
-				options.gamma = this.gammaTable(gamma);
+				options.gamma = gammaTable(gamma);
 			} else if (gamma instanceof Uint8Array || gamma instanceof Uint32Array) {
 				if (gamma.length != 256) {
 					throw new Error('Gamma table must have 256 entries.');
