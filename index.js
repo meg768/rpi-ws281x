@@ -103,7 +103,7 @@ class Module {
 		// Handle gamma correction. Either a number or a an array with 256 entries.
 		if (gamma != undefined) {
 			if (typeof gamma === 'number') {
-				if (gamma <= 0) {
+				if (gamma < 0) {
 					throw new Error('Gamma must be a positive number.');
 				}
 				options.gamma = gammaTable(gamma);
