@@ -10,7 +10,7 @@ var pixels = new Uint32Array(leds);
 
 // Set pixels to a gradient from black to red
 for (let i = 0; i < leds; i++) {
-    let red = (i/leds) * 256;
+    let red = (i/leds) * 255;
     let green = 0;
     let blue = 0;
     let color = (red << 16) | (green << 8) | blue;
