@@ -45,10 +45,6 @@ NAN_METHOD(Addon::configure)
     v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
 
     ///////////////////////////////////////////////////////////////////////////
-    // debug
-    // Nan::MaybeLocal<v8::Value> debug = Nan::Get(options, Nan::New<v8::String>("debug").ToLocalChecked());
-
-    ///////////////////////////////////////////////////////////////////////////
     // leds
     if (Nan::Has(options, Nan::New<v8::String>("leds").ToLocalChecked()).ToChecked())
     {
@@ -149,6 +145,38 @@ NAN_METHOD(Addon::configure)
         else
         {
             ws281x.channel[0].strip_type = WS2811_STRIP_RGB;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // gamma
+    if (Nan::Has(options, Nan::New<v8::String>("gamma").ToLocalChecked()).ToChecked())
+    {
+        Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New<v8::String>("gamma").ToLocalChecked());
+        v8::Local<v8::Value> gamma;
+
+        if (maybe_gamma.ToLocal(&gamma))
+        {
+            static uint8_t gammaCorrection[256];
+
+            if (!node::Buffer::HasInstance(gamma))
+            {
+                return Nan::ThrowTypeError("configure(): gamma must be a Buffer");
+            }
+
+            if (!gamma->IsUint8Array())
+            {
+                return Nan::ThrowError("configure() gamma must be an Uint8Array.");
+            }
+
+            v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+            auto buffer = gamma->ToObject(context).ToLocalChecked();
+            uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
+
+            const int numBytes = std::min(node::Buffer::Length(buffer), 256);
+
+            ws281x.channel[0].gamma = gammaCorrection
+            memcpy(ws281x.channel[0].gamma, data, numBytes);
         }
     }
 
