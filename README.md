@@ -48,7 +48,7 @@ This module is simple and only has three methods **configure()**, **render()** a
      | dma        | Default 10.                                                  |
      | brightness | Default 255.                                                 |
      | gpio       | Default 18.                                                  |
-     | stripType  | Valid values are "rgb", "grb", "brg", "bgr". Default "rgb".  |
+     | stripType  | Valid values are "rgb", "grb", "brg", "bgr", "grbw". Default "rgb". |
 
 - **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
 - **reset()** - Resets configuration and turns all pixels off.
