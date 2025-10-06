@@ -1,3 +1,4 @@
+const { type } = require('os');
 var path = require('path');
 //var addon = require(path.join(__dirname, 'build', 'Release', 'rpi-ws281x.node'));
 var addon = require('bindings')('rpi-ws281x.node');
@@ -23,7 +24,37 @@ class Module {
 
 		this.leds = undefined;
 		this.map = undefined;
-		this.gamma = gamma;
+
+        let isIntArray = a => {
+            return  a instanceof Uint8Array || a instanceof Uint16Array || a instanceof Uint32Array;
+        }
+
+		// Generate a gamma table for a specific gamma value
+		let gammaTable = gamma => {
+			const table = new Uint8Array(256);
+
+			for (let i = 0; i < 256; i++) {
+				table[i] = Math.min(255, Math.round(Math.pow(i / 255, gamma) * 255));
+			}
+
+			return table;
+		};
+
+		let convertToUint8Array = input => {
+			if (input instanceof Uint8Array) {
+				return input;
+			}
+            
+			if (input instanceof Uint32Array) {
+				return new Uint8Array(input);
+            }
+
+			if (input instanceof Uint16Array) {
+				return new Uint8Array(input);
+			}
+
+            return null;
+        };
 
 		if (map instanceof Uint32Array) {
 			if (map.length != leds) {
@@ -69,6 +100,28 @@ class Module {
 			throw new Error('Number of leds must be defined. Either by leds or by width and height.');
 		}
 
+		// Handle gamma correction. Either a number or a an array with 256 entries.
+		if (gamma != undefined) {
+			if (typeof gamma === 'number') {
+				if (gamma <= 0) {
+					throw new Error('Gamma must be a positive number.');
+				}
+				options.gamma = this.gammaTable(gamma);
+			} else if (gamma instanceof Uint8Array || gamma instanceof Uint32Array) {
+				if (gamma.length != 256) {
+					throw new Error('Gamma table must have 256 entries.');
+				}
+				options.gamma = convertToUint8Array(gamma);
+			}
+		}
+
+		// Final check that the gamma table is a Uint8Array
+		if (options.gamma) {
+			if (!(options.gamma instanceof Uint8Array)) {
+				throw new Error('Gamma table must be a Uint8Array with 256 entries.');
+			}
+		}
+
 		this.leds = leds;
 
 		addon.configure({ ...options, leds: leds });
@@ -86,31 +139,6 @@ class Module {
 	}
 
 	render(pixels) {
-		let gammaCorrect = pixels => {
-			let gamma = this.gamma;
-
-			if (gamma == undefined) {
-				return pixels;
-			}
-
-			const output = new Uint32Array(pixels.length);
-
-			for (let i = 0; i < pixels.length; i++) {
-				const rgb = pixels[i] >>> 0; // 0xRRGGBB
-
-				const r1 = (rgb >>> 16) & 0xff;
-				const g1 = (rgb >>> 8) & 0xff;
-				const b1 = (rgb >>> 0) & 0xff;
-
-				const r2 = Math.min(255, Math.round(Math.pow(r1 / 255, gamma) * 255));
-				const g2 = Math.min(255, Math.round(Math.pow(g1 / 255, gamma) * 255));
-				const b2 = Math.min(255, Math.round(Math.pow(b1 / 255, gamma) * 255));
-
-				output[i] = ((r2 << 16) | (g2 << 8) | b2) >>> 0;
-			}
-
-			return output;
-		};
 
 		if (this.leds == undefined) {
 			throw new Error('ws281x not configured.');
@@ -131,9 +159,9 @@ class Module {
 				mapped[i] = pixels[this.map[i]];
 			}
 
-			addon.render(gammaCorrect(mapped));
+			addon.render(mapped);
 		} else {
-			addon.render(gammaCorrect(pixels));
+			addon.render(pixels);
 		}
 	}
 }
