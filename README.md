@@ -1,7 +1,6 @@
 # rpi-ws281x
 
-This is a npm module for connecting a Raspbery Pi to Neopixel strips. It uses the
-library from **jgarff** https://github.com/jgarff/rpi_ws281x.
+This is a npm module (wrapper) for connecting a Raspbery Pi to Neopixel strips. It uses the C-library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
 ## Installation
 
