@@ -173,8 +173,7 @@ NAN_METHOD(Addon::configure)
             auto buffer = gamma->ToObject(context).ToLocalChecked();
             uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
 
-            const int numBytes = std::min(node::Buffer::Length(buffer), 256);
-            memcpy(gammaCorrection, data, numBytes);
+            memcpy(gammaCorrection, data, sizeof(gammaCorrection));
 
             ws281x.channel[0].gamma = gammaCorrection;
         }
