@@ -174,9 +174,9 @@ NAN_METHOD(Addon::configure)
             uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
 
             const int numBytes = std::min(node::Buffer::Length(buffer), 256);
+            memcpy(gammaCorrection, data, numBytes);
 
-            ws281x.channel[0].gamma = gammaCorrection
-            memcpy(ws281x.channel[0].gamma, data, numBytes);
+            ws281x.channel[0].gamma = gammaCorrection;
         }
     }
 
