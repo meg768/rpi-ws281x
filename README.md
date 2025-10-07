@@ -163,17 +163,17 @@ var ws281x = require('rpi-ws281x');
 class Example {
 
     constructor() {
-		// Current pixel position
-		this.offset = 0;
+        // Current pixel position
+        this.offset = 0;
 
-		// Set my Neopixel configuration
-		// By setting width and height instead of number of leds
-		// you may use named pixel mappings.
+        // Set my Neopixel configuration
+        // By setting width and height instead of number of leds
+        // you may use named pixel mappings.
         // Serpentine is a common mapping for matrixes.
-		this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'serpentine' };
+        this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'serpentine' };
 
-		// Configure ws281x
-		ws281x.configure(this.config);
+        // Configure ws281x
+        ws281x.configure(this.config);
     }
 
     loop() {
