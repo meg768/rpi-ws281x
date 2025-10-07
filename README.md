@@ -15,15 +15,15 @@ $ npm install rpi-ws281x --save
 var ws281x = require('rpi-ws281x');
 
 // One time initialization, assumes an 8 pixel strip
-ws281x.configure({leds:8});
+ws281x.configure({ leds: 8 });
 
 // Create my pixels
 var pixels = new Uint32Array(8);
 
 // Set first three pixel pixels to red, green and blue
-pixels[0] = 0xFF0000;
-pixels[1] = 0x00FF00;
-pixels[2] = 0x0000FF;
+pixels[0] = 0xff0000;
+pixels[1] = 0x00ff00;
+pixels[2] = 0x0000ff;
 
 // Render pixels to the Neopixel strip
 ws281x.render(pixels);
@@ -61,48 +61,50 @@ This module is simple and only has three methods **configure()**, **render()** a
 var ws281x = require('rpi-ws281x');
 
 class Example {
-    constructor() {
-        this.config = {};
+	constructor() {
+		this.config = {};
 
-        // Number of leds in my strip
-        this.config.leds = 169;
+		// Number of leds in my strip
+		this.config.leds = 169;
 
-        // Use DMA 10 (default 10)
-        this.config.dma = 10;
+		// Use DMA 10 (default 10)
+		this.config.dma = 10;
 
-        // Set full brightness, a value from 0 to 255 (default 255)
-        this.config.brightness = 255;
+		// Set full brightness, a value from 0 to 255 (default 255)
+		this.config.brightness = 255;
 
-        // Set the GPIO number to communicate with the Neopixel strip (default 18)
-        this.config.gpio = 18;
+		// Set the GPIO number to communicate with the Neopixel strip (default 18)
+		this.config.gpio = 18;
 
-        // The RGB sequence may vary on some strips. Valid values
-        // are "rgb", "rbg", "grb", "gbr", "bgr", "brg".
-        // Default is "rgb".
-        this.config.stripType = 'grb';
+		// Configure strip type
+		this.config.stripType = 'grb';
 
-        // Configure ws281x
-        ws281x.configure(this.config);
-    }
+		// Apply a gamma correction to account for the non-linear brightness
+		// of the LEDs. A typical value is 2.2
+		this.config.gamma = 2.2;
 
-    run() {
-        // Create a pixel array matching the number of leds.
-        // This must be an instance of Uint32Array.
-        var pixels = new Uint32Array(this.config.leds);
+		// Configure ws281x
+		ws281x.configure(this.config);
+	}
 
-        // Create a fill color with red/green/blue.
-        var red = 255;
-        var green = 0;
-        var blue = 0;
-        var color = (red << 16) | (green << 8) | blue;
+	run() {
+		// Create a pixel array matching the number of leds.
+		// This must be an instance of Uint32Array.
+		var pixels = new Uint32Array(this.config.leds);
 
-        for (var i = 0; i < this.config.leds; i++) {
-            pixels[i] = color;
-        }
+		// Create a fill color with red/green/blue.
+		var red = 255;
+		var green = 0;
+		var blue = 0;
+		var color = (red << 16) | (green << 8) | blue;
 
-        // Render to strip
-        ws281x.render(pixels);
-    }
+		for (var i = 0; i < this.config.leds; i++) {
+			pixels[i] = color;
+		}
+
+		// Render to strip
+		ws281x.render(pixels);
+	}
 }
 
 var example = new Example();
@@ -123,7 +125,7 @@ class Example {
         this.offset = 0;
 
         // Set my Neopixel configuration
-        this.config = {leds:169};
+        this.config = {leds:169, stripType : 'grb', gpio:18};
 
         // Configure ws281x
         ws281x.configure(this.config);
@@ -150,7 +152,6 @@ class Example {
 
 var example = new Example();
 example.run();
-
 ```
 
 ### Walking a pixel with pixel mapping
