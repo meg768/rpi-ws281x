@@ -7,8 +7,10 @@ let HEIGHT = 13;
 // Configure a 13x13 matrix with serpentine mapping and gamma correction
 ws281x.configure({ width: WIDTH, height: HEIGHT, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma: 2.2, map: 'serpentine' });
 
+var leds = WIDTH * HEIGHT;
+
 // Create my pixels
-var pixels = new Uint32Array(WIDTH * HEIGHT  );
+var pixels = new Uint32Array(leds);
 
 // Set pixels to a gradient from black to red
 for (let i = 0; i < leds; i++) {
