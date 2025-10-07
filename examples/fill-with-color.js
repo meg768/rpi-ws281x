@@ -29,8 +29,8 @@ class Example {
     run() {
 		// Create a pixel array matching the number of leds.
 		// This must be an instance of Uint32Array.
-		var pixels = new Uint32Array(this.config.leds);
-        var leds = this.config.leds;
+		let pixels = new Uint32Array(this.config.leds);
+        let leds = this.config.leds;
 
 		// Set pixels to a gradient from black to red
 		for (let i = 0; i < leds; i++) {
