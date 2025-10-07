@@ -206,6 +206,6 @@ Be sure to turn off audio if using a Raspberry Pi Zero. Ask ChatGPT how to do th
 
 ## Updates
 
-- 2025-10-06 - Added native gamma corrections using the jgarff C-library. 
-- 2025-10-06 - Added support for RGBW strips.
+- 2025-10-06 - Added gamma corrections using the jgarff C-library and added support for RGBW strips. 
+- 2025-10-07 - Updated documentation and examples.
 
