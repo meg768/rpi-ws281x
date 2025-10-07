@@ -1,6 +1,8 @@
 var ws281x = require('../index.js');
 
+// Number of leds in my strip
 let leds = 169;
+// Gamma correction value
 let gamma = 2.2;
 
 // Configure with gamma correction
