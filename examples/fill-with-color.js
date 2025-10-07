@@ -10,7 +10,7 @@ ws281x.configure({ width: WIDTH, height: HEIGHT, stripType: 'grb', gpio: 18, dma
 
 
 // Create my pixels
-var pixels = new Uint32Array(leds);
+var pixels = new Uint32Array(WIDTH * HEIGHT);
 
 // Set pixels to a gradient from black to red
 for (let i = 0; i < LEDS; i++) {
