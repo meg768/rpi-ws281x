@@ -1,7 +1,7 @@
 var ws281x = require('../index.js');
 
 // Size of my matrix
-let WIDHT = 13;
+let WIDTH = 13;
 let HEIGHT = 13;
 
 // Configure a 13x13 matrix with serpentine mapping and gamma correction
