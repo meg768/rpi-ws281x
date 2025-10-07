@@ -19,6 +19,9 @@ class Example {
         // Specify RGB sequence
         this.config.stripType = 'grb';
 
+        // Set gamma correction to 2.2 
+        this.config.gamma = 2.2;
+
         // Configure ws281x
         ws281x.configure(this.config);
     }
