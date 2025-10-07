@@ -87,21 +87,21 @@ class Example {
     }
 
     run() {
-		// Create a pixel array matching the number of leds.
-		// This must be an instance of Uint32Array.
-		let pixels = new Uint32Array(this.config.leds);
+        // Create a pixel array matching the number of leds.
+        // This must be an instance of Uint32Array.
+        let pixels = new Uint32Array(this.config.leds);
         let leds = this.config.leds;
 
-		// Set pixels to a gradient from black to red
-		for (let i = 0; i < leds; i++) {
-			let red = (i / leds) * 255;
-			let green = 0;
-			let blue = 0;
-			let color = (red << 16) | (green << 8) | blue;
-			pixels[i] = color;
-		}
-		// Render to strip
-		ws281x.render(pixels);
+        // Set pixels to a gradient from black to red
+        for (let i = 0; i < leds; i++) {
+            let red = (i / leds) * 255;
+            let green = 0;
+            let blue = 0;
+            let color = (red << 16) | (green << 8) | blue;
+            pixels[i] = color;
+        }
+        // Render to strip
+        ws281x.render(pixels);
     }
 }
 
