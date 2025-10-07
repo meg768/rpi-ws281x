@@ -60,25 +60,26 @@ This module is simple and only has three methods **configure()**, **render()** a
 
 var ws281x = require('rpi-ws281x');
 
-// Number of leds in my strip
-let leds = 169;
-// Gamma correction value
-let gamma = 2.2;
+// Size of my matrix
+let WIDTH = 13;
+let HEIGHT = 13;
+let LEDS = WIDTH * HEIGHT;
 
-// Configure with gamma correction
-ws281x.configure({ leds: leds, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:gamma });
+// Configure a 13x13 matrix with serpentine mapping and gamma correction
+ws281x.configure({ width: WIDTH, height: HEIGHT, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma: 2.2, map: 'serpentine' });
+
 
 // Create my pixels
-var pixels = new Uint32Array(leds);
+var pixels = new Uint32Array(WIDTH * HEIGHT);
 
 // Set pixels to a gradient from black to red
-for (let i = 0; i < leds; i++) {
-    let red = (i/leds) * 255;
-    let green = 0;
-    let blue = 0;
-    let color = (red << 16) | (green << 8) | blue;
-    pixels[i] = color;
-}   
+for (let i = 0; i < LEDS; i++) {
+	let red = (i / LEDS) * 255;
+	let green = 0;
+	let blue = 0;
+	let color = (red << 16) | (green << 8) | blue;
+	pixels[i] = color;
+}
 
 // Render pixels to the Neopixel strip
 ws281x.render(pixels);
