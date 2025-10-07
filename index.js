@@ -76,7 +76,7 @@ class Module {
 			leds = width * height;
 
 			if (this.map == undefined && typeof map == 'string') {
-				if (map == 'alternating-matrix') {
+				if (map == 'alternating-matrix' || map == "serpentine") {
 					map = new Uint32Array(width * height);
 
 					for (var i = 0; i < map.length; i++) {

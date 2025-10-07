@@ -38,17 +38,16 @@ This module is simple and only has three methods **configure()**, **render()** a
 
      The **options** parameter may have the following properties.
 
-     | Name       | Description                                                  |
-     | ---------- | ------------------------------------------------------------ |
-     | leds       | Number of pixels in the strip.                               |
-     | width      | Width of matrix/screen. Do not specify if **leds** is used.  |
-     | height     | Height of matrix/screen. Do not specify if **leds** is used. |
-     | gamma      | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
-     | map        | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "alternating-matrix" is supported. |
-     | dma        | Default 10.                                                  |
-     | brightness | Default 255.                                                 |
-     | gpio       | Default 18.                                                  |
-     | stripType  | Valid values are "rgb", "grb", "brg", "bgr", "gbr". If using an RGBW-strip, just add "w" to the name. Default "rgb". |
+     | Name          | Description                                                  |
+     | ------------- | ------------------------------------------------------------ |
+     | leds          | Number of pixels in the strip.                               |
+     | width, height | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
+     | gamma         | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
+     | map           | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
+     | dma           | Default 10.                                                  |
+     | brightness    | Default 255.                                                 |
+     | gpio          | Default 18.                                                  |
+     | stripType     | Valid values are "rgb", "grb", "brg", "bgr", "gbr". If using an RGBW-strip, just add "w" to the name. Default "rgb". |
 
 - **render(pixels)** - Renders the pixels specified to the strip. The **pixels** parameter must be an **Uint32Array** representing the color values of all pixels and the same size as the number of leds specified when configuring.
 - **reset()** - Resets configuration and turns all pixels off.
