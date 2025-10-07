@@ -1,12 +1,8 @@
 var ws281x = require('../index.js');
 
-// Number of leds in my strip
-let leds = 169;
-// Gamma correction value
-let gamma = 2.2;
 
-// Configure with gamma correction
-ws281x.configure({ leds: leds, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:gamma });
+// Configure a 13x13 matrix with serpentine mapping and gamma correction
+ws281x.configure({ width: 13, height:13, stripType: 'grb', gpio: 18, dma: 10, brightness: 255, gamma:2.2, map: 'serpentine'  });
 
 // Create my pixels
 var pixels = new Uint32Array(leds);
