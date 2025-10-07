@@ -163,23 +163,17 @@ var ws281x = require('rpi-ws281x');
 class Example {
 
     constructor() {
-        // Current pixel position
-        this.offset = 0;
+		// Current pixel position
+		this.offset = 0;
 
-        // Set my Neopixel configuration
-        this.config = {};
+		// Set my Neopixel configuration
+		// By setting width and height instead of number of leds
+		// you may use named pixel mappings.
+        // Serpentine is a common mapping for matrixes.
+		this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'serpentine' };
 
-        // By setting width and height instead of number of leds
-        // you may use named pixel mappings.
-        // Currently "alternating-matrix" is
-        // supported. You may also set the "map" property
-        // to a custom Uint32Array to define your own map.
-        this.config.width = 13;
-        this.config.height = 13;
-        this.config.map = 'alternating-matrix';
-
-        // Configure ws281x
-        ws281x.configure(this.config);
+		// Configure ws281x
+		ws281x.configure(this.config);
     }
 
     loop() {
@@ -187,7 +181,7 @@ class Example {
         var pixels = new Uint32Array(leds);
 
         // Set a specific pixel
-        pixels[this.offset] = 0xFF0000;
+        pixels[this.offset] = 0xFFFFFF;
 
         // Move on to next
         this.offset = (this.offset + 1) % leds;
@@ -198,13 +192,12 @@ class Example {
 
     run() {
         // Loop every 100 ms
-        setInterval(this.loop.bind(this), 100);
+        setInterval(this.loop.bind(this), 50);
     }
 };
 
 var example = new Example();
 example.run();
-
 ```
 
 ## Note
@@ -215,6 +208,6 @@ Be sure to turn off audio if using a Raspberry Pi Zero. Ask ChatGPT how to do th
 
 ## Updates
 
-2025-10-06 - Added native gamma corrections using the jgarff C-library. 
+- 2025-10-06 - Added native gamma corrections using the jgarff C-library. 
+- 2025-10-06 - Added support for RGBW strips.
 
-2025-10-06 - Added support for RGBW strips.
