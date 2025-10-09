@@ -7,7 +7,7 @@ class Example {
         this.offset = 0;
 
         // Set my Neopixel configuration
-        this.config = {leds:169, stripType : 'grb', gpio:18};
+        this.config = {leds:169, stripType : 'grb', gpio:18, rgbToRgbw: true};
 
         // Configure ws281x
         ws281x.configure(this.config);
@@ -17,7 +17,7 @@ class Example {
         var pixels = new Uint32Array(this.config.leds);
 
         // Set a specific pixel
-        pixels[this.offset] = 0xFFFFFF;
+        pixels[this.offset] = 0xFFFF00; // Yellow
 
         // Move on to next
         this.offset = (this.offset + 1) % this.config.leds;
