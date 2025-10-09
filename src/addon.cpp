@@ -10,6 +10,8 @@
 #define DEFAULT_TYPE WS2811_STRIP_RGB
 
 static ws2811_t ws281x;
+static int convertRGBtoRGBW = 0;
+
 
 #include <cstdint>
 #include <algorithm>
@@ -22,7 +24,7 @@ void RGBToRGBW(uint32_t *pixels, int length)
     {
         uint32_t p = pixels[i];
 
-        // Tolka som 0x00RRGGBB (vanligast vid start)
+        // Tolka som 0x00RRGGBB
         uint8_t r = (p >> 16) & 0xFF;
         uint8_t g = (p >> 8) & 0xFF;
         uint8_t b = p & 0xFF;
@@ -124,6 +126,16 @@ NAN_METHOD(Addon::configure)
 
         if (maybe_brightness.ToLocal(&brightness))
             ws281x.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(ws281x.channel[0].brightness);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // rgbToRgbw
+    if (Nan::Has(options, Nan::New<v8::String>("rgbToRgbw").ToLocalChecked()).ToChecked())
+    {
+        Nan::MaybeLocal<v8::Value> maybe_rgbToRgbw = Nan::Get(options, Nan::New<v8::String>("rgbToRgbw").ToLocalChecked());
+        v8::Local<v8::Value> rgbToRgbw;
+        if (maybe_rgbToRgbw.ToLocal(&rgbToRgbw))
+            convertRGBtoRGBW = Nan::To<bool>(rgbToRgbw).FromMaybe(convertRGBtoRGBW);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -298,6 +310,11 @@ NAN_METHOD(Addon::render)
     const int numBytes = std::min(node::Buffer::Length(buffer), sizeof(ws2811_led_t) * channel.count);
 
     memcpy(channel.leds, data, numBytes);
+
+    if (convertRGBtoRGBW)
+    {
+        RGBToRGBW(channel.leds, channel.count);
+    }   
 
     ws2811_render(&ws281x);
 
