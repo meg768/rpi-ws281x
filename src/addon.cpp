@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <string>
+#include <cstdint>
 
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
@@ -15,32 +16,18 @@ struct RGBW
     uint8_t r, g, b, w;
 };
 
-// The  RGB to RGBW conversion function.
 RGBW RGBToRGBW(uint8_t r, uint8_t g, uint8_t b)
 {
     RGBW output;
 
-    // Determine the smallest white value from above.
-    uint8_t w = round(min(r, min(g, b)));
+    // Ta minsta färgkomponent som vitt
+    uint8_t w = std::min({r, g, b});
 
-    // Make the color with the smallest white value to be the output white value
-    if (w == r)
-    {
-        output.w = r;
-    }
-    else if (w == g)
-    {
-        output.w = g;
-    }
-    else
-    {
-        output.w = b;
-    }
-
-    // Calculate the output red, green and blue values, taking into account the white color temperature.
-    output.r = (r - wOut);
-    output.g = (g - wOut);
-    output.b = (b - wOut);
+    // Subtrahera vitt från alla kanaler
+    output.r = (r > w) ? (r - w) : 0;
+    output.g = (g > w) ? (g - w) : 0;
+    output.b = (b > w) ? (b - w) : 0;
+    output.w = w;
 
     return output;
 }
