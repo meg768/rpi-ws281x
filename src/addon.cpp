@@ -20,7 +20,7 @@ struct config_t
 
 static config_t config;
 
-void RGBToRGBW(uint32_t *pixels, int length)
+void RGBToWRGB(uint32_t *pixels, int length)
 {
     for (int i = 0; i < length; ++i)
     {
@@ -318,7 +318,7 @@ NAN_METHOD(Addon::render)
 
     if (config.convertRGBtoWRGB)
     {
-        RGBToRGBW(channel.leds, channel.count);
+        RGBToWRGB(channel.leds, channel.count);
     }
 
     ws2811_render(&config.ws281x);
