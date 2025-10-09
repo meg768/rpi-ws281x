@@ -10,6 +10,41 @@
 
 static ws2811_t ws281x;
 
+struct RGBW
+{
+    uint8_t r, g, b, w;
+};
+
+// The  RGB to RGBW conversion function.
+RGBW RGBToRGBW(uint8_t r, uint8_t g, uint8_t b)
+{
+    RGBW output;
+
+    // Determine the smallest white value from above.
+    uint8_t w = round(min(r, min(g, b)));
+
+    // Make the color with the smallest white value to be the output white value
+    if (w == r)
+    {
+        output.w = r;
+    }
+    else if (w == g)
+    {
+        output.w = g;
+    }
+    else
+    {
+        output.w = b;
+    }
+
+    // Calculate the output red, green and blue values, taking into account the white color temperature.
+    output.r = (r - wOut);
+    output.g = (g - wOut);
+    output.b = (b - wOut);
+
+    return output;
+}
+
 NAN_METHOD(Addon::configure)
 {
     Nan::HandleScope();
@@ -133,7 +168,6 @@ NAN_METHOD(Addon::configure)
             {
                 ws281x.channel[0].strip_type = WS2811_STRIP_BGR;
             }
-
 
             else if (stripTypeValue == "rgbw")
             {
