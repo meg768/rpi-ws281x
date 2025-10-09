@@ -135,7 +135,7 @@ NAN_METHOD(Addon::configure)
     {
         Nan::MaybeLocal<v8::Value> maybe_convertRGBtoWRGB = Nan::Get(options, Nan::New<v8::String>("convertRGBtoWRGB").ToLocalChecked());
         v8::Local<v8::Value> convertRGBtoWRGB;
-        if (maybe_rgbToRgbw.ToLocal(&convertRGBtoWRGB))
+        if (maybe_convertRGBtoWRGB.ToLocal(&convertRGBtoWRGB))
             config.convertRGBtoWRGB = Nan::To<bool>(convertRGBtoWRGB).FromMaybe(config.convertRGBtoWRGB);
     }
 
