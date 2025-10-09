@@ -3,27 +3,22 @@
 #include <sstream>
 #include <string>
 #include <cstdint>
+#include <cstdint>
+#include <algorithm>
 
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
 #define DEFAULT_DMA 10
 #define DEFAULT_TYPE WS2811_STRIP_RGB
 
-
-struct config_t {
+struct config_t
+{
     ws2811_t ws281x;
     int convertRGBtoRGBW;
+    int initialized;
 };
 
 static config_t config;
-//static ws2811_t ws281x;
-//static int convertRGBtoRGBW = 0;
-
-
-#include <cstdint>
-#include <algorithm>
-
-
 
 void RGBToRGBW(uint32_t *pixels, int length)
 {
@@ -52,12 +47,11 @@ void RGBToRGBW(uint32_t *pixels, int length)
     }
 }
 
-
 NAN_METHOD(Addon::configure)
 {
     Nan::HandleScope();
 
-    if (config.ws281x.freq != 0)
+    if (config.initialized)
     {
         return Nan::ThrowError("ws281x already configured.");
     }
@@ -255,14 +249,16 @@ NAN_METHOD(Addon::configure)
     if (result)
     {
         std::ostringstream errortext;
-        errortext << "configure(): ws2811_init() failed: " << ws2811_get_return_t_str(result);
+        errortext << "ws2811_init() failed: " << ws2811_get_return_t_str(result);
         return Nan::ThrowError(errortext.str().c_str());
     }
 
     if (!config.ws281x.channel[0].leds)
     {
-        return Nan::ThrowError("configure(): ws2811_init succeeded but leds buffer is null.");
+        return Nan::ThrowError("ws2811_init succeeded but leds buffer is null.");
     }
+
+    config.initialized = true;
 
     info.GetReturnValue().Set(Nan::Undefined());
 };
@@ -271,7 +267,7 @@ NAN_METHOD(Addon::reset)
 {
     Nan::HandleScope();
 
-    if (config.ws281x.freq != 0)
+    if (config.initialized)
     {
         if (config.ws281x.channel[0].leds && config.ws281x.channel[0].count > 0)
         {
@@ -280,7 +276,9 @@ NAN_METHOD(Addon::reset)
         }
         ws2811_fini(&config.ws281x);
     }
-    config.ws281x.freq = 0;
+
+    memset(&config, 0, sizeof(config));
+
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -288,23 +286,23 @@ NAN_METHOD(Addon::render)
 {
     Nan::HandleScope();
 
-    if (config.ws281x.freq == 0)
+    if (!config.initialized)
     {
-        return Nan::ThrowError("render(): ws281x not configured.");
+        return Nan::ThrowError("ws281x not configured.");
     }
     if (info.Length() != 1)
     {
-        return Nan::ThrowError("render() requires pixels");
+        return Nan::ThrowError("ws281x.render() requires pixels as a parameter");
     }
     if (!info[0]->IsUint32Array())
     {
-        return Nan::ThrowError("render() requires pixels to be a Uint32Array.");
+        return Nan::ThrowError("ws281x.render() requires pixels to be a Uint32Array.");
     }
 
     // retrieve buffer from argument 1
     if (!node::Buffer::HasInstance(info[0]))
     {
-        Nan::ThrowTypeError("render() expected pixels to be a Buffer");
+        Nan::ThrowTypeError("ws281x.render() expected pixels to be a Buffer");
         return;
     }
 
