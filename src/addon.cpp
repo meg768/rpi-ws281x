@@ -318,7 +318,7 @@ NAN_METHOD(Addon::render)
 
     memcpy(channel.leds, data, numBytes);
 
-    if (convertRGBtoRGBW)
+    if (config.convertRGBtoRGBW)
     {
         RGBToRGBW(channel.leds, channel.count);
     }
