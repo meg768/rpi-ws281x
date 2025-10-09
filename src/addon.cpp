@@ -14,7 +14,7 @@
 struct config_t
 {
     ws2811_t ws281x;
-    int convertRGBtoRGBW;
+    int convertRGBtoWRGB;
     int initialized;
 };
 
@@ -131,12 +131,12 @@ NAN_METHOD(Addon::configure)
 
     ///////////////////////////////////////////////////////////////////////////
     // rgbToRgbw
-    if (Nan::Has(options, Nan::New<v8::String>("rgbToRgbw").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("convertRGBtoWRGB").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_rgbToRgbw = Nan::Get(options, Nan::New<v8::String>("rgbToRgbw").ToLocalChecked());
-        v8::Local<v8::Value> rgbToRgbw;
-        if (maybe_rgbToRgbw.ToLocal(&rgbToRgbw))
-            config.convertRGBtoRGBW = Nan::To<bool>(rgbToRgbw).FromMaybe(config.convertRGBtoRGBW);
+        Nan::MaybeLocal<v8::Value> maybe_rgbToRgbw = Nan::Get(options, Nan::New<v8::String>("convertRGBtoWRGB").ToLocalChecked());
+        v8::Local<v8::Value> convertRGBtoWRGB;
+        if (maybe_rgbToRgbw.ToLocal(&convertRGBtoWRGB))
+            config.convertRGBtoWRGB = Nan::To<bool>(rgbToRgbw).FromMaybe(config.convertRGBtoWRGB);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ NAN_METHOD(Addon::render)
 
     memcpy(channel.leds, data, numBytes);
 
-    if (config.convertRGBtoRGBW)
+    if (config.convertRGBtoWRGB)
     {
         RGBToRGBW(channel.leds, channel.count);
     }
