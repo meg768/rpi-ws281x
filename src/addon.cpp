@@ -76,7 +76,7 @@ NAN_METHOD(Addon::configure)
 
     if (info.Length() != 1)
     {
-        return Nan::ThrowError("configure() requires an argument.");
+        return Nan::ThrowError("ws281x.configure() - requires an argument.");
     }
 
     v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
@@ -91,7 +91,7 @@ NAN_METHOD(Addon::configure)
         if (maybe_leds.ToLocal(&leds))
             config.ws281x.channel[0].count = Nan::To<int>(leds).FromMaybe(config.ws281x.channel[0].count);
         else
-            return Nan::ThrowTypeError("configure(): leds must be defined");
+            return Nan::ThrowTypeError("ws281x.configure() - leds must be defined");
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -221,12 +221,12 @@ NAN_METHOD(Addon::configure)
 
             if (!node::Buffer::HasInstance(gamma))
             {
-                return Nan::ThrowTypeError("configure(): gamma must be a Buffer");
+                return Nan::ThrowTypeError("ws281x.configure() - gamma must be a Buffer");
             }
 
             if (!gamma->IsUint8Array())
             {
-                return Nan::ThrowError("configure() gamma must be an Uint8Array.");
+                return Nan::ThrowError("ws281x.configure() - gamma must be an Uint8Array.");
             }
 
             v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
@@ -241,7 +241,7 @@ NAN_METHOD(Addon::configure)
 
     if (config.ws281x.channel[0].count <= 0)
     {
-        return Nan::ThrowError("configure(): 'leds' must be > 0.");
+        return Nan::ThrowError("ws281x.configure() - 'leds' must be > 0.");
     }
 
     ws2811_return_t result = ws2811_init(&config.ws281x);
@@ -249,13 +249,13 @@ NAN_METHOD(Addon::configure)
     if (result)
     {
         std::ostringstream errortext;
-        errortext << "ws2811_init() failed: " << ws2811_get_return_t_str(result);
+        errortext << "ws281x.configure() - ws2811_init() failed: " << ws2811_get_return_t_str(result);
         return Nan::ThrowError(errortext.str().c_str());
     }
 
     if (!config.ws281x.channel[0].leds)
     {
-        return Nan::ThrowError("ws2811_init succeeded but leds buffer is null.");
+        return Nan::ThrowError("ws281x.configure() - ws2811_init succeeded but leds buffer is null.");
     }
 
     config.initialized = true;
