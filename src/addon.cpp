@@ -11,26 +11,38 @@
 
 static ws2811_t ws281x;
 
-struct RGBW
+#include <cstdint>
+#include <algorithm>
+
+
+
+void RGBToRGBW(uint32_t *pixels, int length)
 {
-    uint8_t r, g, b, w;
-};
+    for (int i = 0; i < length; ++i)
+    {
+        uint32_t p = pixels[i];
 
-RGBW RGBToRGBW(uint8_t r, uint8_t g, uint8_t b)
-{
-    RGBW output;
+        // Tolka som 0x00RRGGBB (vanligast vid start)
+        uint8_t r = (p >> 16) & 0xFF;
+        uint8_t g = (p >> 8) & 0xFF;
+        uint8_t b = p & 0xFF;
 
-    // Ta minsta färgkomponent som vitt
-    uint8_t w = std::min({r, g, b});
+        // Beräkna vitkomponenten som minsta värdet
+        uint8_t w = std::min({r, g, b});
 
-    // Subtrahera vitt från alla kanaler
-    output.r = (r > w) ? (r - w) : 0;
-    output.g = (g > w) ? (g - w) : 0;
-    output.b = (b > w) ? (b - w) : 0;
-    output.w = w;
+        // Subtrahera vitt från färgerna (skydda mot underflöde)
+        uint8_t r_out = (r > w) ? (r - w) : 0;
+        uint8_t g_out = (g > w) ? (g - w) : 0;
+        uint8_t b_out = (b > w) ? (b - w) : 0;
 
-    return output;
+        // Packa som 0xWWRRGGBB
+        pixels[i] = ((uint32_t)w << 24) |
+                    ((uint32_t)r_out << 16) |
+                    ((uint32_t)g_out << 8) |
+                    ((uint32_t)b_out);
+    }
 }
+
 
 NAN_METHOD(Addon::configure)
 {
