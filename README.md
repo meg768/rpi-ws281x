@@ -44,7 +44,7 @@ The **options** parameter may have the following properties.
 | :-------------- | :----------------------------------------------------------- |
 | leds            | Number of pixels in the strip.                               |
 | width, height   | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
-| gamma           | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
+| gamma           | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint8Array** for custom gamma mapping. Length of array must be 256. |
 | map             | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
 | dma             | Default **10**.                                              |
 | brightness      | Default **255**.                                             |
@@ -222,6 +222,6 @@ Be sure to turn off audio if using a Raspberry Pi Zero. Ask ChatGPT how to do th
 
 - 2025-10-07 - Updated documentation and examples.
 
-- 2025-10-11 - Added **conversions** in **configure()**.
+- 2025-10-11 - Added **pixelConversion** in **configure()**.
 
   

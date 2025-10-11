@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 #include <cstdint>
-#include <cstdint>
 #include <algorithm>
+#include <memory>
 
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
@@ -232,7 +232,7 @@ NAN_METHOD(Addon::configure)
 
             if (!gamma->IsUint8Array())
             {
-                return Nan::ThrowError("ws281x.configure() - gamma must be an Uint8Array.");
+                return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
             }
 
             v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
