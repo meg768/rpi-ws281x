@@ -306,39 +306,37 @@ NAN_METHOD(Addon::render)
         return Nan::ThrowError("ws281x.render() requires pixels to be a Uint32Array.");
     }
 
-    // Referens, inte kopia
     ws2811_channel_t &channel = config.ws281x.channel[0];
-
     if (channel.count <= 0 || channel.leds == nullptr)
     {
-        return Nan::ThrowError("ws281x.render() - LED buffer is not initialized.");
+        return Nan::ThrowError("ws281x.render() - LEDs buffer is not initialized.");
     }
 
     v8::Local<v8::Uint32Array> arr = info[0].As<v8::Uint32Array>();
-    const size_t leds_to_copy = std::min(static_cast<size_t>(channel.count), static_cast<size_t>(arr->Length()));
+    const size_t in_len = static_cast<size_t>(arr->Length());
+    const size_t led_count = static_cast<size_t>(channel.count);
+
+    // Exakt matchning krävs
+    if (in_len != led_count)
+    {
+        return Nan::ThrowError("ws281x.render() - pixel array length must equal configured 'leds'.");
+    }
 
     // Hämta pekare till Uint32Array:ens backing store
     std::shared_ptr<v8::BackingStore> backing = arr->Buffer()->GetBackingStore();
     uint8_t *base = static_cast<uint8_t *>(backing->Data());
     uint32_t *data = reinterpret_cast<uint32_t *>(base + arr->ByteOffset());
 
-    // Kopiera in de pixlar vi har
-    memcpy(channel.leds, data, leds_to_copy * sizeof(uint32_t));
+    // Kopiera exakt led_count element
+    memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // Om indata är kortare än channel.count kan vi fylla resterande med 0 (svart)
-    if (leds_to_copy < static_cast<size_t>(channel.count))
-    {
-        memset(channel.leds + leds_to_copy, 0, (static_cast<size_t>(channel.count) - leds_to_copy) * sizeof(uint32_t));
-    }
-
-    // Kör ev. RGB->WRGB-konvertering på de pixlar vi faktiskt satte
+    // Ev. RGB->WRGB-konvertering (in-place) på hela bufferten
     if (config.convertRGBtoWRGB)
     {
-        RGBToWRGB(channel.leds, static_cast<int>(leds_to_copy));
+        RGBToWRGB(channel.leds, static_cast<int>(led_count));
     }
 
     ws2811_render(&config.ws281x);
-
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
