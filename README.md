@@ -40,17 +40,17 @@ This module is simple and only has three methods **configure()**, **render()** a
 
 The **options** parameter may have the following properties.
 
-| Name            | Description                                                  |
-| :-------------- | :----------------------------------------------------------- |
-| leds            | Number of pixels in the strip.                               |
-| width, height   | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
-| gamma           | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
-| map             | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
-| dma             | Default **10**.                                              |
-| brightness      | Default **255**.                                             |
-| gpio            | Default **18**.                                              |
-| stripType       | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
-| pixelConversion | Experimental. Specifies built in pixel conversions. Currently only **"white-shift"** is supported. It will convert the RGB pixels specified in **render()** to WRGB values by shifting white values to the white led. Only useful for RGBW strips. |
+| Name          | Description                                                  |
+| :------------ | :----------------------------------------------------------- |
+| leds          | Number of pixels in the strip.                               |
+| width, height | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
+| gamma         | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
+| map           | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
+| dma           | Default **10**.                                              |
+| brightness    | Default **255**.                                             |
+| gpio          | Default **18**.                                              |
+| stripType     | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
+| conversions   | *(string, experimental)* Built-in pixel conversion. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. **Only effective for RGBW `stripType` variants** (e.g. `grbw`). Unknown values are ignored (treated as `"none"`). |
 
 ### Render
 
@@ -219,6 +219,9 @@ Be sure to turn off audio if using a Raspberry Pi Zero. Ask ChatGPT how to do th
 ## Updates
 
 - 2025-10-06 - Added gamma corrections using the jgarff C-library and added support for RGBW strips. 
-- 2025-10-07 - Updated documentation and examples.
-- 2025-10-11 - Added **pixelConversion** to configuration. Experimental. 
 
+- 2025-10-07 - Updated documentation and examples.
+
+- 2025-10-11 - Added **conversions** in **configure()**.
+
+  

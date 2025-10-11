@@ -133,18 +133,18 @@ NAN_METHOD(Addon::configure)
     // pixelConversion
     if (true)
     {
-        Nan::MaybeLocal<v8::Value> maybe_pixelConversion;
-        v8::Local<v8::Value> pixelConversion;
+        Nan::MaybeLocal<v8::Value> maybe_conversions;
+        v8::Local<v8::Value> conversions;
 
-        if (Nan::Has(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked()).ToChecked())
-            maybe_pixelConversion = Nan::Get(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked());
+        if (Nan::Has(options, Nan::New<v8::String>("conversions").ToLocalChecked()).ToChecked())
+            maybe_conversions = Nan::Get(options, Nan::New<v8::String>("conversions").ToLocalChecked());
 
-        if (maybe_pixelConversion.ToLocal(&pixelConversion))
+        if (maybe_conversions.ToLocal(&conversions))
         {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(pixelConversion).ToLocalChecked());
-            std::string pixelConversionValue = std::string(*value);
+            std::string conversionsValue = std::string(*value);
 
-            if (pixelConversionValue == "white-shift")
+            if (conversionsValue == "white-shift")
             {
                 config.convertRGBtoWRGB = true;
             }
@@ -152,7 +152,7 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // stripType/strip/type
+    // stripType
     if (true)
     {
         Nan::MaybeLocal<v8::Value> maybe_stripType;
