@@ -130,7 +130,7 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // pixelConversion
+    // conversions
     if (true)
     {
         Nan::MaybeLocal<v8::Value> maybe_conversions;
@@ -141,7 +141,7 @@ NAN_METHOD(Addon::configure)
 
         if (maybe_conversions.ToLocal(&conversions))
         {
-            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(pixelConversion).ToLocalChecked());
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(conversions).ToLocalChecked());
             std::string conversionsValue = std::string(*value);
 
             if (conversionsValue == "white-shift")
