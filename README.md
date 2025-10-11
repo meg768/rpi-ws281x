@@ -1,6 +1,6 @@
 # rpi-ws281x
 
-This is a npm module (wrapper) for connecting a Raspbery Pi to Neopixel strips. It uses the C-library from **jgarff** https://github.com/jgarff/rpi_ws281x.
+This is a npm module (wrapper) for connecting a Raspberry Pi to Neopixel strips. It uses the C-library from **jgarff** https://github.com/jgarff/rpi_ws281x.
 
 ## Installation
 
@@ -40,17 +40,17 @@ This module is simple and only has three methods **configure()**, **render()** a
 
 The **options** parameter may have the following properties.
 
-| Name          | Description                                                  |
-| :------------ | :----------------------------------------------------------- |
-| leds          | Number of pixels in the strip.                               |
-| width, height | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
-| gamma         | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
-| map           | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
-| dma           | Default **10**.                                              |
-| brightness    | Default **255**.                                             |
-| gpio          | Default **18**.                                              |
-| stripType     | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
-| conversions   | *(string, experimental)* Built-in pixel conversion. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. **Only effective for RGBW `stripType` variants** (e.g. `grbw`). Unknown values are ignored (treated as `"none"`). |
+| Name            | Description                                                  |
+| :-------------- | :----------------------------------------------------------- |
+| leds            | Number of pixels in the strip.                               |
+| width, height   | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
+| gamma           | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint32Array** for custom gamma mapping. Length of array must be 256. |
+| map             | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
+| dma             | Default **10**.                                              |
+| brightness      | Default **255**.                                             |
+| gpio            | Default **18**.                                              |
+| stripType       | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
+| pixelConversion | *(string, experimental)* Built-in pixel conversion. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. **Only effective for RGBW `stripType` variants** (e.g. `grbw`). Unknown values are ignored (treated as `"none"`). |
 
 ### Render
 
@@ -179,7 +179,7 @@ class Example {
         // Set my Neopixel configuration
         // By setting width and height instead of number of leds
         // you may use named pixel mappings.
-        // Serpentine is a common mapping for matrixes.
+        // Serpentine is a common mapping for matrices.
         this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'serpentine' };
 
         // Configure ws281x

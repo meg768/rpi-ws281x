@@ -130,21 +130,21 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // conversions
+    // pixelConversion
     if (true)
     {
-        Nan::MaybeLocal<v8::Value> maybe_conversions;
-        v8::Local<v8::Value> conversions;
+        Nan::MaybeLocal<v8::Value> maybe_pixelConversion;
+        v8::Local<v8::Value> pixelConversion;
 
-        if (Nan::Has(options, Nan::New<v8::String>("conversions").ToLocalChecked()).ToChecked())
-            maybe_conversions = Nan::Get(options, Nan::New<v8::String>("conversions").ToLocalChecked());
+        if (Nan::Has(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked()).ToChecked())
+            maybe_pixelConversion = Nan::Get(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked());
 
-        if (maybe_conversions.ToLocal(&conversions))
+        if (maybe_pixelConversion.ToLocal(&pixelConversion))
         {
-            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(conversions).ToLocalChecked());
-            std::string conversionsValue = std::string(*value);
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(pixelConversion).ToLocalChecked());
+            std::string pixelConversionValue = std::string(*value);
 
-            if (conversionsValue == "white-shift")
+            if (pixelConversionValue == "white-shift")
             {
                 config.convertRGBtoWRGB = true;
             }
