@@ -130,14 +130,24 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // convertRGBtoWRGB
-    if (Nan::Has(options, Nan::New<v8::String>("convertRGBtoWRGB").ToLocalChecked()).ToChecked())
+    // pixelConversion
+    if (true)
     {
-        Nan::MaybeLocal<v8::Value> maybe_convertRGBtoWRGB = Nan::Get(options, Nan::New<v8::String>("convertRGBtoWRGB").ToLocalChecked());
-        v8::Local<v8::Value> convertRGBtoWRGB;
-        if (maybe_convertRGBtoWRGB.ToLocal(&convertRGBtoWRGB))
+        Nan::MaybeLocal<v8::Value> maybe_pixelConversion;
+        v8::Local<v8::Value> pixelConversion;
+
+        if (Nan::Has(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked()).ToChecked())
+            maybe_pixelConversion = Nan::Get(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked());
+
+        if (maybe_pixelConversion.ToLocal(&pixelConversion))
         {
-            config.convertRGBtoWRGB = Nan::To<bool>(convertRGBtoWRGB).FromMaybe(config.convertRGBtoWRGB) != 0;
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(pixelConversion).ToLocalChecked());
+            std::string pixelConversionValue = std::string(*value);
+
+            if (pixelConversionValue == "white-shift")
+            {
+                config.convertRGBtoWRGB = true;
+            }
         }
     }
 
@@ -148,19 +158,13 @@ NAN_METHOD(Addon::configure)
         Nan::MaybeLocal<v8::Value> maybe_stripType;
         v8::Local<v8::Value> stripType;
 
-        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("type").ToLocalChecked());
-
-        if (Nan::Has(options, Nan::New<v8::String>("strip").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("strip").ToLocalChecked());
-
         if (Nan::Has(options, Nan::New<v8::String>("stripType").ToLocalChecked()).ToChecked())
             maybe_stripType = Nan::Get(options, Nan::New<v8::String>("stripType").ToLocalChecked());
 
         if (maybe_stripType.ToLocal(&stripType))
         {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked());
-            string stripTypeValue = string(*value);
+            std::string stripTypeValue = std::string(*value);
 
             if (stripTypeValue == "rgb")
             {
@@ -284,6 +288,63 @@ NAN_METHOD(Addon::reset)
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
+// ChatGPT version
+NAN_METHOD(Addon::render)
+{
+    Nan::HandleScope();
+
+    if (!config.initialized)
+    {
+        return Nan::ThrowError("ws281x not configured.");
+    }
+    if (info.Length() != 1)
+    {
+        return Nan::ThrowError("ws281x.render() requires pixels as a parameter");
+    }
+    if (!info[0]->IsUint32Array())
+    {
+        return Nan::ThrowError("ws281x.render() requires pixels to be a Uint32Array.");
+    }
+
+    // Referens, inte kopia
+    ws2811_channel_t &channel = config.ws281x.channel[0];
+
+    if (channel.count <= 0 || channel.leds == nullptr)
+    {
+        return Nan::ThrowError("ws281x.render() - LED buffer is not initialized.");
+    }
+
+    v8::Local<v8::Uint32Array> arr = info[0].As<v8::Uint32Array>();
+    const size_t leds_to_copy = std::min(static_cast<size_t>(channel.count), static_cast<size_t>(arr->Length()));
+
+    // Hämta pekare till Uint32Array:ens backing store
+    std::shared_ptr<v8::BackingStore> backing = arr->Buffer()->GetBackingStore();
+    uint8_t *base = static_cast<uint8_t *>(backing->Data());
+    uint32_t *data = reinterpret_cast<uint32_t *>(base + arr->ByteOffset());
+
+    // Kopiera in de pixlar vi har
+    memcpy(channel.leds, data, leds_to_copy * sizeof(uint32_t));
+
+    // Om indata är kortare än channel.count kan vi fylla resterande med 0 (svart)
+    if (leds_to_copy < static_cast<size_t>(channel.count))
+    {
+        memset(channel.leds + leds_to_copy, 0, (static_cast<size_t>(channel.count) - leds_to_copy) * sizeof(uint32_t));
+    }
+
+    // Kör ev. RGB->WRGB-konvertering på de pixlar vi faktiskt satte
+    if (config.convertRGBtoWRGB)
+    {
+        RGBToWRGB(channel.leds, static_cast<int>(leds_to_copy));
+    }
+
+    ws2811_render(&config.ws281x);
+
+    info.GetReturnValue().Set(Nan::Undefined());
+}
+
+/*
+Working version
+
 NAN_METHOD(Addon::render)
 {
     Nan::HandleScope();
@@ -327,6 +388,8 @@ NAN_METHOD(Addon::render)
 
     info.GetReturnValue().Set(Nan::Undefined());
 }
+*/
+
 
 NAN_METHOD(Addon::sleep)
 {
