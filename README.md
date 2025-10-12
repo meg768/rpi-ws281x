@@ -44,13 +44,13 @@ The **options** parameter may have the following properties.
 | :------------ | :----------------------------------------------------------- |
 | leds          | Number of pixels in the strip.                               |
 | width, height | Instead of specifying the number of leds you may specify **width** and **height**. This assumes leds are ordered in a matrix shape. |
-| gamma         | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **Uint8Array** for custom gamma mapping. Length of array must be 256. |
+| gamma         | Gamma number for correction (default none) otherwise 2.2 is recommended. It may also specify an **UInt32Array** for custom gamma mapping. Length of array must be 256. |
 | map           | An **UInt32Array** specifying a pixel mapping. If **width** and **height** is specified it may be a string for predefined mappings. Currently only "serpentine" is supported ("alternating-matrix" also works for backward compatibility). |
 | dma           | Default **10**.                                              |
 | brightness    | Default **255**.                                             |
 | gpio          | Default **18**.                                              |
 | stripType     | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
-| transitions   | *(string, experimental)* Not yet implemented. Built-in pixel transitions. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. Only effective for RGBW-strips. Unknown values are ignored (treated as `"none"`). Maybe some day **"white-shift, monochrome, gamma-2.2"** will work. Still working on details. |
+| transitions   | *(string, experimental)* Not yet implemented. Built-in pixel transitions. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. Only effective for RGBW-strips. Unknown values are ignored (treated as `"none"`). Maybe some day **"white-shift, warm-white, gamma-2.2"** will work. Still working on details. |
 
 ### Render
 
