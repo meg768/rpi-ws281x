@@ -25,8 +25,8 @@ struct config_t
     ws2811_t ws281x;
     int initialized;
 
-    // Sekventiella transitions som körs i render()
-    std::vector<void (*)(uint32_t *, int)> transitions;
+    // Sekventiella filters som körs i render()
+    std::vector<void (*)(uint32_t *, int)> filters;
 };
 
 static config_t config;
@@ -53,11 +53,11 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
 }
 
 // -----------------------------------------------------------------------------
-// Transitions (in-place på 0xWWRRGGBB)
+// Filters (in-place på 0xWWRRGGBB)
 // -----------------------------------------------------------------------------
 
 // 1) Monochrome: gör enbart RGB gråskala, lämna W oförändrad
-static void transitionMonochrome(uint32_t *px, int n)
+static void filterMonochrome(uint32_t *px, int n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -73,7 +73,7 @@ static void transitionMonochrome(uint32_t *px, int n)
 }
 
 // 2) Warm white: värm tonen genom att dämpa blått och lite grönt
-static void transitionWarmWhite(uint32_t *px, int n)
+static void filterWarmWhite(uint32_t *px, int n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -90,7 +90,7 @@ static void transitionWarmWhite(uint32_t *px, int n)
 
 // 3) White shift: flytta ut "gemensam" del (min(R,G,B)) till W
 //    Behåller färgton (RGB minskas lika mycket), W adderas med m
-static void transitionWhiteShift(uint32_t *px, int n)
+static void filterWhiteShift(uint32_t *px, int n)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -111,9 +111,9 @@ static void transitionWhiteShift(uint32_t *px, int n)
 }
 
 // -----------------------------------------------------------------------------
-// Transition lookup
+// Filter lookup
 // -----------------------------------------------------------------------------
-static void (*getTransition(const std::string &s))(uint32_t *, int)
+static void (*getFilter(const std::string &s))(uint32_t *, int)
 {
     auto ieq = [](const std::string &a, const std::string &b)
     {
@@ -126,11 +126,11 @@ static void (*getTransition(const std::string &s))(uint32_t *, int)
     };
 
     if (ieq(s, "monochrome"))
-        return &transitionMonochrome;
+        return &filterMonochrome;
     if (ieq(s, "warm-white"))
-        return &transitionWarmWhite;
+        return &filterWarmWhite;
     if (ieq(s, "white-shift"))
-        return &transitionWhiteShift;
+        return &filterWhiteShift;
     return nullptr;
 }
 
@@ -278,45 +278,45 @@ NAN_METHOD(Addon::configure)
         }
     }
 
-    // transitions
+    // filters
     {
-        if (Nan::Has(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToChecked())
+        if (Nan::Has(options, Nan::New<v8::String>("filters").ToLocalChecked()).ToChecked())
         {
-            v8::Local<v8::Value> v = Nan::Get(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToLocalChecked();
+            v8::Local<v8::Value> v = Nan::Get(options, Nan::New<v8::String>("filters").ToLocalChecked()).ToLocalChecked();
             if (!v->IsArray())
-                return Nan::ThrowTypeError("ws281x.configure() - transitions must be an Array of strings.");
+                return Nan::ThrowTypeError("ws281x.configure() - filters must be an Array of strings.");
 
             v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(v);
             const uint32_t len = arr->Length();
 
-            config.transitions.clear();
-            config.transitions.reserve(len);
+            config.filters.clear();
+            config.filters.reserve(len);
 
             for (uint32_t i = 0; i < len; ++i)
             {
                 v8::Local<v8::Value> item = Nan::Get(arr, i).ToLocalChecked();
                 if (!item->IsString())
-                    return Nan::ThrowTypeError("ws281x.configure() - each transition must be a string.");
+                    return Nan::ThrowTypeError("ws281x.configure() - each filter must be a string.");
 
                 v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
                 std::string name(*s ? *s : "");
 
                 // debug
-                fprintf(stderr, "[ws281x] transition[%u]=%s\n", i, name.c_str());
+                fprintf(stderr, "[ws281x] filter[%u]=%s\n", i, name.c_str());
 
-                auto fn = getTransition(name);
+                auto fn = getFilter(name);
                 if (!fn)
                 {
-                    std::string msg = "ws281x.configure() - unknown transition: '" + name +
+                    std::string msg = "ws281x.configure() - unknown filter: '" + name +
                                       "'. Allowed: monochrome, warm-white, white-shift.";
                     return Nan::ThrowError(msg.c_str());
                 }
-                config.transitions.push_back(fn);
+                config.filters.push_back(fn);
             }
         }
         else
         {
-            config.transitions.clear();
+            config.filters.clear();
         }
     }
 
@@ -390,10 +390,10 @@ NAN_METHOD(Addon::render)
     // 1) Kopiera in
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // 2) Kör transitions (in-place) på 0xWWRRGGBB
-    if (!config.transitions.empty())
+    // 2) Kör filters (in-place) på 0xWWRRGGBB
+    if (!config.filters.empty())
     {
-        for (auto fn : config.transitions)
+        for (auto fn : config.filters)
         {
             fn(channel.leds, static_cast<int>(led_count));
         }
