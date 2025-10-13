@@ -47,14 +47,12 @@ static void transitionMonochrome(uint32_t *px, int n)
         uint8_t w, r, g, b;
         unpack_wrgb(px[i], w, r, g, b);
 
-        // Rec.709-luminans på RGB + befintligt W, klampat till 0..255
-        int Y = (int)(0.2126f * r + 0.7152f * g + 0.0722f * b);
-        int w2 = w + Y;
-        if (w2 > 255)
-            w2 = 255;
+        // Rec.709 approx: (54*r + 183*g + 19*b) / 256
+        int y = (54 * r + 183 * g + 19 * b + 128) >> 8; // +128 för rundning
+        uint8_t Y8 = clamp8_int(y);
 
-        // Monokrom via vita kanalen: nolla RGB
-        px[i] = pack_wrgb((uint8_t)w2, 0, 0, 0);
+        // Sätt RGB = grå, behåll W
+        px[i] = pack_wrgb(w, Y8, Y8, Y8);
     }
 }
 
