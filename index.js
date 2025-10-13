@@ -20,14 +20,14 @@ class Module {
 	}
 
 	configure(options) {
-		var { width, height, map, filters, gamma, leds, ...options } = options;
+		var { width, height, map, filters, transitions, gamma, leds, ...options } = options;
 
 		this.leds = undefined;
 		this.map = undefined;
 
-        let isIntArray = a => {
-            return  a instanceof Uint8Array || a instanceof Uint16Array || a instanceof Uint32Array;
-        }
+		let isIntArray = a => {
+			return a instanceof Uint8Array || a instanceof Uint16Array || a instanceof Uint32Array;
+		};
 
 		// Generate a gamma table for a specific gamma value
 		let gammaTable = gamma => {
@@ -44,17 +44,17 @@ class Module {
 			if (input instanceof Uint8Array) {
 				return input;
 			}
-            
+
 			if (input instanceof Uint32Array) {
 				return new Uint8Array(input);
-            }
+			}
 
 			if (input instanceof Uint16Array) {
 				return new Uint8Array(input);
 			}
 
-            return null;
-        };
+			return null;
+		};
 
 		if (map instanceof Uint32Array) {
 			if (map.length != leds) {
@@ -76,7 +76,7 @@ class Module {
 			leds = width * height;
 
 			if (this.map == undefined && typeof map == 'string') {
-				if (map == 'alternating-matrix' || map == "serpentine") {
+				if (map == 'alternating-matrix' || map == 'serpentine') {
 					map = new Uint32Array(width * height);
 
 					for (var i = 0; i < map.length; i++) {
@@ -122,11 +122,15 @@ class Module {
 			}
 		}
 
-        if (typeof filters == 'string') {
-            filters = filters.split(' ');
-            options = { options, filters };
+		if (typeof filters == 'string') {
+			filters = filters.split(' ');
+			options = { options, filters };
+		}
 
-        }
+		if (typeof transitions == 'string') {
+			filters = transitions.split(' ');
+			options = { options, filters };
+		}
 
 		this.leds = leds;
 
@@ -145,7 +149,6 @@ class Module {
 	}
 
 	render(pixels) {
-
 		if (this.leds == undefined) {
 			throw new Error('ws281x not configured.');
 		}

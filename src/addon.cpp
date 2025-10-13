@@ -99,14 +99,12 @@ static void filterWhiteShift(uint32_t *px, int n)
 
         uint8_t m = std::min({r, g, b}); // gemensam del (mängd "vitt" i RGB)
 
-        int w2 = w + m;
-        if (w2 > 255)
-            w2 = 255;
+        uint8_t w2 = clamp(w + m);
         uint8_t r2 = (uint8_t)(r - m);
         uint8_t g2 = (uint8_t)(g - m);
         uint8_t b2 = (uint8_t)(b - m);
 
-        px[i] = packWRGB((uint8_t)w2, r2, g2, b2);
+        px[i] = packWRGB(w2, r2, g2, b2);
     }
 }
 
@@ -130,6 +128,8 @@ static void (*getFilter(const std::string &s))(uint32_t *, int)
     if (ieq(s, "warm-white"))
         return &filterWarmWhite;
     if (ieq(s, "white-shift"))
+        return &filterWhiteShift;
+    if (ieq(s, "RGBtoRGBW"))
         return &filterWhiteShift;
     return nullptr;
 }
