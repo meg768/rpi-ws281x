@@ -22,7 +22,38 @@ struct config_t
 
 static config_t config;
 
-void RGBToWRGB(uint32_t *pixels, int length)
+static inline uint8_t clamp8_int(int v)
+{
+    return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
+}
+
+static inline void unpack_wrgb(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b)
+{
+    w = (p >> 24) & 0xFF;
+    r = (p >> 16) & 0xFF;
+    g = (p >> 8) & 0xFF;
+    b = (p) & 0xFF;
+}
+
+static inline uint32_t pack_wrgb(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
+{
+    return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
+}
+
+static void transitionWarmWhite(uint32_t *px, int n)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        uint8_t w, r, g, b;
+        unpack_wrgb(px[i], w, r, g, b);
+        int r2 = (int)(r * 1.00 + 0.0);
+        int g2 = (int)(g * 0.93 + 0.0);
+        int b2 = (int)(b * 0.75 + 0.0);
+        px[i] = pack_wrgb(w, clamp8_int(r2), clamp8_int(g2), clamp8_int(b2));
+    }
+}
+
+static void transitionWhiteShift(uint32_t *pixels, int length)
 {
     for (int i = 0; i < length; ++i)
     {
@@ -48,6 +79,25 @@ void RGBToWRGB(uint32_t *pixels, int length)
                     ((uint32_t)b_out);
     }
 }
+
+static void (*getTransition(const std::string &s))(uint32_t *, int)
+{
+    auto ieq = [](const std::string &a, const std::string &b)
+    {
+        if (a.size() != b.size())
+            return false;
+        for (size_t i = 0; i < a.size(); ++i)
+            if (std::tolower((unsigned char)a[i]) != std::tolower((unsigned char)b[i]))
+                return false;
+        return true;
+    };
+    if (ieq(s, "warm-white"))
+        return &transitionWarmWhite;
+    if (ieq(s, "white-shift"))
+        return &transitionWhiteShift;
+    return nullptr;
+}
+
 
 NAN_METHOD(Addon::configure)
 {
@@ -256,16 +306,16 @@ NAN_METHOD(Addon::configure)
                 // debug
                 fprintf(stderr, "[ws281x] transition[%u]=%s\n", i, name.c_str());
 
-                /*
-                auto fn = TransitionFromString(name);
+
+                auto fn = getTransition(name);
                 if (!fn)
                 {
                     std::string msg = "ws281x.configure() - unknown transition: '" + name +
                                       "'. Allowed: rgb->wrgb, warm-white, cool-white, white-shift.";
                     return Nan::ThrowError(msg.c_str());
                 }
-                    */
-                //config.transitions.push_back(fn);
+                    
+                config.transitions.push_back(fn);
             }
         }
         else
@@ -359,14 +409,6 @@ NAN_METHOD(Addon::render)
 
     // Kopiera exakt led_count element
     memcpy(channel.leds, data, led_count * sizeof(uint32_t));
-
-    // Ev. RGB->WRGB-konvertering (in-place) på hela bufferten
-    /*
-    if (config.convertRGBtoWRGB)
-    {
-        RGBToWRGB(channel.leds, static_cast<int>(led_count));
-    }
-    */
 
     ws2811_render(&config.ws281x);
     info.GetReturnValue().Set(Nan::Undefined());
