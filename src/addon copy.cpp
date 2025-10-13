@@ -40,24 +40,6 @@ static inline uint32_t pack_wrgb(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
-static void transitionMonochrome(uint32_t *px, int n)
-{
-    for (int i = 0; i < n; ++i)
-    {
-        uint8_t w, r, g, b;
-        unpack_wrgb(px[i], w, r, g, b);
-
-        // Rec.709-luminans på RGB + befintligt W, klampat till 0..255
-        int Y = (int)(0.2126f * r + 0.7152f * g + 0.0722f * b);
-        int w2 = w + Y;
-        if (w2 > 255)
-            w2 = 255;
-
-        // Monokrom via vita kanalen: nolla RGB
-        px[i] = pack_wrgb((uint8_t)w2, 0, 0, 0);
-    }
-}
-
 static void transitionWarmWhite(uint32_t *px, int n)
 {
     for (int i = 0; i < n; ++i)
@@ -113,8 +95,6 @@ static void (*getTransition(const std::string &s))(uint32_t *, int)
         return &transitionWarmWhite;
     if (ieq(s, "white-shift"))
         return &transitionWhiteShift;
-    if (ieq(s, "monochrome"))
-        return &transitionMonochrome;
     return nullptr;
 }
 
@@ -388,6 +368,7 @@ NAN_METHOD(Addon::reset)
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
+// ChatGPT version
 NAN_METHOD(Addon::render)
 {
     Nan::HandleScope();
@@ -415,37 +396,21 @@ NAN_METHOD(Addon::render)
     const size_t in_len = static_cast<size_t>(arr->Length());
     const size_t led_count = static_cast<size_t>(channel.count);
 
+    // Exakt matchning krävs
     if (in_len != led_count)
     {
         return Nan::ThrowError("ws281x.render() - pixel array length must equal configured 'leds'.");
     }
 
-    // Pekare till JS-backing store
+    // Hämta pekare till Uint32Array:ens backing store
     std::shared_ptr<v8::BackingStore> backing = arr->Buffer()->GetBackingStore();
     uint8_t *base = static_cast<uint8_t *>(backing->Data());
     uint32_t *data = reinterpret_cast<uint32_t *>(base + arr->ByteOffset());
 
-    // 1) Kopiera in
-    std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
+    // Kopiera exakt led_count element
+    memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // 2) Kör transitions (in-place) på 0xWWRRGGBB
-    if (!config.transitions.empty())
-    {
-        for (auto fn : config.transitions)
-        {
-            fn(channel.leds, static_cast<int>(led_count));
-        }
-    }
-
-    // 3) Render
-    ws2811_return_t rc = ws2811_render(&config.ws281x);
-    if (rc)
-    {
-        std::ostringstream err;
-        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-        return Nan::ThrowError(err.str().c_str());
-    }
-
+    ws2811_render(&config.ws281x);
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
