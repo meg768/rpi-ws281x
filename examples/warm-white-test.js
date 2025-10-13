@@ -19,7 +19,7 @@ class Example {
         // Specify RGB sequence
         this.config.stripType = 'grb';
 
-        this.config.xtransitions = 'warm-white';
+        this.config.transitions = 'warm-white';
 
         // Configure ws281x
         ws281x.configure(this.config);
