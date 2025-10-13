@@ -58,7 +58,7 @@ NAN_METHOD(Addon::configure)
         return Nan::ThrowError("ws281x already configured.");
     }
 
-    memset(&config, 0, sizeof(config));
+    config = config_t{}; // värdeinit: ws281x nollas, vector blir tom, initialized=0
 
     config.ws281x.freq = DEFAULT_TARGET_FREQ;
     config.ws281x.dmanum = DEFAULT_DMA;
@@ -312,7 +312,8 @@ NAN_METHOD(Addon::reset)
         ws2811_fini(&config.ws281x);
     }
 
-    memset(&config, 0, sizeof(config));
+    // Nollställ config
+    config = config_t{};
 
     info.GetReturnValue().Set(Nan::Undefined());
 }
