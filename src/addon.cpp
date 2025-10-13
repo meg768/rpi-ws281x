@@ -253,6 +253,8 @@ NAN_METHOD(Addon::configure)
                 v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
                 std::string name(*s ? *s : "");
 
+                printf("%s", name);
+                /*
                 auto fn = TransitionFromString(name);
                 if (!fn)
                 {
@@ -260,6 +262,7 @@ NAN_METHOD(Addon::configure)
                                       "'. Allowed: rgb->wrgb, warm-white, cool-white, white-shift.";
                     return Nan::ThrowError(msg.c_str());
                 }
+                    */
                 config.transitions.push_back(fn);
             }
         }
