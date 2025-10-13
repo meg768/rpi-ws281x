@@ -20,7 +20,7 @@ class Module {
 	}
 
 	configure(options) {
-		var { width, height, map, gamma, leds, ...options } = options;
+		var { width, height, map, transitions, gamma, leds, ...options } = options;
 
 		this.leds = undefined;
 		this.map = undefined;
@@ -121,6 +121,12 @@ class Module {
 				throw new Error('Gamma table must be a Uint8Array with 256 entries.');
 			}
 		}
+
+        if (typeof transitions == 'string') {
+            transitions = transitions.split(' ');
+            options = {options, transitions};
+
+        }
 
 		this.leds = leds;
 
