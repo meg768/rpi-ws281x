@@ -253,7 +253,9 @@ NAN_METHOD(Addon::configure)
                 v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
                 std::string name(*s ? *s : "");
 
-                printf("%s", name);
+                // debug
+                fprintf(stderr, "[ws281x] transition[%u]=%s\n", i, name.c_str());
+
                 /*
                 auto fn = TransitionFromString(name);
                 if (!fn)
@@ -263,7 +265,7 @@ NAN_METHOD(Addon::configure)
                     return Nan::ThrowError(msg.c_str());
                 }
                     */
-                config.transitions.push_back(fn);
+                //config.transitions.push_back(fn);
             }
         }
         else
