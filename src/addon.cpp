@@ -14,8 +14,10 @@
 struct config_t
 {
     ws2811_t ws281x;
-    int convertRGBtoWRGB;
     int initialized;
+
+    // Sekventiella transitions som körs i render()
+    std::vector<void (*)(uint32_t *, int)> transitions;
 };
 
 static config_t config;
@@ -130,28 +132,6 @@ NAN_METHOD(Addon::configure)
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // pixelConversion
-    if (true)
-    {
-        Nan::MaybeLocal<v8::Value> maybe_pixelConversion;
-        v8::Local<v8::Value> pixelConversion;
-
-        if (Nan::Has(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked()).ToChecked())
-            maybe_pixelConversion = Nan::Get(options, Nan::New<v8::String>("pixelConversion").ToLocalChecked());
-
-        if (maybe_pixelConversion.ToLocal(&pixelConversion))
-        {
-            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(pixelConversion).ToLocalChecked());
-            std::string pixelConversionValue = std::string(*value);
-
-            if (pixelConversionValue == "white-shift")
-            {
-                config.convertRGBtoWRGB = true;
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     // stripType
     if (true)
     {
@@ -245,6 +225,50 @@ NAN_METHOD(Addon::configure)
         }
     }
 
+    // /////////////////////////////////////////////////////////////////////////////
+    // transitions
+    if (true)
+    {
+        if (Nan::Has(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToChecked())
+        {
+            v8::Local<v8::Value> v = Nan::Get(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToLocalChecked();
+            if (!v->IsArray())
+            {
+                return Nan::ThrowTypeError("ws281x.configure() - transitions must be an Array of strings.");
+            }
+
+            v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(v);
+            const uint32_t len = arr->Length();
+
+            config.transitions.clear();
+            config.transitions.reserve(len);
+
+            for (uint32_t i = 0; i < len; ++i)
+            {
+                v8::Local<v8::Value> item = Nan::Get(arr, i).ToLocalChecked();
+                if (!item->IsString())
+                {
+                    return Nan::ThrowTypeError("ws281x.configure() - each transition must be a string.");
+                }
+                v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
+                std::string name(*s ? *s : "");
+
+                auto fn = TransitionFromString(name);
+                if (!fn)
+                {
+                    std::string msg = "ws281x.configure() - unknown transition: '" + name +
+                                      "'. Allowed: rgb->wrgb, warm-white, cool-white, white-shift.";
+                    return Nan::ThrowError(msg.c_str());
+                }
+                config.transitions.push_back(fn);
+            }
+        }
+        else
+        {
+            config.transitions.clear();
+        }
+    }
+
     if (config.ws281x.channel[0].count <= 0)
     {
         return Nan::ThrowError("ws281x.configure() - 'leds' must be > 0.");
@@ -331,63 +355,16 @@ NAN_METHOD(Addon::render)
     memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
     // Ev. RGB->WRGB-konvertering (in-place) på hela bufferten
+    /*
     if (config.convertRGBtoWRGB)
     {
         RGBToWRGB(channel.leds, static_cast<int>(led_count));
     }
+    */
 
     ws2811_render(&config.ws281x);
     info.GetReturnValue().Set(Nan::Undefined());
 }
-
-/*
-Working version
-
-NAN_METHOD(Addon::render)
-{
-    Nan::HandleScope();
-
-    if (!config.initialized)
-    {
-        return Nan::ThrowError("ws281x not configured.");
-    }
-    if (info.Length() != 1)
-    {
-        return Nan::ThrowError("ws281x.render() requires pixels as a parameter");
-    }
-    if (!info[0]->IsUint32Array())
-    {
-        return Nan::ThrowError("ws281x.render() requires pixels to be a Uint32Array.");
-    }
-
-    // retrieve buffer from argument 1
-    if (!node::Buffer::HasInstance(info[0]))
-    {
-        Nan::ThrowTypeError("ws281x.render() expected pixels to be a Buffer");
-        return;
-    }
-
-    ws2811_channel_t channel = config.ws281x.channel[0];
-
-    v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
-    auto buffer = info[0]->ToObject(context).ToLocalChecked();
-    uint32_t *data = (uint32_t *)node::Buffer::Data(buffer);
-
-    const int numBytes = std::min(node::Buffer::Length(buffer), sizeof(ws2811_led_t) * channel.count);
-
-    memcpy(channel.leds, data, numBytes);
-
-    if (config.convertRGBtoWRGB)
-    {
-        RGBToWRGB(channel.leds, channel.count);
-    }
-
-    ws2811_render(&config.ws281x);
-
-    info.GetReturnValue().Set(Nan::Undefined());
-}
-*/
-
 
 NAN_METHOD(Addon::sleep)
 {

@@ -50,7 +50,7 @@ The **options** parameter may have the following properties.
 | brightness    | Default **255**.                                             |
 | gpio          | Default **18**.                                              |
 | stripType     | Valid values are **"rgb"**, **"grb"**, **"brg"**, **"bgr"**, **"gbr"**. If using an RGBW-strip, just add "w" to the name. Default **"rgb"**. |
-| transitions   | *(string, experimental)* Not yet implemented. Built-in pixel transitions. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. Only effective for RGBW-strips. Unknown values are ignored (treated as `"none"`). Maybe some day **"white-shift, warm-white, gamma-2.2"** will work. Still working on details. |
+| transitions   | *(string, experimental)* Not yet implemented. Built-in pixel transitions. Valid values: **"none"** (default), **"white-shift"**. When set to **"white-shift"**, RGB input values (packed as `0x00RRGGBB`) are converted to WRGB (packed as `0xWWRRGGBB`) by extracting the white channel using `min(R,G,B)`. Only effective for RGBW-strips. Unknown values are ignored (treated as `"none"`). Maybe some day **"warm-white, gamma-2.2, white-shift"** will work. Still working on details. |
 
 ### Render
 
