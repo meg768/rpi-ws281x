@@ -20,7 +20,7 @@ class Module {
 	}
 
 	configure(options) {
-		var { width, height, map, filters, transitions, gamma, leds, ...options } = options;
+		var { width, height, map, transitions, gamma, leds, ...options } = options;
 
 		this.leds = undefined;
 		this.map = undefined;
@@ -122,14 +122,9 @@ class Module {
 			}
 		}
 
-		if (typeof filters == 'string') {
-			filters = filters.split(' ');
-			options = { options, filters };
-		}
-
 		if (typeof transitions == 'string') {
-			filters = transitions.split(' ');
-			options = { options, filters };
+			transitions = transitions.split(' ');
+			options = { options, transitions };
 		}
 
 		this.leds = leds;

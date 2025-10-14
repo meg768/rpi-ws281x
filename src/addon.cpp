@@ -296,7 +296,7 @@ NAN_METHOD(Addon::configure)
             {
                 v8::Local<v8::Value> item = Nan::Get(arr, i).ToLocalChecked();
                 if (!item->IsString())
-                    return Nan::ThrowTypeError("ws281x.configure() - each filter must be a string.");
+                    return Nan::ThrowTypeError("ws281x.configure() - each transition must be a string.");
 
                 v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
                 std::string name(*s ? *s : "");
