@@ -1,7 +1,6 @@
 # rpi-ws281x
 
-A lightweight Node.js wrapper for controlling **WS281x / NeoPixel** LED strips using a **Raspberry Pi**.  
-Built on top of the C library from [jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x).
+A lightweight Node.js wrapper for controlling **WS281x / NeoPixel** LED strips using a **Raspberry Pi**. Built on top of the C library from [jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x).
 
 ## Installation
 
@@ -54,8 +53,6 @@ The **options** parameter may have the following properties:
 | gpio          | Default **18**. |
 | stripType     | Valid values are `"rgb"`, `"grb"`, `"brg"`, `"bgr"`, `"gbr"`. If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
 | transitions   | *(string, experimental)* One or more space-separated transition filters. See table below. |
-
----
 
 #### Available transitions
 
