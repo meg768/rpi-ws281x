@@ -9,7 +9,7 @@ let config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 
 // Create an array to hold the pixels
 let pixels = new Uint32Array(config.width * config.height);
 
-// Configure
+// Configure ws281x
 ws281x.configure(config);
 
 // Set pixels to a matrix with rainbow colors
