@@ -10,7 +10,7 @@ class Example {
         // By setting width and height instead of number of leds
         // you may use named pixel mappings.
         // Serpentine is a common mapping for matrixes.
-        this.config = { width: 13, height: 13, stripType: 'grb', gpio: 18, dma: 10, map: 'serpentine' };
+        this.config = { width: 13, height: 13, stripType: 'grbw', gpio: 18, dma: 10, map: 'serpentine' };
 
         // Configure ws281x
         ws281x.configure(this.config);
