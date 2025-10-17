@@ -4,7 +4,7 @@ let ws281x = require('../index.js');
 // By setting width and height instead of number of leds
 // you may use named pixel mappings.
 // Serpentine is a common mapping for matrixes.
-let config = { width: 13, height: 13, stripType: 'grbw', gpio: 18, dma: 10, map: 'serpentine', transitions:'  RGBtoRGBW' };
+let config = { width: 13, height: 13, stripType: 'grbw', gpio: 18, dma: 10, map: 'serpentine', transitions:' warm-white RGBtoRGBW' };
 
 
 const pixels = new Uint32Array([
