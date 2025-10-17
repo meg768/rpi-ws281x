@@ -18,6 +18,8 @@ ws281x.render(pixels);
 
 
 ws281x.configure({ leds: 8, stripType: 'grbw', transitions: 'RGBtoRGBW' });
+
+var pixels = new Uint32Array(8);
 pixels[0] = 0xff0000;
 pixels[1] = 0x00ff00;
 pixels[2] = 0x0000ff;
