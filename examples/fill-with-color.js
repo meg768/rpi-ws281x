@@ -17,7 +17,7 @@ class Example {
         this.config.gpio = 18;
 
         // Specify RGB sequence
-        this.config.stripType = 'grb';
+        this.config.stripType = 'grbw';
 
         // Set gamma correction to 2.2 
         this.config.gamma = 2.2;
