@@ -236,7 +236,7 @@ example.run();
 
 > ⚠️ **Important:** Disable onboard audio on Raspberry Pi Zero / Zero 2 W to avoid DMA conflicts.  Run `sudo raspi-config`, then navigate to **Advanced Options → Audio → Disable**.
 
-Tested on Raspberry Pi Zero W and Zero 2 W with Node.js versions **16–20** and WS2811/WS2812B (RGB) strips. RGBW support is implemented but pending real-world testing.
+Tested on Raspberry Pi Zero W and Zero 2 W with Node.js versions **16–20** and WS2811/WS2812B (RGB) strips. 
 
 ## See also
 - [jgarff/rpi_ws281x](https://github.com/jgarff/rpi_ws281x) — Original C library.
