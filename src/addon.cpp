@@ -108,6 +108,29 @@ static void transitionWhiteShift(uint32_t *px, int n)
     }
 }
 
+static void transitionRGBtoRGBW(uint32_t *px, int n)
+{
+    // Kör bara om hårdvaran faktiskt har W-kanal
+    bool is_rgbw =
+        config.ws281x.channel[0].strip_type == SK6812_STRIP_RGBW ||
+        config.ws281x.channel[0].strip_type == SK6812_STRIP_GRBW ||
+        config.ws281x.channel[0].strip_type == SK6812_STRIP_GBRW ||
+        config.ws281x.channel[0].strip_type == SK6812_STRIP_BRGW ||
+        config.ws281x.channel[0].strip_type == SK6812_STRIP_BGRW;
+
+    if (!is_rgbw)
+        return;
+
+    for (int i = 0; i < n; ++i)
+    {
+        uint8_t w, r, g, b;
+        unpackWRGB(px[i], w, r, g, b);
+        uint8_t m = std::min({r, g, b}); // gemensam “vit” del
+        uint8_t w2 = clamp(w + m);
+        px[i] = packWRGB(w2, r - m, g - m, b - m);
+    }
+}
+
 // -----------------------------------------------------------------------------
 // Transition lookup
 // -----------------------------------------------------------------------------
@@ -129,8 +152,9 @@ static void (*getTransition(const std::string &s))(uint32_t *, int)
         return &transitionWarmWhite;
     if (ieq(s, "white-shift"))
         return &transitionWhiteShift;
-    if (ieq(s, "RGBtoRGBW"))
-        return &transitionWhiteShift;
+    if (ieq(s, "RGBtoRGBW") || ieq(s, "rgb-to-rgbw") || ieq(s, "rgb2rgbw"))
+        return &transitionRGBtoRGBW;
+
     return nullptr;
 }
 
