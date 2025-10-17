@@ -110,7 +110,7 @@ static void transitionWhiteShift(uint32_t *px, int n)
 
 static void transitionRGBtoRGBW(uint32_t *px, int n)
 {
-    fprintf(stderr, "[ws281x] testing för RGBW strips");
+
     // Kör bara om hårdvaran faktiskt har W-kanal
     bool is_rgbw =
         config.ws281x.channel[0].strip_type == SK6812_STRIP_RGBW ||
@@ -122,7 +122,6 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
     if (!is_rgbw)
         return;
 
-    fprintf(stderr, "[ws281x] RGBtoRGBW active, first px before: %08x\n", px[0]);
 
     for (int i = 0; i < n; ++i)
     {
@@ -131,8 +130,6 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
         uint8_t m = std::min({r, g, b}); // gemensam “vit” del
         uint8_t w2 = clamp(w + m);
         px[i] = packWRGB(w2, r - m, g - m, b - m);
-        if (i == 0)
-            fprintf(stderr, "[ws281x] after: %08x\n", px[0]);
     }
 }
 
@@ -327,9 +324,6 @@ NAN_METHOD(Addon::configure)
 
                 v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
                 std::string name(*s ? *s : "");
-
-                // debug
-                fprintf(stderr, "[ws281x] transition[%u]=%s\n", i, name.c_str());
 
                 auto fn = getTransition(name);
                 if (!fn)
