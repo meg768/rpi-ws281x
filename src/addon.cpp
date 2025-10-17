@@ -121,7 +121,7 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
     if (!is_rgbw)
         return;
 
-    fprintf(stderr, "[ws281x] RGBtoRGBW active, first px before: %08x\n", px[0]);
+    fprintf(stdout, "[ws281x] RGBtoRGBW active, first px before: %08x\n", px[0]);
 
     for (int i = 0; i < n; ++i)
     {
@@ -131,7 +131,7 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
         uint8_t w2 = clamp(w + m);
         px[i] = packWRGB(w2, r - m, g - m, b - m);
         if (i == 0)
-            fprintf(stderr, "[ws281x] after: %08x\n", px[0]);
+            fprintf(stdout, "[ws281x] after: %08x\n", px[0]);
     }
 }
 
