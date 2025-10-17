@@ -122,8 +122,8 @@ class Module {
 			}
 		}
 
-		if (typeof transitions == 'string') {
-			options.transitions = transitions.split(' ');
+		if (typeof transitions === 'string') {
+			options.transitions = transitions.split(/[,\s]+/).filter(Boolean);
 		}
 
 		this.leds = leds;
