@@ -110,6 +110,7 @@ static void transitionWhiteShift(uint32_t *px, int n)
 
 static void transitionRGBtoRGBW(uint32_t *px, int n)
 {
+    fprintf(stderr, "[ws281x] testing för RGBW strips");
     // Kör bara om hårdvaran faktiskt har W-kanal
     bool is_rgbw =
         config.ws281x.channel[0].strip_type == SK6812_STRIP_RGBW ||
