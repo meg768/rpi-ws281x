@@ -1,7 +1,7 @@
 var ws281x = require('../index.js');
 
 // One time initialization, assumes an 8 pixel strip
-ws281x.configure({ leds: 8, transitions:'' });
+ws281x.configure({ leds: 8, xtransitions:'' });
 
 // Create my pixels
 var pixels = new Uint32Array(8);
