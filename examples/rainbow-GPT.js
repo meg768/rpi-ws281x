@@ -6,7 +6,7 @@ const W = 13,
 const config = {
 	width: W,
 	height: H,
-	stripType: 'grb', // ditt val; lib:en ordnar byteordning
+	stripType: 'grbw', // ditt val; lib:en ordnar byteordning
 	gpio: 18,
 	dma: 10,
 	map: 'serpentine'
