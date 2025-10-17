@@ -123,8 +123,7 @@ class Module {
 		}
 
 		if (typeof transitions == 'string') {
-			transitions = transitions.split(' ');
-			options = { options, transitions };
+			options.transitions = transitions.split(' ');
 		}
 
 		this.leds = leds;
