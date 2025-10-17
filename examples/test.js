@@ -19,7 +19,9 @@ ws281x.render(pixels);
 
 ws281x.configure({ leds: 8, stripType: 'grbw', transitions: ['RGBtoRGBW'] });
 
-pixels.fill(0);
+// Create my pixels
+var pixels = new Uint32Array(8);
+
 pixels[0] = 0x00ff0000; // röd
 pixels[1] = 0x0000ff00; // grön
 pixels[2] = 0x000000ff; // blå
