@@ -9,7 +9,8 @@ const config = {
 	stripType: 'grbw', // ditt val; lib:en ordnar byteordning
 	gpio: 18,
 	dma: 10,
-	map: 'serpentine'
+	map: 'serpentine',
+    transitions:'monochrome'
 };
 
 ws281x.configure(config);
