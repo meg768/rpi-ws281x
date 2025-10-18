@@ -59,7 +59,7 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
-static inline bool IsRGBW()
+static inline bool isRGBW()
 {
     switch (config.ws281x.channel[0].strip_type)
     {
@@ -131,7 +131,7 @@ static void convertToRGBW(uint32_t *px, int n)
 {
 
 
-    if (!IsRGBW())
+    if (!isRGBW())
         return;
 
     for (int i = 0; i < n; ++i)
