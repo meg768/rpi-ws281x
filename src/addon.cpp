@@ -384,7 +384,6 @@ NAN_METHOD(Addon::render)
     // Copy pixels
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // Raw RGBW mode: bypass all processing (expects 0xWWRRGGBB in physical order)
     if (!config.rawRGBW || !isRGBW())
     {
         // Normal pipeline
