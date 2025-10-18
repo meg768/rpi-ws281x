@@ -40,7 +40,7 @@ static config_t config;
 // -----------------------------------------------------------------------------
 // Helpers: WRGB pack/unpack and clamp
 // -----------------------------------------------------------------------------
-uint8_t Addon : clamp(int v) {
+static inline uint8_t clamp(int v) {
     return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
 }
 
