@@ -285,7 +285,7 @@ NAN_METHOD(Addon::configure)
     {
         Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked());
         v8::Local<v8::Value> colorTemperature;
-        if (maybe_dma.ToLocal(&colorTemperature))
+        if (maybe_colorTemperature.ToLocal(&colorTemperature))
             config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
     }
 
@@ -294,7 +294,7 @@ NAN_METHOD(Addon::configure)
     {
         Nan::MaybeLocal<v8::Value> maybe_rgbwConversion = Nan::Get(options, Nan::New<v8::String>("rgbwConversion").ToLocalChecked());
         v8::Local<v8::Value> rgbwConversion;
-        if (maybe_dma.ToLocal(&rgbwConversion))
+        if (maybe_rgbwConversion.ToLocal(&rgbwConversion))
             config.rgbwConversion = Nan::To<int>(rgbwConversion).FromMaybe(config.rgbwConversion);
     }
 
