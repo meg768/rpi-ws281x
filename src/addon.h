@@ -41,13 +41,7 @@ class Addon {
     static NAN_METHOD(render);
     static NAN_METHOD(sleep);
 
-    static inline uint8_t clamp(int value) {
-        if (value <= 0)
-            return 0;
-        if (value >= 255)
-            return 255;
-        return static_cast<uint8_t>(value);
-    }
+    static inline uint8_t clamp(int value);
 };
 
 #endif
