@@ -227,8 +227,7 @@ Tested on Raspberry Pi Zero W and Zero 2 W with Node.js versions **16–20** and
 
 ## Changelog
 
-**2025-10-18** — Removed transitions and added colorTemperature and    
-
+**2025-10-18** — Removed *transitions* and added *colorTemperature* and *rawRGBW* to config.
 **2025-10-17** — Fixed bugs using *transitions* for RGBW-stips.   
 **2025-10-12** — Added *transitions* in `configure()`.  
 **2025-10-07** — Updated documentation and examples.  
