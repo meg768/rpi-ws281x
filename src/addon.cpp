@@ -1,5 +1,6 @@
 #include "addon.h"
 
+#include <cmath>
 #include <sstream>
 #include <string>
 #include <cstdint>
@@ -58,6 +59,20 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
+static inline bool IsRGBW()
+{
+    switch (config.ws281x.channel[0].strip_type)
+    {
+    case SK6812_STRIP_RGBW:
+    case SK6812_STRIP_GRBW:
+    case SK6812_STRIP_GBRW:
+    case SK6812_STRIP_BRGW:
+    case SK6812_STRIP_BGRW:
+        return true;
+    default:
+        return false;
+    }
+}
 static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
 {
     // Begränsa intervallet till rimliga värden
@@ -115,15 +130,8 @@ static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
 static void convertToRGBW(uint32_t *px, int n)
 {
 
-    // Kör bara om hårdvaran faktiskt har W-kanal
-    bool isRGBW =
-        config.ws281x.channel[0].strip_type == SK6812_STRIP_RGBW ||
-        config.ws281x.channel[0].strip_type == SK6812_STRIP_GRBW ||
-        config.ws281x.channel[0].strip_type == SK6812_STRIP_GBRW ||
-        config.ws281x.channel[0].strip_type == SK6812_STRIP_BRGW ||
-        config.ws281x.channel[0].strip_type == SK6812_STRIP_BGRW;
 
-    if (!isRGBW)
+    if (!IsRGBW())
         return;
 
     for (int i = 0; i < n; ++i)
@@ -292,7 +300,7 @@ NAN_METHOD(Addon::configure)
             }
         }
     }
-    
+
     // colorTemperature
     if (!config.rawRGBW)
     {
