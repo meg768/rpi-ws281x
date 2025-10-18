@@ -62,7 +62,7 @@ Transitions is a series of filters before rendering pixels. Each transition conv
 | :--- | :----------- |
 | warm-white | Converts RGB values to warm color tones. Input `0x00RRGGBB`. Output `0x00RRGGBB`. |
 | monochrome | Discards color and keeps brightness only. Input `0x00RRGGBB`. Output `0x00RRGGBB`. |
-| rgbw | Converts RGB to RGBW by extracting the white channel using `min(R,G,B)`. Input `0x00RRGGBB`. Output   `0xWWRRGGBB`. Has no effect on RGB-strips. |
+| rgb-to-rgbw | Converts RGB to RGBW by extracting the white channel using `min(R,G,B)`. Input `0x00RRGGBB`. Output   `0xWWRRGGBB`. Has no effect on RGB-strips. |
 
 **Example:**
 
