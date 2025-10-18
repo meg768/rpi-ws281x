@@ -72,7 +72,7 @@ static inline bool isRGBW() {
 // -----------------------------------------------------------------------------
 // Color temperature adjustment (RGB only; W is left untouched)
 // -----------------------------------------------------------------------------
-static void adjustColorTemperature(uint32_t *px, int n, int kelvin) {
+void Addon::adjustColorTemperature(uint32_t *px, int n, int kelvin) {
     // Defensive no-op
     if (kelvin <= 0)
         return;
@@ -118,7 +118,7 @@ static void adjustColorTemperature(uint32_t *px, int n, int kelvin) {
 // -----------------------------------------------------------------------------
 // RGB -> RGBW conversion (extract common white component)
 // -----------------------------------------------------------------------------
-static void convertToRGBW(uint32_t *px, int n) {
+void Addon::convertToRGBW(uint32_t *px, int n) {
     if (!isRGBW())
         return;
 

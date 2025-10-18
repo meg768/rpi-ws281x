@@ -43,5 +43,7 @@ class Addon {
 
     static inline uint8_t clamp(int value);
     static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b);
+    static void adjustColorTemperature(uint32_t *px, int n, int kelvin);
+    static void convertToRGBW(uint32_t *px, int n);
 
 #endif
