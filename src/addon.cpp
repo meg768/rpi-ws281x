@@ -75,21 +75,6 @@ static inline bool isRGBW()
 }
 
 
-static void renderPixels(const Nan::FunctionCallbackInfo<v8::Value> &info)
-{
-    ws2811_return_t rc = ws2811_render(&config.ws281x);
-
-    if (rc)
-    {
-        std::ostringstream err;
-        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-        Nan::ThrowError(err.str().c_str());
-        return;
-    }
-
-    info.GetReturnValue().Set(Nan::Undefined());
-}
-
 // -----------------------------------------------------------------------------
 // Color temperature adjustment (RGB only; W is left untouched)
 // -----------------------------------------------------------------------------
@@ -400,21 +385,28 @@ NAN_METHOD(Addon::render)
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
     // Raw RGBW mode: bypass all processing (expects 0xWWRRGGBB in physical order)
-    if (config.rawRGBW)
+    if (!config.rawRGBW || !isRGBW())
     {
-        return renderPixels(info);
+        // Normal pipeline
+        if (config.colorTemperature > 0)
+        {
+            adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
+        }
+
+        convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
-    // Normal pipeline
-    if (config.colorTemperature > 0)
+    ws2811_return_t rc = ws2811_render(&config.ws281x);
+
+    if (rc)
     {
-        adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
+        std::ostringstream err;
+        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
+        Nan::ThrowError(err.str().c_str());
+        return;
     }
 
-    convertToRGBW(channel.leds, static_cast<int>(led_count));
-
-    return renderPixels(info);
-
+    info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(Addon::sleep)
