@@ -88,25 +88,6 @@ static void transitionWarmWhite(uint32_t *px, int n)
     }
 }
 
-// 3) White shift: flytta ut "gemensam" del (min(R,G,B)) till W
-//    Behåller färgton (RGB minskas lika mycket), W adderas med m
-static void transitionWhiteShift(uint32_t *px, int n)
-{
-    for (int i = 0; i < n; ++i)
-    {
-        uint8_t w, r, g, b;
-        unpackWRGB(px[i], w, r, g, b);
-
-        uint8_t m = std::min({r, g, b}); // gemensam del (mängd "vitt" i RGB)
-
-        uint8_t w2 = clamp(w + m);
-        uint8_t r2 = (uint8_t)(r - m);
-        uint8_t g2 = (uint8_t)(g - m);
-        uint8_t b2 = (uint8_t)(b - m);
-
-        px[i] = packWRGB(w2, r2, g2, b2);
-    }
-}
 
 static void transitionRGBtoRGBW(uint32_t *px, int n)
 {

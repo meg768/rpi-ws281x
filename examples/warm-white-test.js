@@ -17,7 +17,7 @@ class Example {
         this.config.gpio = 18;
 
         // Specify RGB sequence
-        this.config.stripType = 'grb';
+        this.config.stripType = 'grbw';
 
         // Convert to warm-white
         this.config.transitions = 'warm-white';
