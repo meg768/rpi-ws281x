@@ -20,7 +20,7 @@ class Module {
 	}
 
 	configure(options) {
-		var { width, height, map, transitions, gamma, leds, ...options } = options;
+		var { width, height, map, gamma, leds, ...options } = options;
 
 		this.leds = undefined;
 		this.map = undefined;
@@ -122,9 +122,6 @@ class Module {
 			}
 		}
 
-		if (typeof transitions === 'string') {
-			options.transitions = transitions.split(/[,\s]+/).filter(Boolean);
-		}
 
 		this.leds = leds;
 

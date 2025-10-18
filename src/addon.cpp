@@ -22,11 +22,18 @@
 
 struct config_t
 {
-    ws2811_t ws281x;
+    // Is it initialized?
     int initialized;
 
-    // Sekventiella transitions som körs i render()
-    std::vector<void (*)(uint32_t *, int)> transitions;
+    // Color temperature in Kelvin (0 == no conversion)
+    int colorTemperature;
+
+    // Convert RGB to RGBW
+    int rgbwConversion;
+
+    // The ws281x struct
+    ws2811_t ws281x;
+
 };
 
 static config_t config;
@@ -52,44 +59,62 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
-// -----------------------------------------------------------------------------
-// Transitions (in-place på 0xWWRRGGBB)
-// -----------------------------------------------------------------------------
 
-// 1) Monochrome: gör enbart RGB gråskala, lämna W oförändrad
-static void transitionMonochrome(uint32_t *px, int n)
+static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
 {
-    for (int i = 0; i < n; ++i)
+    // Begränsa intervallet till rimliga värden
+    if (kelvin < 1000)
+        kelvin = 1000;
+    if (kelvin > 40000)
+        kelvin = 40000;
+
+    // Konvertera Kelvin till justeringsfaktorer (r,g,b)
+    float tmpKelvin = kelvin / 100.0f;
+    float rFactor, gFactor, bFactor;
+
+    if (tmpKelvin <= 66.0f)
     {
-        uint8_t w, r, g, b;
-        unpackWRGB(px[i], w, r, g, b);
-
-        // Rec.709 approx: (54*r + 183*g + 19*b) / 256, +128 för rundning
-        int y = (54 * r + 183 * g + 19 * b + 128) >> 8;
-        uint8_t Y8 = clamp(y);
-
-        px[i] = packWRGB(w, Y8, Y8, Y8);
+        rFactor = 1.0f;
+        gFactor = 0.3900815788f * logf(tmpKelvin) - 0.6318414438f;
+        bFactor = (tmpKelvin <= 19.0f) ? 0.0f : (0.5432067891f * logf(tmpKelvin - 10.0f) - 1.1962540891f);
     }
-}
+    else
+    {
+        rFactor = 1.2929361861f * powf(tmpKelvin - 60.0f, -0.1332047592f);
+        gFactor = 1.1298908609f * powf(tmpKelvin - 60.0f, -0.0755148492f);
+        bFactor = 1.0f;
+    }
 
-// 2) Warm white: värm tonen genom att dämpa blått och lite grönt
-static void transitionWarmWhite(uint32_t *px, int n)
-{
+    // Clamp between 0.0 and 1.0
+    if (rFactor < 0.0f)
+        rFactor = 0.0f;
+    if (gFactor < 0.0f)
+        gFactor = 0.0f;
+    if (bFactor < 0.0f)
+        bFactor = 0.0f;
+
+    if (rFactor > 1.0f)
+        rFactor = 1.0f;
+    if (gFactor > 1.0f)
+        gFactor = 1.0f;
+    if (bFactor > 1.0f)
+        bFactor = 1.0f;
+
+    // Applicera justeringen per pixel
     for (int i = 0; i < n; ++i)
     {
         uint8_t w, r, g, b;
         unpackWRGB(px[i], w, r, g, b);
 
-        int r2 = (int)(r * 1.00f + 0.0f);
-        int g2 = (int)(g * 0.93f + 0.0f);
-        int b2 = (int)(b * 0.75f + 0.0f);
+        int r2 = (int)(r * rFactor);
+        int g2 = (int)(g * gFactor);
+        int b2 = (int)(b * bFactor);
 
         px[i] = packWRGB(w, clamp(r2), clamp(g2), clamp(b2));
     }
 }
 
-
-static void transitionRGBtoRGBW(uint32_t *px, int n)
+static void convertRGBtoRGBW(uint32_t *px, int n)
 {
 
     // Kör bara om hårdvaran faktiskt har W-kanal
@@ -103,7 +128,6 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
     if (!is_rgbw)
         return;
 
-
     for (int i = 0; i < n; ++i)
     {
         uint8_t w, r, g, b;
@@ -114,30 +138,6 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
     }
 }
 
-// -----------------------------------------------------------------------------
-// Transition lookup
-// -----------------------------------------------------------------------------
-static void (*getTransition(const std::string &s))(uint32_t *, int)
-{
-    auto ieq = [](const std::string &a, const std::string &b)
-    {
-        if (a.size() != b.size())
-            return false;
-        for (size_t i = 0; i < a.size(); ++i)
-            if (std::tolower((unsigned char)a[i]) != std::tolower((unsigned char)b[i]))
-                return false;
-        return true;
-    };
-
-    if (ieq(s, "monochrome"))
-        return &transitionMonochrome;
-    if (ieq(s, "warm-white"))
-        return &transitionWarmWhite;
-    if (ieq(s, "RGBtoRGBW") || ieq(s, "rgb-to-rgbw") || ieq(s, "rgbw"))
-        return &transitionRGBtoRGBW;
-
-    return nullptr;
-}
 
 // -----------------------------------------------------------------------------
 // NAN Methods
@@ -283,49 +283,30 @@ NAN_METHOD(Addon::configure)
         }
     }
 
-    // transitions
+    // colorTemperature
+    if (Nan::Has(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked()).ToChecked())
     {
-        if (Nan::Has(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToChecked())
-        {
-            v8::Local<v8::Value> v = Nan::Get(options, Nan::New<v8::String>("transitions").ToLocalChecked()).ToLocalChecked();
-            if (!v->IsArray())
-                return Nan::ThrowTypeError("ws281x.configure() - transitions must be an Array of strings.");
+        Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked());
+        v8::Local<v8::Value> colorTemperature;
+        if (maybe_dma.ToLocal(&colorTemperature))
+            config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
+    }
 
-            v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(v);
-            const uint32_t len = arr->Length();
-
-            config.transitions.clear();
-            config.transitions.reserve(len);
-
-            for (uint32_t i = 0; i < len; ++i)
-            {
-                v8::Local<v8::Value> item = Nan::Get(arr, i).ToLocalChecked();
-                if (!item->IsString())
-                    return Nan::ThrowTypeError("ws281x.configure() - each transition must be a string.");
-
-                v8::String::Utf8Value s(v8::Isolate::GetCurrent(), item);
-                std::string name(*s ? *s : "");
-
-                auto fn = getTransition(name);
-                if (!fn)
-                {
-                    std::string msg = "ws281x.configure() - unknown transition: '" + name +
-                                      "'. Allowed: monochrome, warm-white, white-shift.";
-                    return Nan::ThrowError(msg.c_str());
-                }
-                config.transitions.push_back(fn);
-            }
-        }
-        else
-        {
-            config.transitions.clear();
-        }
+    // rgbwConversion
+    if (Nan::Has(options, Nan::New<v8::String>("rgbwConversion").ToLocalChecked()).ToChecked())
+    {
+        Nan::MaybeLocal<v8::Value> maybe_rgbwConversion = Nan::Get(options, Nan::New<v8::String>("rgbwConversion").ToLocalChecked());
+        v8::Local<v8::Value> rgbwConversion;
+        if (maybe_dma.ToLocal(&rgbwConversion))
+            config.rgbwConversion = Nan::To<int>(rgbwConversion).FromMaybe(config.rgbwConversion);
     }
 
     if (config.ws281x.channel[0].count <= 0)
         return Nan::ThrowError("ws281x.configure() - 'leds' must be > 0.");
 
+    // Initialize
     ws2811_return_t result = ws2811_init(&config.ws281x);
+
     if (result)
     {
         std::ostringstream errortext;
@@ -337,6 +318,7 @@ NAN_METHOD(Addon::configure)
         return Nan::ThrowError("ws281x.configure() - ws2811_init succeeded but leds buffer is null.");
 
     config.initialized = true;
+
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -354,7 +336,7 @@ NAN_METHOD(Addon::reset)
         ws2811_fini(&config.ws281x);
     }
 
-    // Nollställ config korrekt (initierar även vector)
+    // Nollställ config korrekt
     config = config_t{};
 
     info.GetReturnValue().Set(Nan::Undefined());
@@ -389,20 +371,24 @@ NAN_METHOD(Addon::render)
     uint8_t *base = static_cast<uint8_t *>(backing->Data());
     uint32_t *data = reinterpret_cast<uint32_t *>(base + arr->ByteOffset());
 
-    // 1) Kopiera in
+    // Copy pixels
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // 2) Kör filters (in-place) på 0xWWRRGGBB
-    if (!config.transitions.empty())
+    // Adjust color temperature if specified
+    if (config.colorTemperature > 0)
     {
-        for (auto fn : config.transitions)
-        {
-            fn(channel.leds, static_cast<int>(led_count));
-        }
+        adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
-    // 3) Render
+    // Convert to RGBW if specified
+    if (config.rgbwConversion > 0)
+    {
+        convertRGBtoRGBW(channel.leds, static_cast<int>(led_count));
+    }
+
+    // Finally, render
     ws2811_return_t rc = ws2811_render(&config.ws281x);
+
     if (rc)
     {
         std::ostringstream err;
