@@ -296,7 +296,7 @@ NAN_METHOD(Addon::configure)
         Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked());
         v8::Local<v8::Value> rawRGBW;
         if (maybe_rawRGBW.ToLocal(&rawRGBW))
-            config.rawRGBW = Nan::To<int>(convertToRGBW).FromMaybe(config.rawRGBW);
+            config.rawRGBW = Nan::To<int>(rawRGBW).FromMaybe(config.rawRGBW);
     }
 
     if (config.ws281x.channel[0].count <= 0)
