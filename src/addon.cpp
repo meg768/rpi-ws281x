@@ -40,10 +40,11 @@ static config_t config;
 // -----------------------------------------------------------------------------
 // Helpers: WRGB pack/unpack and clamp
 // -----------------------------------------------------------------------------
+/*
 static inline uint8_t clamp(int v) {
     return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
 }
-
+*/
 static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b) {
     w = (p >> 24) & 0xFF;
     r = (p >> 16) & 0xFF;
