@@ -253,6 +253,7 @@ NAN_METHOD(Addon::configure)
         {
             config.ws281x.channel[0].strip_type = WS2811_STRIP_RGB;
         }
+
     }
 
     // gamma
@@ -372,14 +373,14 @@ NAN_METHOD(Addon::render)
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
     // Adjust color temperature if specified
-    if (config.colorTemperature > 0)
+    if (!config.rawRGBW && config.colorTemperature > 0)
     {
         printf("Color temp %d\n", config.colorTemperature);
         adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
     // Convert to RGBW if specified
-    if (config.convertToRGBW)
+    if (!config.rawRGBW)
     {
         printf("Converting to RGBW\n");
         convertRGBtoRGBW(channel.leds, static_cast<int>(led_count));
