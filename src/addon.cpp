@@ -75,7 +75,7 @@ static inline bool isRGBW()
 }
 
 
-static void render(const Nan::FunctionCallbackInfo<v8::Value> &info)
+static void renderPixels(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
     ws2811_return_t rc = ws2811_render(&config.ws281x);
 
@@ -402,15 +402,7 @@ NAN_METHOD(Addon::render)
     // Raw RGBW mode: bypass all processing (expects 0xWWRRGGBB in physical order)
     if (config.rawRGBW)
     {
-        ws2811_return_t rc = ws2811_render(&config.ws281x);
-        if (rc)
-        {
-            std::ostringstream err;
-            err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-            return Nan::ThrowError(err.str().c_str());
-        }
-        info.GetReturnValue().Set(Nan::Undefined());
-        return;
+        return renderPixels(info);
     }
 
     // Normal pipeline
@@ -421,16 +413,8 @@ NAN_METHOD(Addon::render)
 
     convertToRGBW(channel.leds, static_cast<int>(led_count));
 
-    // Render
-    ws2811_return_t rc = ws2811_render(&config.ws281x);
-    if (rc)
-    {
-        std::ostringstream err;
-        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-        return Nan::ThrowError(err.str().c_str());
-    }
+    return renderPixels(info);
 
-    info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(Addon::sleep)
