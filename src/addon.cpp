@@ -124,14 +124,14 @@ void Addon::convertToRGBW(uint32_t *px, int n) {
 
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
-        Addon::unpackWRGB(px[i], w, r, g, b);
+        unpackWRGB(px[i], w, r, g, b);
 
         // Common white component (portable min-min, no initializer_list)
         uint8_t m = std::min(std::min(r, g), b);
 
         // Move common component to W and subtract from RGB
         uint8_t w2 = Addon::clamp((int)w + (int)m);
-        px[i] = Addon::packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
+        px[i] = packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
     }
 }
 
