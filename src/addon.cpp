@@ -116,14 +116,14 @@ static void convertToRGBW(uint32_t *px, int n)
 {
 
     // Kör bara om hårdvaran faktiskt har W-kanal
-    bool is_rgbw =
+    bool isRGBW =
         config.ws281x.channel[0].strip_type == SK6812_STRIP_RGBW ||
         config.ws281x.channel[0].strip_type == SK6812_STRIP_GRBW ||
         config.ws281x.channel[0].strip_type == SK6812_STRIP_GBRW ||
         config.ws281x.channel[0].strip_type == SK6812_STRIP_BRGW ||
         config.ws281x.channel[0].strip_type == SK6812_STRIP_BGRW;
 
-    if (!is_rgbw)
+    if (!isRGBW)
         return;
 
     for (int i = 0; i < n; ++i)
