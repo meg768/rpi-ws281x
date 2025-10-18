@@ -42,6 +42,6 @@ class Addon {
     static NAN_METHOD(sleep);
 
   private:
-    //    uint8_t clamp(int v);
+};
 
 #endif
