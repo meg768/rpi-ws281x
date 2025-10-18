@@ -53,17 +53,7 @@ The **options** parameter may have the following properties:
 | gpio          | Default **18**. |
 | stripType     | Valid values are `"rgb"`, `"grb"`, `"brg"`, `"bgr"`, `"gbr"`. If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
 | colorTemperature | Specifies color temperature in Kelvin. If omitted, no adjustments are added to the RGB channel. |
-| rawRGBW | True/false. Bypasses all conversions when using RGBW-strips. You are on your own with this one. No temperature or gamma adjustments at all. |
-
-#### Available transitions
-
-Transitions is a series of filters before rendering pixels. Each transition converts RGB or RGBW values to new values ready for next transition.
-
-| Name | Description |
-| :--- | :----------- |
-| warm-white | Converts RGB values to warm color tones. Input `0x00RRGGBB`. Output `0x00RRGGBB`. |
-| monochrome | Discards color and keeps brightness only. Input `0x00RRGGBB`. Output `0x00RRGGBB`. |
-| rgb-to-rgbw | Converts RGB to RGBW by extracting the white channel using `min(R,G,B)`. Input `0x00RRGGBB`. Output   `0xWWRRGGBB`. Has no effect on RGB-strips. |
+| rawRGBW | True/false. Bypasses all conversions when using RGBW-strips. You are on your own with this one. No temperature or gamma adjustments at all. Default **false**. |
 
 **Example:**
 
