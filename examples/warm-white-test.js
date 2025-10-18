@@ -23,7 +23,7 @@ class Example {
         this.config.colorTemperature = 1000;
 
         // Use RGBW
-        this.config.rgbwConversion = 1;
+        //this.config.rgbwConversion = true;
 
         // Configure ws281x
         ws281x.configure(this.config);
