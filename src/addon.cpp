@@ -383,7 +383,7 @@ NAN_METHOD(Addon::render)
     if (!config.rawRGBW)
     {
         printf("Converting to RGBW\n");
-        convertRGBtoRGBW(channel.leds, static_cast<int>(led_count));
+        convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
     // Finally, render
