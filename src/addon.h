@@ -25,6 +25,11 @@ extern "C" {
 #include "rpi_ws281x/ws2811.h"
 }
 
+#define DEFAULT_TARGET_FREQ 800000
+#define DEFAULT_GPIO_PIN 18
+#define DEFAULT_DMA 10
+#define DEFAULT_TYPE WS2811_STRIP_RGB
+
 class Addon {
     struct config_t {
         // Initialization flag

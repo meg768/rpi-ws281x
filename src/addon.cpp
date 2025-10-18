@@ -1,29 +1,4 @@
 #include "addon.h"
-/*
-#include <algorithm>
-#include <cmath>
-#include <cstdint>
-#include <memory>
-#include <sstream>
-#include <string>
-
-#include <cctype>
-#include <cstdio>
-#include <cstring>
-#include <unistd.h>
-#include <vector>
-*/
-// -----------------------------------------------------------------------------
-// Config
-// -----------------------------------------------------------------------------
-#define DEFAULT_TARGET_FREQ 800000
-#define DEFAULT_GPIO_PIN 18
-#define DEFAULT_DMA 10
-#define DEFAULT_TYPE WS2811_STRIP_RGB
-
-// -----------------------------------------------------------------------------
-// Helpers: WRGB pack/unpack and clamp
-// -----------------------------------------------------------------------------
 
 uint8_t Addon::clamp(int v) {
     return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
@@ -56,7 +31,10 @@ bool Addon::isRGBW() {
 // -----------------------------------------------------------------------------
 // Color temperature adjustment (RGB only; W is left untouched)
 // -----------------------------------------------------------------------------
-void Addon::adjustColorTemperature(uint32_t *px, int n, int kelvin) {
+void Addon::adjustColorTemperature(uint32_t *px, int n) {
+
+    int kelvin = config.colorTemperature;
+
     // Defensive no-op
     if (kelvin <= 0)
         return;
@@ -337,11 +315,7 @@ NAN_METHOD(Addon::render) {
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
     if (!config.rawRGBW || !isRGBW()) {
-        // Normal pipeline
-        if (config.colorTemperature > 0) {
-            adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
-        }
-
+        adjustColorTemperature(channel.leds, static_cast<int>(led_count));
         convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
