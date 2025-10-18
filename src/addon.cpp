@@ -28,8 +28,8 @@ struct config_t
     // Color temperature in Kelvin (0 == no conversion)
     int colorTemperature;
 
-    // Convert RGB to RGBW
-    int convertToRGBW;
+    // No conversions at all using a RGBW-strip
+    int rawRGBW;
 
     // The ws281x struct
     ws2811_t ws281x;
@@ -289,13 +289,13 @@ NAN_METHOD(Addon::configure)
             config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
     }
 
-    // convertToRGBW
-    if (Nan::Has(options, Nan::New<v8::String>("convertToRGBW").ToLocalChecked()).ToChecked())
+    // rawRGBW
+    if (Nan::Has(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_convertToRGBW = Nan::Get(options, Nan::New<v8::String>("convertToRGBW").ToLocalChecked());
-        v8::Local<v8::Value> convertToRGBW;
-        if (maybe_convertToRGBW.ToLocal(&convertToRGBW))
-            config.convertToRGBW = Nan::To<int>(convertToRGBW).FromMaybe(config.convertToRGBW);
+        Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked());
+        v8::Local<v8::Value> rawRGBW;
+        if (maybe_rawRGBW.ToLocal(&rawRGBW))
+            config.rawRGBW = Nan::To<int>(convertToRGBW).FromMaybe(config.rawRGBW);
     }
 
     if (config.ws281x.channel[0].count <= 0)

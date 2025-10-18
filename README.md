@@ -52,7 +52,8 @@ The **options** parameter may have the following properties:
 | brightness    | Default **255**. |
 | gpio          | Default **18**. |
 | stripType     | Valid values are `"rgb"`, `"grb"`, `"brg"`, `"bgr"`, `"gbr"`. If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
-| transitions   | *(string, experimental)* One or more space-separated transition filters. See table below. |
+| colorTemperature | Specifies color temperature in Kelvin. If omitted, no |
+| rawRGBW | True/false. Bypasses all conversions when using RGBW-strips. You are on your own with this one. No temperature or gamma adjustments at all. |
 
 #### Available transitions
 
