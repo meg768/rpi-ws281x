@@ -52,7 +52,7 @@ void Addon::unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &
     b = (p) & 0xFF;
 }
 
-static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) {
+uint32_t Addon::packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) {
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
@@ -111,7 +111,7 @@ void Addon::adjustColorTemperature(uint32_t *px, int n, int kelvin) {
         int g2 = (int)std::lround(g * gF);
         int b2 = (int)std::lround(b * bF);
 
-        px[i] = packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
+        px[i] = Addon::packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
     }
 }
 
@@ -131,7 +131,7 @@ void Addon::convertToRGBW(uint32_t *px, int n) {
 
         // Move common component to W and subtract from RGB
         uint8_t w2 = Addon::clamp((int)w + (int)m);
-        px[i] = packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
+        px[i] = Addon::packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
     }
 }
 
