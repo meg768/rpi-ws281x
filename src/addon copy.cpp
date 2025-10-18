@@ -14,7 +14,7 @@
 #include <unistd.h>
 
 // -----------------------------------------------------------------------------
-// Config
+// Konfig
 // -----------------------------------------------------------------------------
 #define DEFAULT_TARGET_FREQ 800000
 #define DEFAULT_GPIO_PIN 18
@@ -23,23 +23,23 @@
 
 struct config_t
 {
-    // Initialization flag
+    // Is it initialized?
     int initialized;
 
-    // Color temperature in Kelvin (0 == disabled)
+    // Color temperature in Kelvin (0 == no conversion)
     int colorTemperature;
 
-    // Bypass all processing when using an RGBW strip (raw 0xWWRRGGBB)
+    // No conversions at all using a RGBW-strip
     int rawRGBW;
 
-    // Underlying ws281x struct
+    // The ws281x struct
     ws2811_t ws281x;
 };
 
 static config_t config;
 
 // -----------------------------------------------------------------------------
-// Helpers: WRGB pack/unpack and clamp
+// Hjälpfunktioner: WRGB pack/unpack och clamp
 // -----------------------------------------------------------------------------
 static inline uint8_t clamp(int v)
 {
@@ -73,79 +73,64 @@ static inline bool isRGBW()
         return false;
     }
 }
-
-
-static void render(const Nan::FunctionCallbackInfo<v8::Value> &info)
-{
-    ws2811_return_t rc = ws2811_render(&config.ws281x);
-
-    if (rc)
-    {
-        std::ostringstream err;
-        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-        Nan::ThrowError(err.str().c_str());
-        return;
-    }
-
-    info.GetReturnValue().Set(Nan::Undefined());
-}
-
-// -----------------------------------------------------------------------------
-// Color temperature adjustment (RGB only; W is left untouched)
-// -----------------------------------------------------------------------------
 static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
 {
-    // Defensive no-op
-    if (kelvin <= 0)
-        return;
-
-    // Constrain to reasonable range
+    // Begränsa intervallet till rimliga värden
     if (kelvin < 1000)
         kelvin = 1000;
     if (kelvin > 40000)
         kelvin = 40000;
 
-    // Kelvin -> RGB factors
-    float t = kelvin / 100.0f;
-    float rF, gF, bF;
+    // Konvertera Kelvin till justeringsfaktorer (r,g,b)
+    float tmpKelvin = kelvin / 100.0f;
+    float rFactor, gFactor, bFactor;
 
-    if (t <= 66.0f)
+    if (tmpKelvin <= 66.0f)
     {
-        rF = 1.0f;
-        gF = 0.3900815788f * logf(t) - 0.6318414438f;
-        bF = (t <= 19.0f) ? 0.0f : (0.5432067891f * logf(t - 10.0f) - 1.1962540891f);
+        rFactor = 1.0f;
+        gFactor = 0.3900815788f * logf(tmpKelvin) - 0.6318414438f;
+        bFactor = (tmpKelvin <= 19.0f) ? 0.0f : (0.5432067891f * logf(tmpKelvin - 10.0f) - 1.1962540891f);
     }
     else
     {
-        rF = 1.2929361861f * powf(t - 60.0f, -0.1332047592f);
-        gF = 1.1298908609f * powf(t - 60.0f, -0.0755148492f);
-        bF = 1.0f;
+        rFactor = 1.2929361861f * powf(tmpKelvin - 60.0f, -0.1332047592f);
+        gFactor = 1.1298908609f * powf(tmpKelvin - 60.0f, -0.0755148492f);
+        bFactor = 1.0f;
     }
 
-    // Clamp factors to [0..1]
-    rF = (rF < 0.0f) ? 0.0f : (rF > 1.0f ? 1.0f : rF);
-    gF = (gF < 0.0f) ? 0.0f : (gF > 1.0f ? 1.0f : gF);
-    bF = (bF < 0.0f) ? 0.0f : (bF > 1.0f ? 1.0f : bF);
+    // Clamp between 0.0 and 1.0
+    if (rFactor < 0.0f)
+        rFactor = 0.0f;
+    if (gFactor < 0.0f)
+        gFactor = 0.0f;
+    if (bFactor < 0.0f)
+        bFactor = 0.0f;
 
-    // Apply per pixel (RGB only)
+    if (rFactor > 1.0f)
+        rFactor = 1.0f;
+    if (gFactor > 1.0f)
+        gFactor = 1.0f;
+    if (bFactor > 1.0f)
+        bFactor = 1.0f;
+
+    // Applicera justeringen per pixel
     for (int i = 0; i < n; ++i)
     {
         uint8_t w, r, g, b;
         unpackWRGB(px[i], w, r, g, b);
 
-        int r2 = (int)std::lround(r * rF);
-        int g2 = (int)std::lround(g * gF);
-        int b2 = (int)std::lround(b * bF);
+        int r2 = (int)(r * rFactor);
+        int g2 = (int)(g * gFactor);
+        int b2 = (int)(b * bFactor);
 
         px[i] = packWRGB(w, clamp(r2), clamp(g2), clamp(b2));
     }
 }
 
-// -----------------------------------------------------------------------------
-// RGB -> RGBW conversion (extract common white component)
-// -----------------------------------------------------------------------------
 static void convertToRGBW(uint32_t *px, int n)
 {
+
+
     if (!isRGBW())
         return;
 
@@ -153,13 +138,9 @@ static void convertToRGBW(uint32_t *px, int n)
     {
         uint8_t w, r, g, b;
         unpackWRGB(px[i], w, r, g, b);
-
-        // Common white component (portable min-min, no initializer_list)
-        uint8_t m = std::min(std::min(r, g), b);
-
-        // Move common component to W and subtract from RGB
-        uint8_t w2 = clamp((int)w + (int)m);
-        px[i] = packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
+        uint8_t m = std::min({r, g, b}); // gemensam “vit” del
+        uint8_t w2 = clamp(w + m);
+        px[i] = packWRGB(w2, r - m, g - m, b - m);
     }
 }
 
@@ -175,7 +156,7 @@ NAN_METHOD(Addon::configure)
         return Nan::ThrowError("ws281x already configured.");
     }
 
-    // Value-init config (zero POD, clear pointers)
+    // Värdeinit: nollar C-fälten och initierar std::vector korrekt
     config = config_t{};
 
     config.ws281x.freq = DEFAULT_TARGET_FREQ;
@@ -196,53 +177,56 @@ NAN_METHOD(Addon::configure)
 
     if (info.Length() != 1)
     {
-        return Nan::ThrowError("ws281x.configure() requires an options object.");
+        return Nan::ThrowError("ws281x.configure() - requires an argument.");
     }
 
     v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
 
     // leds
-    if (Nan::Has(options, Nan::New("leds").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("leds").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_leds = Nan::Get(options, Nan::New("leds").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_leds = Nan::Get(options, Nan::New<v8::String>("leds").ToLocalChecked());
         v8::Local<v8::Value> leds;
+
         if (maybe_leds.ToLocal(&leds))
             config.ws281x.channel[0].count = Nan::To<int>(leds).FromMaybe(config.ws281x.channel[0].count);
         else
-            return Nan::ThrowTypeError("ws281x.configure() - 'leds' must be defined");
+            return Nan::ThrowTypeError("ws281x.configure() - leds must be defined");
     }
 
     // dma
-    if (Nan::Has(options, Nan::New("dma").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("dma").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_dma = Nan::Get(options, Nan::New("dma").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_dma = Nan::Get(options, Nan::New<v8::String>("dma").ToLocalChecked());
         v8::Local<v8::Value> dma;
         if (maybe_dma.ToLocal(&dma))
             config.ws281x.dmanum = Nan::To<int>(dma).FromMaybe(config.ws281x.dmanum);
     }
 
     // gpio
-    if (Nan::Has(options, Nan::New("gpio").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("gpio").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_gpio = Nan::Get(options, Nan::New("gpio").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_gpio = Nan::Get(options, Nan::New<v8::String>("gpio").ToLocalChecked());
         v8::Local<v8::Value> gpio;
+
         if (!maybe_gpio.IsEmpty() && maybe_gpio.ToLocal(&gpio))
             config.ws281x.channel[0].gpionum = Nan::To<int>(gpio).FromMaybe(config.ws281x.channel[0].gpionum);
     }
 
     // brightness
-    if (Nan::Has(options, Nan::New("brightness").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("brightness").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_brightness = Nan::Get(options, Nan::New("brightness").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_brightness = Nan::Get(options, Nan::New<v8::String>("brightness").ToLocalChecked());
         v8::Local<v8::Value> brightness;
+
         if (maybe_brightness.ToLocal(&brightness))
             config.ws281x.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(config.ws281x.channel[0].brightness);
     }
 
     // rawRGBW
-    if (Nan::Has(options, Nan::New("rawRGBW").ToLocalChecked()).ToChecked())
+    if (Nan::Has(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New("rawRGBW").ToLocalChecked());
+        Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked());
         v8::Local<v8::Value> rawRGBW;
         if (maybe_rawRGBW.ToLocal(&rawRGBW))
             config.rawRGBW = Nan::To<int>(rawRGBW).FromMaybe(config.rawRGBW);
@@ -253,8 +237,8 @@ NAN_METHOD(Addon::configure)
         Nan::MaybeLocal<v8::Value> maybe_stripType;
         v8::Local<v8::Value> stripType;
 
-        if (Nan::Has(options, Nan::New("stripType").ToLocalChecked()).ToChecked())
-            maybe_stripType = Nan::Get(options, Nan::New("stripType").ToLocalChecked());
+        if (Nan::Has(options, Nan::New<v8::String>("stripType").ToLocalChecked()).ToChecked())
+            maybe_stripType = Nan::Get(options, Nan::New<v8::String>("stripType").ToLocalChecked());
 
         if (maybe_stripType.ToLocal(&stripType))
         {
@@ -288,41 +272,41 @@ NAN_METHOD(Addon::configure)
         }
     }
 
-    // gamma (Uint8Array(256) expected) — disabled in rawRGBW
+    // gamma
     if (!config.rawRGBW)
     {
-        if (Nan::Has(options, Nan::New("gamma").ToLocalChecked()).ToChecked())
+
+        if (Nan::Has(options, Nan::New<v8::String>("gamma").ToLocalChecked()).ToChecked())
         {
-            Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New("gamma").ToLocalChecked());
+            Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New<v8::String>("gamma").ToLocalChecked());
             v8::Local<v8::Value> gamma;
 
             if (maybe_gamma.ToLocal(&gamma))
             {
                 static uint8_t gammaCorrection[256];
 
+                if (!node::Buffer::HasInstance(gamma))
+                    return Nan::ThrowTypeError("ws281x.configure() - gamma must be a Buffer");
+
                 if (!gamma->IsUint8Array())
                     return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
 
-                v8::Local<v8::Uint8Array> g = gamma.As<v8::Uint8Array>();
-                if (g->Length() != 256)
-                    return Nan::ThrowError("ws281x.configure() - gamma table must have length 256.");
+                v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+                auto buffer = gamma->ToObject(context).ToLocalChecked();
+                uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
 
-                auto ab = g->Buffer();
-                auto bs = ab->GetBackingStore();
-                uint8_t *data = static_cast<uint8_t *>(bs->Data()) + g->ByteOffset();
-
-                std::memcpy(gammaCorrection, data, 256);
+                std::memcpy(gammaCorrection, data, sizeof(gammaCorrection));
                 config.ws281x.channel[0].gamma = gammaCorrection;
             }
         }
     }
 
-    // colorTemperature — disabled in rawRGBW
+    // colorTemperature
     if (!config.rawRGBW)
     {
-        if (Nan::Has(options, Nan::New("colorTemperature").ToLocalChecked()).ToChecked())
+        if (Nan::Has(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked()).ToChecked())
         {
-            Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New("colorTemperature").ToLocalChecked());
+            Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked());
             v8::Local<v8::Value> colorTemperature;
             if (maybe_colorTemperature.ToLocal(&colorTemperature))
                 config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
@@ -332,19 +316,21 @@ NAN_METHOD(Addon::configure)
     if (config.ws281x.channel[0].count <= 0)
         return Nan::ThrowError("ws281x.configure() - 'leds' must be > 0.");
 
-    // Initialize driver
+    // Initialize
     ws2811_return_t result = ws2811_init(&config.ws281x);
+
     if (result)
     {
-        std::ostringstream err;
-        err << "ws281x.configure() - ws2811_init() failed: " << ws2811_get_return_t_str(result);
-        return Nan::ThrowError(err.str().c_str());
+        std::ostringstream errortext;
+        errortext << "ws281x.configure() - ws2811_init() failed: " << ws2811_get_return_t_str(result);
+        return Nan::ThrowError(errortext.str().c_str());
     }
 
     if (!config.ws281x.channel[0].leds)
         return Nan::ThrowError("ws281x.configure() - ws2811_init succeeded but leds buffer is null.");
 
     config.initialized = true;
+
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -362,8 +348,9 @@ NAN_METHOD(Addon::reset)
         ws2811_fini(&config.ws281x);
     }
 
-    // Clear config
+    // Nollställ config korrekt
     config = config_t{};
+
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
@@ -375,7 +362,7 @@ NAN_METHOD(Addon::render)
         return Nan::ThrowError("ws281x not configured.");
 
     if (info.Length() != 1)
-        return Nan::ThrowError("ws281x.render() requires a Uint32Array of pixels.");
+        return Nan::ThrowError("ws281x.render() requires pixels as a parameter");
 
     if (!info[0]->IsUint32Array())
         return Nan::ThrowError("ws281x.render() requires pixels to be a Uint32Array.");
@@ -391,7 +378,7 @@ NAN_METHOD(Addon::render)
     if (in_len != led_count)
         return Nan::ThrowError("ws281x.render() - pixel array length must equal configured 'leds'.");
 
-    // Pointer to JS backing store
+    // Pekare till JS-backing store
     std::shared_ptr<v8::BackingStore> backing = arr->Buffer()->GetBackingStore();
     uint8_t *base = static_cast<uint8_t *>(backing->Data());
     uint32_t *data = reinterpret_cast<uint32_t *>(base + arr->ByteOffset());
@@ -399,30 +386,21 @@ NAN_METHOD(Addon::render)
     // Copy pixels
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    // Raw RGBW mode: bypass all processing (expects 0xWWRRGGBB in physical order)
-    if (config.rawRGBW)
-    {
-        ws2811_return_t rc = ws2811_render(&config.ws281x);
-        if (rc)
-        {
-            std::ostringstream err;
-            err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-            return Nan::ThrowError(err.str().c_str());
-        }
-        info.GetReturnValue().Set(Nan::Undefined());
-        return;
-    }
-
-    // Normal pipeline
+    // Adjust color temperature if specified
     if (config.colorTemperature > 0)
     {
         adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
-    convertToRGBW(channel.leds, static_cast<int>(led_count));
+    // Convert to RGBW if specified
+    if (!config.rawRGBW)
+    {
+        convertToRGBW(channel.leds, static_cast<int>(led_count));
+    }
 
-    // Render
+    // Finally, render
     ws2811_return_t rc = ws2811_render(&config.ws281x);
+
     if (rc)
     {
         std::ostringstream err;
@@ -437,14 +415,8 @@ NAN_METHOD(Addon::sleep)
 {
     Nan::HandleScope();
 
-    if (info.Length() < 1 || !info[0]->IsInt32())
-        return Nan::ThrowTypeError("ws281x.sleep(ms) requires an integer milliseconds.");
+    usleep(info[0]->ToInt32(Nan::GetCurrentContext()).ToLocalChecked()->Value() * 1000);
 
-    int32_t ms = info[0]->Int32Value(Nan::GetCurrentContext()).FromMaybe(0);
-    if (ms < 0)
-        ms = 0;
-
-    usleep(ms * 1000);
     info.GetReturnValue().Set(Nan::Undefined());
 }
 
