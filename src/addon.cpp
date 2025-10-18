@@ -105,13 +105,13 @@ void Addon::adjustColorTemperature(uint32_t *px, int n, int kelvin) {
     // Apply per pixel (RGB only)
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
-        Addon::unpackWRGB(px[i], w, r, g, b);
+        unpackWRGB(px[i], w, r, g, b);
 
         int r2 = (int)std::lround(r * rF);
         int g2 = (int)std::lround(g * gF);
         int b2 = (int)std::lround(b * bF);
 
-        px[i] = Addon::packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
+        px[i] = packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
     }
 }
 
