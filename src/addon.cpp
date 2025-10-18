@@ -40,7 +40,9 @@ static config_t config;
 // -----------------------------------------------------------------------------
 // Helpers: WRGB pack/unpack and clamp
 // -----------------------------------------------------------------------------
-static inline uint8_t clamp(int v) { return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v); }
+static inline uint8_t clamp(int v) {
+    return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
+}
 
 static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b) {
     w = (p >> 24) & 0xFF;
@@ -49,7 +51,9 @@ static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, ui
     b = (p) & 0xFF;
 }
 
-static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) { return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b; }
+static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) {
+    return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
+}
 
 static inline bool isRGBW() {
     switch (config.ws281x.channel[0].strip_type) {
