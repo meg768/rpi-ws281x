@@ -69,7 +69,7 @@ Transitions is a series of filters before rendering pixels. Each transition conv
 ```js
 ws281x.configure({
   leds: 64,
-  transitions: "warm-white rgbw"
+  transitions: "warm-white rgb-to-rgbw"
 });
 ```
 ### Render
