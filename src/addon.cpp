@@ -111,7 +111,7 @@ static void adjustColorTemperature(uint32_t *px, int n, int kelvin) {
         int g2 = (int)std::lround(g * gF);
         int b2 = (int)std::lround(b * bF);
 
-        px[i] = packWRGB(w, this.clamp(r2), this.clamp(g2), this.clamp(b2));
+        px[i] = packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
     }
 }
 
