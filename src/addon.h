@@ -40,6 +40,7 @@ class Addon {
     static void adjustColorTemperature(uint32_t *px, int n, int kelvin);
     static void convertToRGBW(uint32_t *px, int n);
     static uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b);
+    static bool isRGBW();
 };
 
 #endif

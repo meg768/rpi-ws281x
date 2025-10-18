@@ -56,7 +56,7 @@ uint32_t Addon::packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) {
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
 
-static inline bool isRGBW() {
+bool Addon::isRGBW() {
     switch (config.ws281x.channel[0].strip_type) {
         case SK6812_STRIP_RGBW:
         case SK6812_STRIP_GRBW:
