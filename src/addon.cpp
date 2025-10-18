@@ -152,7 +152,7 @@ static void (*getTransition(const std::string &s))(uint32_t *, int)
         return &transitionMonochrome;
     if (ieq(s, "warm-white"))
         return &transitionWarmWhite;
-    if (ieq(s, "RGBtoRGBW") || ieq(s, "rgb-to-rgbw") || ieq(s, "rgb2rgbw"))
+    if (ieq(s, "RGBtoRGBW") || ieq(s, "rgb-to-rgbw") || ieq(s, "rgbw"))
         return &transitionRGBtoRGBW;
 
     return nullptr;
