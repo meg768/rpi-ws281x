@@ -20,7 +20,7 @@ class Example {
         this.config.stripType = 'grbw';
 
         // Convert to warm-white
-        this.config.colorTemperature = 2400;
+        this.config.colorTemperature = 4000;
 
         // Configure ws281x
         ws281x.configure(this.config);
