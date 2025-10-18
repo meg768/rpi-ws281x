@@ -29,7 +29,7 @@ struct config_t
     int colorTemperature;
 
     // Convert RGB to RGBW
-    int rgbwConversion;
+    int convertToRGBW;
 
     // The ws281x struct
     ws2811_t ws281x;
@@ -289,13 +289,13 @@ NAN_METHOD(Addon::configure)
             config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
     }
 
-    // rgbwConversion
-    if (Nan::Has(options, Nan::New<v8::String>("rgbwConversion").ToLocalChecked()).ToChecked())
+    // convertToRGBW
+    if (Nan::Has(options, Nan::New<v8::String>("convertToRGBW").ToLocalChecked()).ToChecked())
     {
-        Nan::MaybeLocal<v8::Value> maybe_rgbwConversion = Nan::Get(options, Nan::New<v8::String>("rgbwConversion").ToLocalChecked());
-        v8::Local<v8::Value> rgbwConversion;
-        if (maybe_rgbwConversion.ToLocal(&rgbwConversion))
-            config.rgbwConversion = Nan::To<int>(rgbwConversion).FromMaybe(config.rgbwConversion);
+        Nan::MaybeLocal<v8::Value> maybe_convertToRGBW = Nan::Get(options, Nan::New<v8::String>("convertToRGBW").ToLocalChecked());
+        v8::Local<v8::Value> convertToRGBW;
+        if (maybe_convertToRGBW.ToLocal(&convertToRGBW))
+            config.convertToRGBW = Nan::To<int>(convertToRGBW).FromMaybe(config.convertToRGBW);
     }
 
     if (config.ws281x.channel[0].count <= 0)
@@ -374,12 +374,12 @@ NAN_METHOD(Addon::render)
     // Adjust color temperature if specified
     if (config.colorTemperature > 0)
     {
-        printf("color temp %d\n", config.colorTemperature);
+        printf("Color temp %d\n", config.colorTemperature);
         adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
     // Convert to RGBW if specified
-    if (config.rgbwConversion > 0)
+    if (config.convertToRGBW)
     {
         printf("Converting to RGBW\n");
         convertRGBtoRGBW(channel.leds, static_cast<int>(led_count));

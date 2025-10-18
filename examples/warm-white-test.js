@@ -2,31 +2,31 @@ var ws281x = require('../index.js');
 
 class Example {
     constructor() {
-        this.config = {};
+		this.config = {};
 
-        // Number of leds in my strip
-        this.config.leds = 169;
+		// Number of leds in my strip
+		this.config.leds = 169;
 
-        // Use DMA 10 (default 10)
-        this.config.dma = 10;
+		// Use DMA 10 (default 10)
+		this.config.dma = 10;
 
-        // Set full brightness, a value from 0 to 255 (default 255)
-        this.config.brightness = 128;
+		// Set full brightness, a value from 0 to 255 (default 255)
+		this.config.brightness = 128;
 
-        // Set the GPIO number to communicate with the Neopixel strip (default 18)
-        this.config.gpio = 18;
+		// Set the GPIO number to communicate with the Neopixel strip (default 18)
+		this.config.gpio = 18;
 
-        // Specify RGB sequence
-        this.config.stripType = 'grbw';
+		// Specify RGB sequence
+		this.config.stripType = 'grbw';
 
-        // Convert color temperature
-        this.config.colorTemperature = 3000;
+		// Set color temperature (using Kelvin)
+		this.config.colorTemperature = 3000;
 
-        // Use RGBW
-        this.config.rgbwConversion = true;
+		// Use RGBW
+		this.config.rgbwConversion = true;
 
-        // Configure ws281x
-        ws281x.configure(this.config);
+		// Configure ws281x
+		ws281x.configure(this.config);
     }
 
     run() {
