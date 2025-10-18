@@ -53,14 +53,14 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) { re
 
 static inline bool isRGBW() {
     switch (config.ws281x.channel[0].strip_type) {
-    case SK6812_STRIP_RGBW:
-    case SK6812_STRIP_GRBW:
-    case SK6812_STRIP_GBRW:
-    case SK6812_STRIP_BRGW:
-    case SK6812_STRIP_BGRW:
-        return true;
-    default:
-        return false;
+        case SK6812_STRIP_RGBW:
+        case SK6812_STRIP_GRBW:
+        case SK6812_STRIP_GBRW:
+        case SK6812_STRIP_BRGW:
+        case SK6812_STRIP_BGRW:
+            return true;
+        default:
+            return false;
     }
 }
 
