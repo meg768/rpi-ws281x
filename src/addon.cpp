@@ -112,7 +112,7 @@ static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
     }
 }
 
-static void convertRGBtoRGBW(uint32_t *px, int n)
+static void convertToRGBW(uint32_t *px, int n)
 {
 
     // Kör bara om hårdvaran faktiskt har W-kanal
