@@ -21,21 +21,6 @@
 #define DEFAULT_DMA 10
 #define DEFAULT_TYPE WS2811_STRIP_RGB
 
-struct config_t {
-    // Initialization flag
-    int initialized;
-
-    // Color temperature in Kelvin (0 == disabled)
-    int colorTemperature;
-
-    // Bypass all processing when using an RGBW strip (raw 0xWWRRGGBB)
-    int rawRGBW;
-
-    // Underlying ws281x struct
-    ws2811_t ws281x;
-};
-
-static config_t config;
 
 // -----------------------------------------------------------------------------
 // Helpers: WRGB pack/unpack and clamp
