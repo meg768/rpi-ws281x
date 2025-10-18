@@ -45,7 +45,7 @@ uint8_t Addon::clamp(int v) {
     return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
 }
 
-static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b) {
+void Addon::unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b) {
     w = (p >> 24) & 0xFF;
     r = (p >> 16) & 0xFF;
     g = (p >> 8) & 0xFF;
@@ -105,7 +105,7 @@ static void adjustColorTemperature(uint32_t *px, int n, int kelvin) {
     // Apply per pixel (RGB only)
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
-        unpackWRGB(px[i], w, r, g, b);
+        Addon::unpackWRGB(px[i], w, r, g, b);
 
         int r2 = (int)std::lround(r * rF);
         int g2 = (int)std::lround(g * gF);
@@ -124,7 +124,7 @@ static void convertToRGBW(uint32_t *px, int n) {
 
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
-        unpackWRGB(px[i], w, r, g, b);
+        Addon::unpackWRGB(px[i], w, r, g, b);
 
         // Common white component (portable min-min, no initializer_list)
         uint8_t m = std::min(std::min(r, g), b);

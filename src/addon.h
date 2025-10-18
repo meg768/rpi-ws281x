@@ -42,6 +42,6 @@ class Addon {
     static NAN_METHOD(sleep);
 
     static inline uint8_t clamp(int value);
-};
+    static inline void unpackWRGB(uint32_t p, uint8_t &w, uint8_t &r, uint8_t &g, uint8_t &b);
 
 #endif
