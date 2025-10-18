@@ -33,7 +33,6 @@ struct config_t
 
     // The ws281x struct
     ws2811_t ws281x;
-
 };
 
 static config_t config;
@@ -58,7 +57,6 @@ static inline uint32_t packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b)
 {
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
-
 
 static void adjustColorTemperature(uint32_t *px, int n, int kelvin)
 {
@@ -137,7 +135,6 @@ static void convertRGBtoRGBW(uint32_t *px, int n)
         px[i] = packWRGB(w2, r - m, g - m, b - m);
     }
 }
-
 
 // -----------------------------------------------------------------------------
 // NAN Methods
@@ -377,6 +374,7 @@ NAN_METHOD(Addon::render)
     // Adjust color temperature if specified
     if (config.colorTemperature > 0)
     {
+        printf("color temp %d\n", config.colorTemperature);
         adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
