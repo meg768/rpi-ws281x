@@ -215,6 +215,15 @@ NAN_METHOD(Addon::configure)
             config.ws281x.channel[0].brightness = Nan::To<int>(brightness).FromMaybe(config.ws281x.channel[0].brightness);
     }
 
+    // rawRGBW
+    if (Nan::Has(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked()).ToChecked())
+    {
+        Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked());
+        v8::Local<v8::Value> rawRGBW;
+        if (maybe_rawRGBW.ToLocal(&rawRGBW))
+            config.rawRGBW = Nan::To<int>(rawRGBW).FromMaybe(config.rawRGBW);
+    }
+
     // stripType
     {
         Nan::MaybeLocal<v8::Value> maybe_stripType;
@@ -253,50 +262,47 @@ NAN_METHOD(Addon::configure)
         {
             config.ws281x.channel[0].strip_type = WS2811_STRIP_RGB;
         }
-
     }
 
     // gamma
-    if (Nan::Has(options, Nan::New<v8::String>("gamma").ToLocalChecked()).ToChecked())
+    if (!config.rawRGBW)
     {
-        Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New<v8::String>("gamma").ToLocalChecked());
-        v8::Local<v8::Value> gamma;
 
-        if (maybe_gamma.ToLocal(&gamma))
+        if (Nan::Has(options, Nan::New<v8::String>("gamma").ToLocalChecked()).ToChecked())
         {
-            static uint8_t gammaCorrection[256];
+            Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New<v8::String>("gamma").ToLocalChecked());
+            v8::Local<v8::Value> gamma;
 
-            if (!node::Buffer::HasInstance(gamma))
-                return Nan::ThrowTypeError("ws281x.configure() - gamma must be a Buffer");
+            if (maybe_gamma.ToLocal(&gamma))
+            {
+                static uint8_t gammaCorrection[256];
 
-            if (!gamma->IsUint8Array())
-                return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
+                if (!node::Buffer::HasInstance(gamma))
+                    return Nan::ThrowTypeError("ws281x.configure() - gamma must be a Buffer");
 
-            v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
-            auto buffer = gamma->ToObject(context).ToLocalChecked();
-            uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
+                if (!gamma->IsUint8Array())
+                    return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
 
-            std::memcpy(gammaCorrection, data, sizeof(gammaCorrection));
-            config.ws281x.channel[0].gamma = gammaCorrection;
+                v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+                auto buffer = gamma->ToObject(context).ToLocalChecked();
+                uint8_t *data = (uint8_t *)node::Buffer::Data(buffer);
+
+                std::memcpy(gammaCorrection, data, sizeof(gammaCorrection));
+                config.ws281x.channel[0].gamma = gammaCorrection;
+            }
         }
     }
-
+    
     // colorTemperature
-    if (Nan::Has(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked()).ToChecked())
+    if (!config.rawRGBW)
     {
-        Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked());
-        v8::Local<v8::Value> colorTemperature;
-        if (maybe_colorTemperature.ToLocal(&colorTemperature))
-            config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
-    }
-
-    // rawRGBW
-    if (Nan::Has(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked()).ToChecked())
-    {
-        Nan::MaybeLocal<v8::Value> maybe_rawRGBW = Nan::Get(options, Nan::New<v8::String>("rawRGBW").ToLocalChecked());
-        v8::Local<v8::Value> rawRGBW;
-        if (maybe_rawRGBW.ToLocal(&rawRGBW))
-            config.rawRGBW = Nan::To<int>(rawRGBW).FromMaybe(config.rawRGBW);
+        if (Nan::Has(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked()).ToChecked())
+        {
+            Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New<v8::String>("colorTemperature").ToLocalChecked());
+            v8::Local<v8::Value> colorTemperature;
+            if (maybe_colorTemperature.ToLocal(&colorTemperature))
+                config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
+        }
     }
 
     if (config.ws281x.channel[0].count <= 0)
