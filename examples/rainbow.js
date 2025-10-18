@@ -10,7 +10,7 @@ const config = {
 	gpio: 18,
 	dma: 10,
 	map: 'serpentine',
-    transitions:'RGBtoRGBW'
+    transitions:'rgb-to-rgbw'
 };
 
 ws281x.configure(config);
