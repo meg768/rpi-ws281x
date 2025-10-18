@@ -130,7 +130,7 @@ static void convertToRGBW(uint32_t *px, int n) {
         uint8_t m = std::min(std::min(r, g), b);
 
         // Move common component to W and subtract from RGB
-        uint8_t w2 = clamp((int)w + (int)m);
+        uint8_t w2 = Addon::clamp((int)w + (int)m);
         px[i] = packWRGB(w2, (uint8_t)(r - m), (uint8_t)(g - m), (uint8_t)(b - m));
     }
 }
