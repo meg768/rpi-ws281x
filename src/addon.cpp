@@ -1,5 +1,5 @@
 #include "addon.h"
-
+/*
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -12,7 +12,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <vector>
-
+*/
 // -----------------------------------------------------------------------------
 // Config
 // -----------------------------------------------------------------------------
@@ -20,7 +20,6 @@
 #define DEFAULT_GPIO_PIN 18
 #define DEFAULT_DMA 10
 #define DEFAULT_TYPE WS2811_STRIP_RGB
-
 
 // -----------------------------------------------------------------------------
 // Helpers: WRGB pack/unpack and clamp
