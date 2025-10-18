@@ -20,7 +20,7 @@ class Example {
         this.config.stripType = 'grbw';
 
         // Convert to warm-white
-        this.config.colorTemperature = 2700;
+        this.config.colorTemperature = 1000;
 
         // Use RGBW
         this.config.rgbConversion = 1;
