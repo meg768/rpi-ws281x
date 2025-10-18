@@ -389,14 +389,12 @@ NAN_METHOD(Addon::render)
     // Adjust color temperature if specified
     if (!config.rawRGBW && config.colorTemperature > 0)
     {
-        printf("Color temp %d\n", config.colorTemperature);
         adjustColorTemperature(channel.leds, static_cast<int>(led_count), config.colorTemperature);
     }
 
     // Convert to RGBW if specified
     if (!config.rawRGBW)
     {
-        printf("Converting to RGBW\n");
         convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
