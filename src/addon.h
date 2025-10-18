@@ -2,28 +2,24 @@
 #ifndef _addon_h
 #define _addon_h
 
+// C++ standard
 #include <algorithm>
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <getopt.h>
-#include <math.h>
-#include <memory.h>
-#include <nan.h>
-#include <signal.h>
-#include <stdexcept>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <v8.h>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+#include <memory>
+#include <sstream>
+#include <string>
 #include <vector>
+
+// NAN/V8 och ditt eget
+#include "addon.h"
+#include <nan.h>
+
+// C/POSIX – sist
+#include <cctype>
+#include <cstdio>
+#include <unistd.h>
 
 extern "C" {
 #include "rpi_ws281x/ws2811.h"
