@@ -129,7 +129,7 @@ static void transitionRGBtoRGBW(uint32_t *px, int n)
         unpackWRGB(px[i], w, r, g, b);
         uint8_t m = std::min({r, g, b}); // gemensam “vit” del
         uint8_t w2 = clamp(w + m);
-        px[i] = packWRGB(w2, r - m, g - m, b - m);
+        px[i] = packWRGB(w2/2, r - m, g - m, b - m);
     }
 }
 
