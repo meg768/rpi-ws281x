@@ -20,6 +20,7 @@ uint32_t Addon::packWRGB(uint8_t w, uint8_t r, uint8_t g, uint8_t b) {
 bool Addon::isRGBW() {
     switch (config.ws281x.channel[0].strip_type) {
         case SK6812_STRIP_RGBW:
+        case SK6812_STRIP_RBGW:
         case SK6812_STRIP_GRBW:
         case SK6812_STRIP_GBRW:
         case SK6812_STRIP_BRGW:
@@ -210,6 +211,8 @@ NAN_METHOD(Addon::configure) {
 
             if (stripTypeValue == "rgb")
                 config.ws281x.channel[0].strip_type = WS2811_STRIP_RGB;
+            else if (stripTypeValue == "rbg")
+                config.ws281x.channel[0].strip_type = WS2811_STRIP_RBG;
             else if (stripTypeValue == "grb")
                 config.ws281x.channel[0].strip_type = WS2811_STRIP_GRB;
             else if (stripTypeValue == "gbr")
@@ -220,6 +223,8 @@ NAN_METHOD(Addon::configure) {
                 config.ws281x.channel[0].strip_type = WS2811_STRIP_BGR;
             else if (stripTypeValue == "rgbw")
                 config.ws281x.channel[0].strip_type = SK6812_STRIP_RGBW;
+            else if (stripTypeValue == "rbgw")
+                config.ws281x.channel[0].strip_type = SK6812_STRIP_RBGW;
             else if (stripTypeValue == "grbw")
                 config.ws281x.channel[0].strip_type = SK6812_STRIP_GRBW;
             else if (stripTypeValue == "gbrw")
