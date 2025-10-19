@@ -46,8 +46,6 @@ class Addon {
     static bool isRGBW();
 
   public:
-    Addon();
-
     static NAN_METHOD(configure);
     static NAN_METHOD(reset);
     static NAN_METHOD(render);

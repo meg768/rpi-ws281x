@@ -1,5 +1,7 @@
 #include "addon.h"
 
+Addon::config_t Addon::config;
+
 uint8_t Addon::clamp(int v) {
     return (v < 0) ? 0 : (v > 255 ? 255 : (uint8_t)v);
 }
