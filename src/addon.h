@@ -40,7 +40,7 @@ class Addon {
     static void unpackWRGB(uint32_t pixel, uint8_t &white, uint8_t &red, uint8_t &green, uint8_t &blue);
 
     // Color conversions
-    static void adjustColorTemperature(uint32_t *pixels, int length);
+    static void adjustColorTemperature(uint32_t *pixels, int length, bool rgbw);
     static void convertToRGBW(uint32_t *pixels, int length);
 
     static bool isRGBW();

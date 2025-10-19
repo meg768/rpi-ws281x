@@ -33,7 +33,7 @@ bool Addon::isRGBW() {
 // - For RGBW: fold as much W as possible into neutral RGB before applying CCT,
 //   so the white also gets tinted. Leftover W stays as-is.
 // -----------------------------------------------------------------------------
-void Addon::adjustColorTemperature(uint32_t *px, int n) {
+void Addon::adjustColorTemperature(uint32_t *px, int n, bool rgbw) {
     int kelvin = config.colorTemperature;
 
     if (kelvin <= 0)
@@ -63,8 +63,6 @@ void Addon::adjustColorTemperature(uint32_t *px, int n) {
     rF = (rF < 0.0f) ? 0.0f : (rF > 1.0f ? 1.0f : rF);
     gF = (gF < 0.0f) ? 0.0f : (gF > 1.0f ? 1.0f : gF);
     bF = (bF < 0.0f) ? 0.0f : (bF > 1.0f ? 1.0f : bF);
-
-    const bool rgbw = isRGBW();
 
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
@@ -106,9 +104,6 @@ void Addon::adjustColorTemperature(uint32_t *px, int n) {
 // RGB -> RGBW conversion (extract common white component)
 // -----------------------------------------------------------------------------
 void Addon::convertToRGBW(uint32_t *px, int n) {
-    if (!isRGBW())
-        return;
-
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
         unpackWRGB(px[i], w, r, g, b);
@@ -236,41 +231,37 @@ NAN_METHOD(Addon::configure) {
         }
     }
 
-    // gamma (Uint8Array(256) expected) — disabled in rawRGBW
-    if (!config.rawRGBW) {
-        if (Nan::Has(options, Nan::New("gamma").ToLocalChecked()).ToChecked()) {
-            Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New("gamma").ToLocalChecked());
-            v8::Local<v8::Value> gamma;
+    // gamma (Uint8Array(256) expected)
+    if (Nan::Has(options, Nan::New("gamma").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_gamma = Nan::Get(options, Nan::New("gamma").ToLocalChecked());
+        v8::Local<v8::Value> gamma;
 
-            if (maybe_gamma.ToLocal(&gamma)) {
-                static uint8_t gammaCorrection[256];
+        if (maybe_gamma.ToLocal(&gamma)) {
+            static uint8_t gammaCorrection[256];
 
-                if (!gamma->IsUint8Array())
-                    return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
+            if (!gamma->IsUint8Array())
+                return Nan::ThrowError("ws281x.configure() - gamma must be a Uint8Array.");
 
-                v8::Local<v8::Uint8Array> g = gamma.As<v8::Uint8Array>();
-                if (g->Length() != 256)
-                    return Nan::ThrowError("ws281x.configure() - gamma table "
-                                           "must have length 256.");
+            v8::Local<v8::Uint8Array> g = gamma.As<v8::Uint8Array>();
+            if (g->Length() != 256)
+                return Nan::ThrowError("ws281x.configure() - gamma table "
+                                       "must have length 256.");
 
-                auto ab = g->Buffer();
-                auto bs = ab->GetBackingStore();
-                uint8_t *data = static_cast<uint8_t *>(bs->Data()) + g->ByteOffset();
+            auto ab = g->Buffer();
+            auto bs = ab->GetBackingStore();
+            uint8_t *data = static_cast<uint8_t *>(bs->Data()) + g->ByteOffset();
 
-                std::memcpy(gammaCorrection, data, 256);
-                config.ws281x.channel[0].gamma = gammaCorrection;
-            }
+            std::memcpy(gammaCorrection, data, 256);
+            config.ws281x.channel[0].gamma = gammaCorrection;
         }
     }
 
-    // colorTemperature — disabled in rawRGBW
-    if (!config.rawRGBW) {
-        if (Nan::Has(options, Nan::New("colorTemperature").ToLocalChecked()).ToChecked()) {
-            Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New("colorTemperature").ToLocalChecked());
-            v8::Local<v8::Value> colorTemperature;
-            if (maybe_colorTemperature.ToLocal(&colorTemperature))
-                config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
-        }
+    // colorTemperature
+    if (Nan::Has(options, Nan::New("colorTemperature").ToLocalChecked()).ToChecked()) {
+        Nan::MaybeLocal<v8::Value> maybe_colorTemperature = Nan::Get(options, Nan::New("colorTemperature").ToLocalChecked());
+        v8::Local<v8::Value> colorTemperature;
+        if (maybe_colorTemperature.ToLocal(&colorTemperature))
+            config.colorTemperature = Nan::To<int>(colorTemperature).FromMaybe(config.colorTemperature);
     }
 
     if (config.ws281x.channel[0].count <= 0)
@@ -339,10 +330,14 @@ NAN_METHOD(Addon::render) {
     // Copy pixels
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
-    adjustColorTemperature(channel.leds, static_cast<int>(led_count));
+    if (config.rawRGBW) {
+        adjustColorTemperature(channel.leds, static_cast<int>(led_count), true);
 
-    if (!config.rawRGBW || !isRGBW()) {
-        convertToRGBW(channel.leds, static_cast<int>(led_count));
+    } else {
+        adjustColorTemperature(channel.leds, static_cast<int>(led_count), false);
+        if (isRGBW()) {
+            convertToRGBW(channel.leds, static_cast<int>(led_count));
+        }
     }
 
     ws2811_return_t result = ws2811_render(&config.ws281x);
