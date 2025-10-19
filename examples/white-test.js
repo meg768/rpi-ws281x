@@ -22,7 +22,7 @@ class Example {
 		// Set color temperature (using Kelvin)
 		this.config.colorTemperature = 3200;
 
-		// Use RGBW
+		// Use raw RGBW
 		//this.config.rawRGBW = true;
 
 		// Configure ws281x
