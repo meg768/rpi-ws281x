@@ -29,33 +29,33 @@ bool Addon::isRGBW() {
 }
 
 // -----------------------------------------------------------------------------
-// Color temperature adjustment (RGB only; W is left untouched)
+// Color temperature adjustment (works for RGB and RGBW)
+// - For RGBW: fold as much W as possible into neutral RGB before applying CCT,
+//   so the white also gets tinted. Leftover W stays as-is.
 // -----------------------------------------------------------------------------
 void Addon::adjustColorTemperature(uint32_t *px, int n) {
-
     int kelvin = config.colorTemperature;
 
-    // Defensive no-op
     if (kelvin <= 0)
-        return;
+        return; // no-op
 
-    // Constrain to reasonable range
+    // Clamp reasonable range
     if (kelvin < 1000)
         kelvin = 1000;
     if (kelvin > 40000)
         kelvin = 40000;
 
-    // Kelvin -> RGB factors
+    // Kelvin -> RGB scale factors
     float t = kelvin / 100.0f;
     float rF, gF, bF;
 
     if (t <= 66.0f) {
         rF = 1.0f;
-        gF = 0.3900815788f * logf(t) - 0.6318414438f;
-        bF = (t <= 19.0f) ? 0.0f : (0.5432067891f * logf(t - 10.0f) - 1.1962540891f);
+        gF = 0.3900815788f * std::logf(t) - 0.6318414438f;
+        bF = (t <= 19.0f) ? 0.0f : (0.5432067891f * std::logf(t - 10.0f) - 1.1962540891f);
     } else {
-        rF = 1.2929361861f * powf(t - 60.0f, -0.1332047592f);
-        gF = 1.1298908609f * powf(t - 60.0f, -0.0755148492f);
+        rF = 1.2929361861f * std::powf(t - 60.0f, -0.1332047592f);
+        gF = 1.1298908609f * std::powf(t - 60.0f, -0.0755148492f);
         bF = 1.0f;
     }
 
@@ -64,16 +64,41 @@ void Addon::adjustColorTemperature(uint32_t *px, int n) {
     gF = (gF < 0.0f) ? 0.0f : (gF > 1.0f ? 1.0f : gF);
     bF = (bF < 0.0f) ? 0.0f : (bF > 1.0f ? 1.0f : bF);
 
-    // Apply per pixel (RGB only)
+    const bool rgbw = isRGBW();
+
     for (int i = 0; i < n; ++i) {
         uint8_t w, r, g, b;
         unpackWRGB(px[i], w, r, g, b);
 
-        int r2 = (int)std::lround(r * rF);
-        int g2 = (int)std::lround(g * gF);
-        int b2 = (int)std::lround(b * bF);
+        if (rgbw && w > 0) {
+            // Fold a neutral portion of W into RGB (same delta to R/G/B), limited by headroom
+            int headR = 255 - r;
+            int headG = 255 - g;
+            int headB = 255 - b;
 
-        px[i] = packWRGB(w, Addon::clamp(r2), Addon::clamp(g2), Addon::clamp(b2));
+            int delta = w;
+            if (delta > headR)
+                delta = headR;
+            if (delta > headG)
+                delta = headG;
+            if (delta > headB)
+                delta = headB;
+
+            if (delta > 0) {
+                r = uint8_t(r + delta);
+                g = uint8_t(g + delta);
+                b = uint8_t(b + delta);
+                w = uint8_t(w - delta);
+            }
+            // kvarvarande w (om någon) lämnas orörd – tintas inte direkt
+        }
+
+        // Apply CCT on RGB only
+        int r2 = int(std::lroundf(r * rF));
+        int g2 = int(std::lroundf(g * gF));
+        int b2 = int(std::lroundf(b * bF));
+
+        px[i] = packWRGB(w, clamp(r2), clamp(g2), clamp(b2));
     }
 }
 
