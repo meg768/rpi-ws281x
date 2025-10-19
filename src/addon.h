@@ -2,6 +2,8 @@
 #ifndef _addon_h
 #define _addon_h
 
+/*
+
 // C++ standard
 #include <algorithm>
 #include <cmath>
@@ -23,6 +25,15 @@
 
 extern "C" {
 #include "rpi_ws281x/ws2811.h"
+}
+*/
+
+#include <cstdint> // uint32_t m.m.
+#include <nan.h>   // NAN_METHOD etc.
+#include <v8.h>    // v8:: typer (Nan drar ofta in det ändå, men säkert)
+
+extern "C" {
+#include "rpi_ws281x/ws2811.h" // ws2811_t i klassens config
 }
 
 #define DEFAULT_TARGET_FREQ 800000
@@ -48,11 +59,15 @@ class Addon {
     static config_t config;
 
   private:
+    // Color helpers
     static uint8_t clamp(int value);
+    static uint32_t packWRGB(uint8_t white, uint8_t red, uint8_t green, uint8_t blue);
     static void unpackWRGB(uint32_t pixel, uint8_t &white, uint8_t &red, uint8_t &green, uint8_t &blue);
+
+    // Color conversions
     static void adjustColorTemperature(uint32_t *pixels, int length);
     static void convertToRGBW(uint32_t *pixels, int length);
-    static uint32_t packWRGB(uint8_t white, uint8_t red, uint8_t green, uint8_t blue);
+
     static bool isRGBW();
 
   public:
