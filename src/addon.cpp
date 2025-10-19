@@ -253,15 +253,15 @@ NAN_METHOD(Addon::configure) {
 
     // Initialize driver
     ws2811_return_t result = ws2811_init(&config.ws281x);
+
     if (result) {
-        std::ostringstream err;
-        err << "ws281x.configure() - ws2811_init() failed: " << ws2811_get_return_t_str(result);
-        return Nan::ThrowError(err.str().c_str());
+        std::string msg = "ws281x.configure() - ws2811_init() failed: ";
+        msg += ws2811_get_return_t_str(result);
+        return Nan::ThrowError(msg.c_str());
     }
 
     if (!config.ws281x.channel[0].leds)
-        return Nan::ThrowError("ws281x.configure() - ws2811_init succeeded but "
-                               "leds buffer is null.");
+        return Nan::ThrowError("ws281x.configure() - ws2811_init succeeded but leds buffer is null.");
 
     config.initialized = true;
     info.GetReturnValue().Set(Nan::Undefined());
