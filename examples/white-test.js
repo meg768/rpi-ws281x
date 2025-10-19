@@ -20,7 +20,7 @@ class Example {
 		this.config.stripType = 'grbw';
 
 		// Set color temperature (using Kelvin)
-		this.config.colorTemperature = 2000;
+		this.config.colorTemperature = 2700;
 
         this.config.rawRGBW = true;
 
