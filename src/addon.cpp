@@ -339,8 +339,9 @@ NAN_METHOD(Addon::render) {
     // Copy pixels
     std::memcpy(channel.leds, data, led_count * sizeof(uint32_t));
 
+    adjustColorTemperature(channel.leds, static_cast<int>(led_count));
+
     if (!config.rawRGBW || !isRGBW()) {
-        adjustColorTemperature(channel.leds, static_cast<int>(led_count));
         convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
