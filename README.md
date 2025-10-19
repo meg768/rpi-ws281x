@@ -52,8 +52,8 @@ The **options** parameter may have the following properties:
 | brightness    | Default **255**. |
 | gpio          | Default **18**. |
 | stripType     | Valid values are `"rgb"`, `"grb"`, `"brg"`, `"bgr"`, `"gbr"`. If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
-| colorTemperature | Specifies color temperature in Kelvin. If omitted, no adjustments are made to the RGB channel. |
-| rawRGBW | True/false. Bypasses all conversions when using RGBW-strips. You are on your own with this one. No color temperature or gamma adjustments at all. Default **false**. Has no effect on RGB-strips. Otherwise, RGB values are "white-shifted" to the white channel of the RGBW-strip. |
+| colorTemperature | Specifies color temperature in Kelvin. If omitted, no adjustments are made to the RGB/RGBW channels. |
+| rawRGBW | True/false. Indicates that pixel values contain full RGBW values and prevents RGB values to be converted into RGBW values using "white-shift". Only affects RGBW-strips. Default **false**. |
 
 ### Render
 
