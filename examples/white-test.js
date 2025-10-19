@@ -34,7 +34,8 @@ class Example {
 
         // Set pixels to a gradient from black to red
         for (let i = 0; i < leds; i++) {
-            pixels[i] = 0xFFFFFF;
+            //pixels[i] = 0xFFFFFF;
+            pixels[i] = 0xFF000000;
         }
         // Render to strip
         ws281x.render(pixels);
