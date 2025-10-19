@@ -319,13 +319,12 @@ NAN_METHOD(Addon::render) {
         convertToRGBW(channel.leds, static_cast<int>(led_count));
     }
 
-    ws2811_return_t rc = ws2811_render(&config.ws281x);
+    ws2811_return_t result = ws2811_render(&config.ws281x);
 
-    if (rc) {
-        std::ostringstream err;
-        err << "ws281x.render() - ws2811_render failed: " << ws2811_get_return_t_str(rc);
-        Nan::ThrowError(err.str().c_str());
-        return;
+    if (result) {
+        std::string msg = "ws281x.render() - ws2811_render() failed: ";
+        msg += ws2811_get_return_t_str(result);
+        return Nan::ThrowError(msg.c_str());
     }
 
     info.GetReturnValue().Set(Nan::Undefined());
