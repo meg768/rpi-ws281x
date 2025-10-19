@@ -28,6 +28,7 @@ extern "C" {
 }
 */
 
+#include <cmath>
 #include <cstdint> // uint32_t m.m.
 #include <nan.h>   // NAN_METHOD etc.
 #include <v8.h>    // v8:: typer (Nan drar ofta in det ändå, men säkert)
