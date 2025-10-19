@@ -8,7 +8,7 @@
 #include <v8.h>
 
 extern "C" {
-#include "rpi_ws281x/ws2811.h" // ws2811_t i klassens config
+#include "rpi_ws281x/ws2811.h"
 }
 
 #define DEFAULT_TARGET_FREQ 800000
