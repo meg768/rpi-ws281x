@@ -2,36 +2,10 @@
 #ifndef _addon_h
 #define _addon_h
 
-/*
-
-// C++ standard
-#include <algorithm>
 #include <cmath>
 #include <cstdint>
-#include <cstring>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <vector>
-
-// NAN/V8 och ditt eget
-#include "addon.h"
 #include <nan.h>
-
-// C/POSIX – sist
-#include <cctype>
-#include <cstdio>
-#include <unistd.h>
-
-extern "C" {
-#include "rpi_ws281x/ws2811.h"
-}
-*/
-
-#include <cmath>
-#include <cstdint> // uint32_t m.m.
-#include <nan.h>   // NAN_METHOD etc.
-#include <v8.h>    // v8:: typer (Nan drar ofta in det ändå, men säkert)
+#include <v8.h>
 
 extern "C" {
 #include "rpi_ws281x/ws2811.h" // ws2811_t i klassens config
