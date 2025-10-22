@@ -51,7 +51,7 @@ The **options** parameter may have the following properties:
 | dma           | Default **10**. |
 | brightness    | Default **255**. |
 | gpio          | Default **18**. |
-| stripType     | Valid values are `"rgb"`, `"grb"`, `"brg"`, `"bgr"`, `"gbr"`. If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
+| stripType     | Valid values are `"rgb"`, `"rbg"`, `"grb"`, `"gbr"`, `"brg"`, `"bgr"` . If using an RGBW-strip, just add `"w"` to the name. Default `"rgb"`. |
 | colorTemperature | Specifies color temperature in Kelvin. If omitted, no adjustments are made to the RGB/RGBW channels. Common values are 2700 for warm white or 4000 for cool white. |
 | rawRGBW | True/false. Indicates that pixel values contain full RGBW values and prevents RGB values to be converted into RGBW values using "white-shift". Only affects RGBW-strips. Default **false**. |
 
@@ -227,6 +227,7 @@ Tested on Raspberry Pi Zero W and Zero 2 W with Node.js versions **16–20** and
 
 ## Changelog
 
+**2025-10-22** — Updated documentation.   
 **2025-10-18** — Removed *transitions* and added *colorTemperature* and *rawRGBW* to config. Still experimental.   
 **2025-10-17** — Fixed bugs using *transitions* for RGBW-stips.   
 **2025-10-12** — Added *transitions* in `configure()`.  
