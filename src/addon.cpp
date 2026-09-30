@@ -149,11 +149,11 @@ NAN_METHOD(Addon::configure) {
     config.ws281x.channel[1].brightness = 0;
     config.ws281x.channel[1].strip_type = 0;
 
-    if (info.Length() != 1) {
+    if (info.Length() != 1 || !info[0]->IsObject()) {
         return Nan::ThrowError("ws281x.configure() requires an options object.");
     }
 
-    v8::Local<v8::Object> options = v8::Local<v8::Object>::Cast(info[0]);
+    v8::Local<v8::Object> options = info[0].As<v8::Object>();
 
     // leds
     if (Nan::Has(options, Nan::New("leds").ToLocalChecked()).ToChecked()) {
@@ -206,7 +206,12 @@ NAN_METHOD(Addon::configure) {
             maybe_stripType = Nan::Get(options, Nan::New("stripType").ToLocalChecked());
 
         if (maybe_stripType.ToLocal(&stripType)) {
-            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), Nan::To<v8::String>(stripType).ToLocalChecked());
+            v8::Local<v8::String> stripTypeString;
+
+            if (!Nan::To<v8::String>(stripType).ToLocal(&stripTypeString))
+                return;
+
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), stripTypeString);
             std::string stripTypeValue = std::string(*value);
 
             if (stripTypeValue == "rgb")
